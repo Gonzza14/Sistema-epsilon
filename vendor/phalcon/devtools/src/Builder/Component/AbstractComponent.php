@@ -17,7 +17,7 @@ use Phalcon\DevTools\Builder\Exception\BuilderException;
 use Phalcon\DevTools\Builder\Path;
 use Phalcon\DevTools\Script\Color;
 use Phalcon\DevTools\Validation\Validator\Namespaces;
-use Phalcon\Validation;
+use Phalcon\Filter\Validation;
 
 /**
  * Base class for builder components
