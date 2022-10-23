@@ -19,13 +19,25 @@ class UsuarioController extends Controller
 		$usuario= new Usuarios();
 		$usuario->nombre = $this->request->getPost("nombre");
 		$usuario->correo = $this->request->getPost("correo");
-		
 		if (!$usuario->save()) {
-			echo "Error no se han guardado los datos";
-		}
+         echo '<div class="alert alert-danger" role="alert">
+               Error, vuelva a intentarlo
+               </div>
+               <div>
+               <a href="../usuario">
+               <input class="btn btn-primary"  value="Regresar"type="button">
+               </a>
+               </div>';		}
 		   else
 		{
-		   echo "Los datos se han almacenado correctamente";
+         echo '<div class="alert alert-success" role="alert">
+               El registro se guardo con exito
+               </div>
+               <div>
+               <a href="../usuario">
+               <input class="btn btn-primary"  value="Regresar"type="button">
+               </a>
+               </div>';
 		}
     }
 
@@ -40,19 +52,34 @@ class UsuarioController extends Controller
    	public function updateAction()
    	{
         $id = $this->request->getPost("id");
-        $user = Usuarios::findFirstById($id);
+        $usuario = Usuarios::findFirstById($id);
 
-        $user->id = $this->request->getPost("id");
-        $user->nombre = $this->request->getPost("nombre");
-        $user->correo = $this->request->getPost("correo");
-        $user->save();
-     if (!$user->save()) {
-         echo "Error no se han guardado los datos";
+        $usuario->id = $this->request->getPost("id");
+        $usuario->nombre = $this->request->getPost("nombre");
+        $usuario->correo = $this->request->getPost("correo");
+        $usuario->save();
+     if (!$usuario->save()) {
+      
+         echo '<div class="alert alert-danger" role="alert">
+               Error, vuelva a intentarlo
+               </div>
+               <div>
+               <a href="../usuario">
+               <input class="btn btn-primary"  value="Regresar"type="button">
+               </a>
+               </div>';
      }
         else
      {
-        echo "Los datos se han almacenado correctamente";
-     }
-   	  }
+         echo '<div class="alert alert-success" role="alert">
+               El registro se guardo con exito
+               </div>
+               <div>
+               <a href="../usuario">
+               <input class="btn btn-primary"  value="Regresar"type="button">
+               </a>
+               </div>';
+      }
+   }
 
 }

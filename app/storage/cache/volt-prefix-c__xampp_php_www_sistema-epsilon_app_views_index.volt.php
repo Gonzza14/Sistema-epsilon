@@ -97,8 +97,7 @@
 
           <li class="nav-item">
             <a href="<?= $this->url->get('../usuario') ?>" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
+              <i class="nav-icon fas fa-user"></i>              <p>
                 Usuarios
               </p>
             </a>
@@ -106,7 +105,7 @@
 
           <li class="nav-item">
             <a href="../user" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-users"></i>
               <p>
                 Roles
               </p>
@@ -115,7 +114,7 @@
 
           <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-key"></i>
               <p>
                 Permisos
               </p>
@@ -124,7 +123,7 @@
 
           <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-file"></i>
               <p>
                 Tipo de documentos
               </p>
@@ -136,7 +135,7 @@
 
           <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-marker"></i>
               <p>
                 Ingresar solicitud asociado
               </p>
@@ -147,7 +146,7 @@
 
           <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-list"></i>
               <p>
                 Solicitudes
               </p>
@@ -158,7 +157,7 @@
 
           <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-money-bill-wave"></i>
               <p>
                 Recibo de pago
               </p>
@@ -166,7 +165,7 @@
           </li>
           <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-id-card"></i>
               <p>
                 Generar carnet
               </p>
@@ -178,7 +177,7 @@
 
           <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-coins"></i>
               <p>
                 Recibir de pago
               </p>
