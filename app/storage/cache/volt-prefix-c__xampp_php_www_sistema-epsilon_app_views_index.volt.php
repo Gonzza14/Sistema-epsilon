@@ -134,7 +134,7 @@
           <li class="nav-header">SOLICITUD</li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="<?= $this->url->get('../asociado') ?>" class="nav-link">
               <i class="nav-icon fas fa-marker"></i>
               <p>
                 Ingresar solicitud asociado
@@ -192,6 +192,7 @@
     <!-- /.sidebar -->
   </aside>
 
+  
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -201,18 +202,13 @@
           <div class="col-sm-6">
             <h1 class="m-0">Bienvenido</h1>
           </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-          </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
-    <!-- /.content-header -->
+    <!-- /.content-header --> 
 
     <!-- Main content -->
-    <div class="container">
+    <div class="col col-12">
     <?php echo $this->getContent(); ?>
     </div>
     <!-- /.content -->
