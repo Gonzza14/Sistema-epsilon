@@ -131,9 +131,16 @@ button:hover {
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Genero</label>
+
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
+            <select class="categoria_id form-control" name="categoria_id" id="categoria_id" value="">
+                <option selected='true' disabled='disabled'>Seleccionar genero</option>
+                <?php foreach ($data_genero as $v) { ?>
+                <option value="<?= $v->IDGENERO ?>"><?= $v->NOMBREGENERO ?></option>
+                <?php } ?>
+            </select>
+        </div>
+
         </div>
       </div>
 
