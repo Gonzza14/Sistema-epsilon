@@ -36,7 +36,7 @@ $container->setShared(
                 'extension' => '.php',
                 'separator' => '_',
                 'stat'      => true,
-                'path'      => APP_PATH.('./storage/cache/volt'),
+                'path'      => APP_PATH.('/cache/volt/'),
                 'prefix'    => '-prefix-',
             ]
         );
@@ -50,7 +50,7 @@ $container->set(
     function () {
         $view = new View();
 
-        $view->setViewsDir('../app/views/');
+        $view->setViewsDir(APP_PATH . '/views/');
 
         $view->registerEngines(
             [
