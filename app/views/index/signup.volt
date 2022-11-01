@@ -14,7 +14,7 @@
         <select class="form-control" name="idRol" id="user_role">
             <option value="">Seleccionar rol de usuario</option>
             {% for role in roles %}
-                <option value="{{role.IDROL}}">{{role.NOMBREROL}}</option>
+                <option value="{{role.IDROL}}">{{role.IDROL}}</option>
             {% endfor %}
         </select>
         <br>

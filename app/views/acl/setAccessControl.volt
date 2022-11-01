@@ -15,7 +15,7 @@
             <tr>
                 <th>Metodos</th>
                 <?php foreach ($roles as $role): ?>
-                    <th><?= $role->NOMBREROL; ?></th>
+                    <th><?= $role->IDROL; ?></th>
                 <?php endforeach; ?>
             </tr>
         </thead>

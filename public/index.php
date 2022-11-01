@@ -6,13 +6,14 @@ use Phalcon\Mvc\View;
 use Phalcon\Mvc\Application;
 use Phalcon\Mvc\Url;
 use Phalcon\Db\Adapter\Pdo\Mysql;
-use Phalcon\Di\DiInterface;
+use Phalcon\Flash\Direct as Flash;
 use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Mvc\View\Engine\Volt;
 use Phalcon\Session\Manager;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Mvc\Model\MetaData\Memory;
 use Phalcon\Mvc\Dispatcher;
+use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Session\Bag as SessionBag;
 
 define('BASE_PATH', dirname(__DIR__));
@@ -25,6 +26,7 @@ $loader->setDirectories(
         APP_PATH . '/controllers/',
         APP_PATH . '/models/',
         APP_PATH . '/config/',
+        APP_PATH . '/plugins/',
     ]
 );
 
@@ -37,7 +39,6 @@ $loader->setNamespaces(
 );
 
 $container = new FactoryDefault();
-
 
 
 $container->setShared(
@@ -84,6 +85,12 @@ $container->setShared('session', function () {
     ]);
     $session->setAdapter($files)->start();
     return $session;
+});
+
+$container->setShared('sessionBag', function () {
+    $session = new Manager();
+    $sessionBag = new SessionBag($session, 'user');
+    return $sessionBag;
 });
 
 //Meta-data
@@ -135,6 +142,17 @@ $container->set(
     return $dispatcher;
 });*/
 
+$container->set('dispatcher', function () use ($container) {
+    $eventsManager = new EventsManager;
+    // Check if the user is allowed to access certain action using the SecurityPlugin
+    $eventsManager->attach('dispatch:beforeDispatch', new SecurityPlugin);
+    // Handle exceptions and not-found exceptions using NotFoundPlugin
+    // $eventsManager->attach('dispatch:beforeException', new NotFoundPlugin);
+    $dispatcher = new Dispatcher();
+    $dispatcher->setEventsManager($eventsManager);
+    return $dispatcher;
+});
+
 $application = new Application($container);
 
 try {
@@ -147,3 +165,15 @@ try {
 } catch (\Exception $e) {
     echo 'Exception: ', $e->getMessage();
 }
+
+/**
+ * Register the session flash service with the Twitter Bootstrap classes
+ */
+$container->set('flash', function () {
+    return new Flash([
+        'error'   => 'alert alert-danger',
+        'success' => 'alert alert-success',
+        'notice'  => 'alert alert-info',
+        'warning' => 'alert alert-warning'
+    ]);
+});

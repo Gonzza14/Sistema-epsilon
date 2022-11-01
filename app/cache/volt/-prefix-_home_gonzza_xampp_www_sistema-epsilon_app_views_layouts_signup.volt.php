@@ -1,5 +1,5 @@
 <div class="container">
-    <form action="<?= $this->url->get('index/signup') ?>" class="form-horizontal" method="POST">
+    <form action="<?= $this->url->get('layouts/signup') ?>" class="form-horizontal" method="POST">
         <h2 class="form-signin-heading">Registro de usuario</h2>
         <label for="user" class="sr-only">Nombre de usuario</label>
         <input type="text" name="nombre" class="form-control" placeholder="Nombre de usuario">

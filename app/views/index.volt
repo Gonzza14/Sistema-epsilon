@@ -59,7 +59,13 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-
+        <a href="{{ url('../index/signin') }}" class="nav-link">Iniciar sesion</a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ url('../index/signup') }}" class="nav-link">Registrarse</a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ url('../index/logout') }}" class="nav-link">Cerrar sesion</a>
       </li>
     </ul>
   </nav>

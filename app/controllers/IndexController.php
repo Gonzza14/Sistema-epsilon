@@ -5,6 +5,8 @@ use Phalcon\Html\TagFactory;
 
 class IndexController extends Controller
 {
+
+
     public function indexAction()
     {
         $this->view->usuarios = Usuarios::find();
@@ -72,7 +74,7 @@ class IndexController extends Controller
 
     public function signupAction(){
 
-        $this->view->roles = Roles::find();
+        $this->view->roles = security\Roles::find();
 
         $post = $this->request->getPost();
         if ($this->request->isPost()) {
