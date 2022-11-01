@@ -9,6 +9,7 @@ class UsuarioController extends Controller
 
     	$data_usuario = Usuarios::find();
     	$this->view->data_usuario=$data_usuario;
+      
     }
 
     public function createAction(){

@@ -97,20 +97,26 @@ button:hover {
   $(document).ready(function(){
       $("#pais").on('change', function () {
           $("#pais option:selected").each(function () {
-              id_pais=$(this).val();
-              $.post("getRegion.php",{
-id_pais: id_pais},function(data){
-              $("#region").html(data);
-            })		
+              elegido=$(this).val();
+              $.post("modelos.php", { elegido: elegido }, function(data){
+                  $("#region").innerHTML(data);
+              });			
           });
      });
   });
   </script>
 
-<?php 
-include "db_config.php";
-?>
+  <script>
 
+$(document).ready(function()
+{
+	$("#boton").click(function(){
+        	$.post("modelos.php", {coche: "Ford", modelo: "Focus", color: "rojo"}, function(htmlexterno){
+   $("#cargaexterna").html(htmlexterno);
+    		});
+	});
+});
+  </script>
 <form id="regForm" action="/action_page.php">
   <h2>Solicitud de admisión de cooperativa</h2>
   <div class="bg-gray row col-12 "></div></br>
@@ -118,7 +124,10 @@ include "db_config.php";
   <!-------------------------Datos personales--------------------------------------------------------->
   <div class="tab">
     <div class="row col-12"><h5><b>Agregar datos personales</b></h5></div>
-
+    
+    
+    <input type="button" id="boton" value="Enviar parámetros">
+    <div id="cargaexterna">Aquí se mostrarán los parámetros enviados</div>
     <div class="row">
 
      <div class="col-sm-6">
@@ -151,17 +160,9 @@ include "db_config.php";
           <div class="col-sm-8">
             <select class="categoria_id form-control" name="genero"  value="">
               <option selected='true' disabled='disabled'>Seleccionar genero</option>
-              <?php
-              $result = mysqli_query($conn,"SELECT * FROM  genero");
-              while($row =mysqli_fetch_array($result)){
-                ?>
-                <option value="<?php echo $row['IDGENERO'];?>"> <?php echo $row['NOMBREGENERO']; ?></option>
-              <?php
-              }
-              ?>
-                  <!-- {% for v in data_genero %}
-                  <option value="{{ v.IDGENERO }}">{{ v.NOMBREGENERO }}</option>
-                  {%endfor%} -->
+                  <?php foreach ($data_genero as $v) { ?>
+                  <option value="<?= $v->IDGENERO ?>"><?= $v->NOMBREGENERO ?></option>
+                  <?php } ?>
           </select>
           </div>
         </div>
@@ -180,27 +181,16 @@ include "db_config.php";
           <div class="col-sm-8">
             <select class="form-control" name="pais" id="pais" value="">
               <option selected='true' disabled='disabled'>Seleccionar pais</option>
-              <?php
-              $resultP = mysqli_query($conn,"SELECT * FROM  pais");
-              while($rowP =mysqli_fetch_array($resultP)){
-                ?>
-                <option value="<?php echo $rowP['IDPAIS'];?>"> <?php echo $rowP['NOMBREPAIS']; ?></option>
-              <?php
-              }
-              ?>
-                  <!-- {% for p in data_pais %}
-                  <option value="{{ p.IDPAIS }}">{{ p.NOMBREPAIS }}</option>
-                  {%endfor%} -->
+                  <?php foreach ($data_pais as $p) { ?>
+                  <option value="<?= $p->IDPAIS ?>"><?= $p->NOMBREPAIS ?></option>
+                  <?php } ?>
           </select>
           </div>
         </div>
-
         <div class="form-group row">
           <label class="col-sm col-form-label">Región nacimiento</label>
           <div class="col-sm-8">
-            <select class="form-control" name="region" id="region" value="">
-          </select>
-
+<input name="region" id="region">
           </div>
         </div>
         <div class="form-group row">

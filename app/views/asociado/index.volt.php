@@ -159,9 +159,9 @@ include "db_config.php";
               <?php
               }
               ?>
-                  <!-- {% for v in data_genero %}
-                  <option value="{{ v.IDGENERO }}">{{ v.NOMBREGENERO }}</option>
-                  {%endfor%} -->
+                  <!-- <?php foreach ($data_genero as $v) { ?>
+                  <option value="<?= $v->IDGENERO ?>"><?= $v->NOMBREGENERO ?></option>
+                  <?php } ?> -->
           </select>
           </div>
         </div>
@@ -188,9 +188,9 @@ include "db_config.php";
               <?php
               }
               ?>
-                  <!-- {% for p in data_pais %}
-                  <option value="{{ p.IDPAIS }}">{{ p.NOMBREPAIS }}</option>
-                  {%endfor%} -->
+                  <!-- <?php foreach ($data_pais as $p) { ?>
+                  <option value="<?= $p->IDPAIS ?>"><?= $p->NOMBREPAIS ?></option>
+                  <?php } ?> -->
           </select>
           </div>
         </div>
