@@ -30,7 +30,15 @@ $loader->setDirectories(
 
 $loader->register();
 
+$loader->setNamespaces(
+    [
+        "security" =>  APP_PATH . '/models/'
+    ]
+);
+
 $container = new FactoryDefault();
+
+
 
 $container->setShared(
     'voltService',

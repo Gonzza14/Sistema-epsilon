@@ -1,4 +1,5 @@
 <?php
+namespace security;
 
 use Phalcon\Mvc\Model;
 
