@@ -1,0 +1,23 @@
+<div class="container">
+    <form action="{{url ("index/signup")}}" class="form-horizontal" method="POST">
+        <h2 class="form-signin-heading">Registro de usuario</h2>
+        <label for="user" class="sr-only">Nombre de usuario</label>
+        <input type="text" name="nombre" class="form-control" placeholder="Nombre de usuario">
+        <br>
+        <label for="inputEmail" class="sr-only">Correo electronico</label>
+        <input type="text" name="correo" class="form-control" placeholder="Correo electronico">
+        <br>
+        <label for="inputPassword" class="sr-only">Contraseña</label>
+        <input type="password" name="clave" class="form-control" placeholder="Contraseña">
+        <br>
+        <label for="role" class="sr-only">Rol de usuario</label>
+        <select class="form-control" name="idRol" id="user_role">
+            <option value="">Seleccionar rol de usuario</option>
+            {% for role in roles %}
+                <option value="{{role.IDROL}}">{{role.NOMBREROL}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
+    </form>
+</div>

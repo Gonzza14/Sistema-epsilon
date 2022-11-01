@@ -9,6 +9,11 @@ use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Di\DiInterface;
 use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Mvc\View\Engine\Volt;
+use Phalcon\Session\Manager;
+use Phalcon\Session\Adapter\Stream;
+use Phalcon\Mvc\Model\MetaData\Memory;
+use Phalcon\Mvc\Dispatcher;
+use Phalcon\Session\Bag as SessionBag;
 
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
@@ -19,9 +24,10 @@ $loader->setDirectories(
     [
         APP_PATH . '/controllers/',
         APP_PATH . '/models/',
+        APP_PATH . '/config/',
     ]
 );
-    
+
 $loader->register();
 
 $container = new FactoryDefault();
@@ -36,7 +42,7 @@ $container->setShared(
                 'extension' => '.php',
                 'separator' => '_',
                 'stat'      => true,
-                'path'      => APP_PATH.('/cache/volt/'),
+                'path'      => APP_PATH . ('/cache/volt/'),
                 'prefix'    => '-prefix-',
             ]
         );
@@ -61,6 +67,27 @@ $container->set(
         return $view;
     }
 );
+
+//Session
+$container->setShared('session', function () {
+    $session = new Manager();
+    $files = new Stream([
+        'savePath' => '/tmp'
+    ]);
+    $session->setAdapter($files)->start();
+    return $session;
+});
+
+//Meta-data
+$container['modelsMetaData'] = function () {
+
+    $metaData = new Memory([
+        "lifetime" => 86400,
+        "prefix" => "metaData"
+    ]);
+    return $metaData;
+};
+
 $container->set(
     'url',
     function () {
@@ -78,12 +105,27 @@ $container->set(
             [
                 'host'     => 'localhost',
                 'username' => 'root',
-                'password' => '',
+                'password' => 'PorscheGt3RS',
                 'dbname'   => 'epsilon',
             ]
         );
     }
 );
+
+/*$container->set('dispatcher', function () use ($container) {
+    $eventsManager = $container->getShared('eventsManager');
+
+    //Clase de permisos
+    $permission = new Permission();
+
+    //Escucha los eventos de la clase permisos
+    $eventsManager->attach('dispatch', $permission);
+
+    $dispatcher = new Dispatcher();
+    $dispatcher->setEventsManager($eventsManager);
+
+    return $dispatcher;
+});*/
 
 $application = new Application($container);
 
