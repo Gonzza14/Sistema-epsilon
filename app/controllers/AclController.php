@@ -341,7 +341,7 @@ class AclController extends Controller
                 }
             }
 
-            echo $msg;
+            $this->flash->notice($msg);
 
             // Disable View File Content
             $this->view->disable();

@@ -47,31 +47,41 @@
   <nav class="main-header navbar navbar-expand navbar-dark">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
+      {% if session.has('AUTH')%}
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      {% endif %}
       <li class="nav-item d-none d-sm-inline-block">
+        {% if session.has('AUTH')%}
         <a href="{{ url('../index') }}" class="nav-link">Inicio</a>
+        {% endif %}
       </li>
 
     </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+      {% if session.has('AUTH') === false%}
       <li class="nav-item">
         <a href="{{ url('../index/signin') }}" class="nav-link">Iniciar sesion</a>
       </li>
+      {% endif %}
+      {% if session.has('AUTH') === false%}
       <li class="nav-item">
         <a href="{{ url('../index/signup') }}" class="nav-link">Registrarse</a>
       </li>
+      {% endif %}
+      {% if session.has('AUTH')%}
       <li class="nav-item">
         <a href="{{ url('../index/logout') }}" class="nav-link">Cerrar sesion</a>
       </li>
+      {% endif %}
     </ul>
   </nav>
   <!-- /.navbar -->
 
-  
+  {% if session.has('AUTH')%}
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -200,7 +210,7 @@
     </div>
     <!-- /.sidebar -->
   </aside>
- 
+  {% endif %}
   
   
   <!-- Content Wrapper. Contains page content -->
@@ -210,7 +220,9 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Bienvenid@ <?= $this->session->get('AUTH')['nombre'] ?></h1>
+            {% if session.has('AUTH') %}
+            <h1 class="m-0">Bienvenid@ <?= $this->session->get('AUTH')['nombre'];?></h1>
+            {% endif %}
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -232,13 +244,16 @@
   </aside>
   <!-- /.control-sidebar -->
 
+  {{ flash.output() }}
   <!-- Main Footer -->
+  {% if session.has('AUTH')%}
   <footer class="main-footer">
     <strong>Copyright &copy; 2022 Sistema Epsilon.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
     </div>
   </footer>
+    {% endif %}
 </div>
 
 <!-- ./wrapper -->

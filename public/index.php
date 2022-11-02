@@ -7,6 +7,7 @@ use Phalcon\Mvc\Application;
 use Phalcon\Mvc\Url;
 use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Flash\Direct as Flash;
+use Phalcon\Escaper;
 use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Mvc\View\Engine\Volt;
 use Phalcon\Session\Manager;
@@ -15,6 +16,7 @@ use Phalcon\Mvc\Model\MetaData\Memory;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Session\Bag as SessionBag;
+use Phalcon\Flash\Session as FlashSession;
 
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
@@ -170,10 +172,12 @@ try {
  * Register the session flash service with the Twitter Bootstrap classes
  */
 $container->set('flash', function () {
-    return new Flash([
+    $flash = new FlashSession([
         'error'   => 'alert alert-danger',
         'success' => 'alert alert-success',
         'notice'  => 'alert alert-info',
         'warning' => 'alert alert-warning'
     ]);
+
+    return $flash;
 });

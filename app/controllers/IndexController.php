@@ -9,7 +9,6 @@ class IndexController extends Controller
 
     public function indexAction()
     {
-        $this->view->usuarios = Usuarios::find();
     }
 
 
@@ -35,10 +34,6 @@ class IndexController extends Controller
                     echo "El usuario no esta activo";
                     $this->view->disable();
                 } else {
-
-                    # https://docs.phalconphp.com/en/3.3/session#start
-        
-                    // Set a session
                     $this->session->set('AUTH', [
                         'id' => $usuario->IDUSUARIO,
                         'nombre' => $usuario->NOMBREUSUARIO,
@@ -60,9 +55,8 @@ class IndexController extends Controller
                 }
 
             } else {
-
-                echo "Email y correo invalido.";
-                $this->view->disable();
+                $this->flash->error("Email y/o contraseña invalida.");
+                return $this->response->redirect('index/signin');
             }
         }
     }
@@ -99,7 +93,7 @@ class IndexController extends Controller
                 $mensajes = $usuario->getMessages();
     
                 foreach ($mensajes as $mensaje) {
-                    echo $mensaje->getMessage(), "<br/>";
+                    $this->flash->error( $mensaje->getMessage(), "<br/>");
                 }
 
                 $this->view->disable();

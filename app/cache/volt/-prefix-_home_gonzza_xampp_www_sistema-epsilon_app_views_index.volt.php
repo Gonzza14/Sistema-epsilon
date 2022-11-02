@@ -47,31 +47,41 @@
   <nav class="main-header navbar navbar-expand navbar-dark">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
+      <?php if ($this->session->has('AUTH')) { ?>
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      <?php } ?>
       <li class="nav-item d-none d-sm-inline-block">
+        <?php if ($this->session->has('AUTH')) { ?>
         <a href="<?= $this->url->get('../index') ?>" class="nav-link">Inicio</a>
+        <?php } ?>
       </li>
 
     </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+      <?php if ($this->session->has('AUTH') === false) { ?>
       <li class="nav-item">
         <a href="<?= $this->url->get('../index/signin') ?>" class="nav-link">Iniciar sesion</a>
       </li>
+      <?php } ?>
+      <?php if ($this->session->has('AUTH') === false) { ?>
       <li class="nav-item">
         <a href="<?= $this->url->get('../index/signup') ?>" class="nav-link">Registrarse</a>
       </li>
+      <?php } ?>
+      <?php if ($this->session->has('AUTH')) { ?>
       <li class="nav-item">
         <a href="<?= $this->url->get('../index/logout') ?>" class="nav-link">Cerrar sesion</a>
       </li>
+      <?php } ?>
     </ul>
   </nav>
   <!-- /.navbar -->
 
-  
+  <?php if ($this->session->has('AUTH')) { ?>
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -200,7 +210,7 @@
     </div>
     <!-- /.sidebar -->
   </aside>
- 
+  <?php } ?>
   
   
   <!-- Content Wrapper. Contains page content -->
@@ -210,7 +220,9 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Bienvenid@ <?= $this->session->get('AUTH')['nombre'] ?></h1>
+            <?php if ($this->session->has('AUTH')) { ?>
+            <h1 class="m-0">Bienvenid@ <?= $this->session->get('AUTH')['nombre'];?></h1>
+            <?php } ?>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -232,13 +244,16 @@
   </aside>
   <!-- /.control-sidebar -->
 
+  <?= $this->flash->output() ?>
   <!-- Main Footer -->
+  <?php if ($this->session->has('AUTH')) { ?>
   <footer class="main-footer">
     <strong>Copyright &copy; 2022 Sistema Epsilon.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
     </div>
   </footer>
+    <?php } ?>
 </div>
 
 <!-- ./wrapper -->
