@@ -122,7 +122,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="<?= $this->url->get('../tipoDocumento') ?>" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
               <p>
                 Tipo de documentos
