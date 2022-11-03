@@ -6,7 +6,7 @@ use security\Roles;
 use Phalcon\Mvc\Controller;
 
 use Phalcon\Mvc\Model\Criteria;
-use Phalcon\Paginator\Adapter\Model as Paginator;
+use Phalcon\Paginator\Adapter\QueryBuilder as Paginator;
 use security\Acl;
 
 class AclController extends Controller
@@ -29,10 +29,10 @@ class AclController extends Controller
         $parametros = $this->persistent->parameters;
         if (!is_array($parametros)) {
             $parametros = [];
-        }
+        } 
         $parametros["order"] = "IDROL";
-
         $acl = Acl::find($parametros);
+        $builder = $this->modelsManager->createBuilder($parametros)->columns("IDROL, accion, componente")->from(Acl::class)->orderBy("IDROL");
         if (count($acl) == 0) {
             $this->flash->notice("La busqueda no encuentra una lista de acceso");
 
@@ -45,12 +45,13 @@ class AclController extends Controller
         }
 
         $paginador = new Paginator([
-            'data' => $acl,
+            'builder' => $builder,
             'limit'=> 10,
             'page' => $numeroPagina
         ]);
 
-        $this->view->page = $paginador->getPaginate();
+        $page = $paginador->paginate();
+        $this->view->setVar('page', $page);
     }
 
      /**
@@ -83,9 +84,9 @@ class AclController extends Controller
 
             $this->view->IDROLE = $acl->IDROL;
 
-            $this->tag->setDefault("IDROL", $acl->IDROL);
-            $this->tag->setDefault("accion", $acl->accion);
-            $this->tag->setDefault("componente", $acl->componente);
+            Phalcon\Tag::setDefault("IDROL", $acl->IDROL);
+            Phalcon\Tag::setDefault("accion", $acl->accion);
+            Phalcon\Tag::setDefault("componente", $acl->componente);
             
         }
     }
@@ -341,10 +342,9 @@ class AclController extends Controller
                 }
             }
 
-            $this->flash->notice($msg);
-
-            // Disable View File Content
             $this->view->disable();
+            $this->flash->notice($msg);
+            $this->response->redirect('acl');
 
         } else {
             return $this->response->redirect();

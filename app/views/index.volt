@@ -123,7 +123,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="../user" class="nav-link">
+            <a href="{{ url('../roles') }}" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
               <p>
                 Roles
@@ -132,7 +132,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ url('../acl') }}" class="nav-link">
               <i class="nav-icon fas fa-key"></i>
               <p>
                 Permisos
@@ -213,6 +213,7 @@
   {% endif %}
   
   
+  
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -220,8 +221,9 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
+            {{ flash.output() }}
             {% if session.has('AUTH') %}
-            <h1 class="m-0">Bienvenid@ <?= $this->session->get('AUTH')['nombre'];?></h1>
+            <!--<h1 class="m-0">Bienvenid@ <?= $this->session->get('AUTH')['nombre'];?></h1>-->
             {% endif %}
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -244,7 +246,7 @@
   </aside>
   <!-- /.control-sidebar -->
 
-  {{ flash.output() }}
+
   <!-- Main Footer -->
   {% if session.has('AUTH')%}
   <footer class="main-footer">

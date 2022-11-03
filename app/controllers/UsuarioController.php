@@ -4,82 +4,83 @@ use Phalcon\Mvc\Controller;
 
 class UsuarioController extends Controller
 {
-    public function indexAction()
-    {
+   public function indexAction()
+   {
 
-    	$data_usuario = Usuarios::find();
-    	$this->view->data_usuario=$data_usuario;
-    }
+      $data_usuario = Usuarios::find();
+      $this->view->data_usuario = $data_usuario;
+   }
 
-    public function createAction(){
+   public function createAction()
+   {
+   }
+   public function editAction($id)
+   {
+      $this->view->roles = security\Roles::find();
+      $usuario = Usuarios::findFirst($id);
 
-    }
-
-    public function storeAction(){
-		$usuario= new Usuarios();
-		$usuario->nombre = $this->request->getPost("nombre");
-		$usuario->correo = $this->request->getPost("correo");
-		if (!$usuario->save()) {
-         echo '<div class="alert alert-danger" role="alert">
-               Error, vuelva a intentarlo
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';		}
-		   else
-		{
-         echo '<div class="alert alert-success" role="alert">
-               El registro se guardo con exito
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';
-		}
-    }
-
-    public function editAction($id)
-   	{
-   		$usuario = Usuarios::findFirst($id);
-
-   		$this->view->id=$usuario->id;
-   		$this->view->nombre=$usuario->nombre;
-   		$this->view->correo=$usuario->correo;
-   	}
-   	public function updateAction()
-   	{
-        $id = $this->request->getPost("id");
-        $usuario = Usuarios::findFirstById($id);
-
-        $usuario->id = $this->request->getPost("id");
-        $usuario->nombre = $this->request->getPost("nombre");
-        $usuario->correo = $this->request->getPost("correo");
-        $usuario->save();
-     if (!$usuario->save()) {
-      
-         echo '<div class="alert alert-danger" role="alert">
-               Error, vuelva a intentarlo
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';
-     }
-        else
-     {
-         echo '<div class="alert alert-success" role="alert">
-               El registro se guardo con exito
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';
+      $this->view->id = $usuario->IDUSUARIO;
+      $this->view->nombre = $usuario->NOMBREUSUARIO;
+      $this->view->correo = $usuario->CORREOUSUARIO;
+      $this->view->rol = $usuario->IDROL;
+   }
+   public function updateAction()
+   {
+      $id = $this->request->getPost("id");
+      $usuario = Usuarios::findFirstByIDUSUARIO($id);
+      $usuario->IDUSUARIO = $this->request->getPost("id");
+      $usuario->NOMBREUSUARIO = $this->request->getPost("nombre");
+      $usuario->CORREOUSUARIO = $this->request->getPost("correo");
+      $usuario->IDROL = $this->request->getPost("idRol");
+      $usuario->ACTUALIZADO=  date('d/m/y h:i:s');
+      $usuario->save();
+      if (!$usuario->save()) {
+         $this->flash->error("El usuario no se pudo actualizar");
+         $this->dispatcher->forward([
+            'controller' => "usuario",
+            'action' => 'index'
+        ]);
+      } else {
+         $this->flash->success("El usuario se actualizo con exito");
+         $this->response->redirect('usuario');
       }
    }
 
+   public function deleteAction($id)
+   {
+
+      if ($id > 0 AND !empty($id))
+      {
+          // Check Agin User Article is Valid
+          $usuario = Usuarios::findFirst([
+              'conditions' => 'IDUSUARIO = :1: AND IDUSUARIO != :2:',
+              'bind' => [
+                  '1' => $id,
+                  '2' => $this->session->get('AUTH')['id']
+              ]
+          ]);
+
+          if (!$usuario) {
+              $this->flash->error('El usuario no fue encontrado');
+              return $this->response->redirect('usuario');
+          }    
+
+          if (!$usuario->delete()) {
+              foreach ($usuario->getMessages() as $msg) {
+                  $this->flash->error((string) $msg);
+              }
+              return $this->response->redirect("usuario");
+          } else {
+              $this->flash->success("El usuario fue eliminado");
+              return $this->response->redirect("usuario");
+          }
+
+      } else {
+          $this->flash->error("El identificador del usuario es invalido");
+          return $this->response->redirect("usuario");
+      }
+
+      # View Page Disable
+      $this->view->disable();
+   }
 }

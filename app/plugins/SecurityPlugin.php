@@ -84,9 +84,11 @@ class SecurityPlugin extends Injectable
             $aclItems = security\Acl::find();
             
             // Fetch Register User Roles
+            $rolesArreglo[] = null;
             foreach ($roles as $rol) {
                 $acl->addRole($rol->IDROL);
             }
+
             
             foreach ($componentes as $componente) {
                 $acciones = Accion::find();

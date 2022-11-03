@@ -56,7 +56,7 @@ class IndexController extends Controller
 
             } else {
                 $this->flash->error("Email y/o contraseña invalida.");
-                return $this->response->redirect('index/signin');
+                $this->view->disable();
             }
         }
     }
@@ -78,7 +78,7 @@ class IndexController extends Controller
             $usuario->NOMBREUSUARIO = $post['nombre'];
             $usuario->CORREOUSUARIO = $post['correo'];
             $usuario->CONTRAUSUARIO = md5($post['clave']);
-            $usuario->IDROL= $post['idRol'];
+            $usuario->IDROL= "Solicitante";
             $usuario->ACTIVO = 1;
             $usuario->CREADO=  date('d/m/y h:i:s');
             $usuario->ACTUALIZADO=  date('d/m/y h:i:s');
@@ -86,6 +86,7 @@ class IndexController extends Controller
             $exito = $usuario->save();
     
             if ($exito) {
+                $this->flash->success("¡Gracias por registrarte!");
                 $this->response->redirect('/index/signin');
                 $this->view->disable();
             } else {
@@ -95,7 +96,6 @@ class IndexController extends Controller
                 foreach ($mensajes as $mensaje) {
                     $this->flash->error( $mensaje->getMessage(), "<br/>");
                 }
-
                 $this->view->disable();
             }
         }

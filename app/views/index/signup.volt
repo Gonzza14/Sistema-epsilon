@@ -10,14 +10,14 @@
         <label for="inputPassword" class="sr-only">Contraseña</label>
         <input autocomplete="off" type="password" name="clave" class="form-control" placeholder="Contraseña">
         <br>
-        <label for="role" class="sr-only">Rol de usuario</label>
+        <!--<label for="role" class="sr-only">Rol de usuario</label>
         <select class="form-control" name="idRol" id="user_role">
             <option value="">Seleccionar rol de usuario</option>
             {% for role in roles %}
                 <option value="{{role.IDROL}}">{{role.IDROL}}</option>
             {% endfor %}
         </select>
-        <br>
+        <br>-->
         <button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
     </form>
 </div>

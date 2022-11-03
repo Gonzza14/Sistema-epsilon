@@ -1,38 +1,32 @@
         <div class="row">
           <div class="row py-lg-2">
             <div class="col-md-6">
-                 <h2>Lista de usuarios</h2>
+                 <h2>Lista de roles</h2>
             </div>
-            <!--<div class="col-md-6">
-              <a href="usuario/create/" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Nuevo usuario</a>
-            </div>-->
+            <div class="col-md-6">
+              <a href="roles/create/" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Nuevo rol</a>
+            </div>
           </div>
       </div>
       </br>
-      <table class="table table-dark table-hover " id="dataTableUsuario">
+      <table class="table table-dark table-hover " id="dataTableRol">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Rol</th>
+              <th>Nombre del rol</th>
               <th>Creado</th>
               <th>Actualizado</th>
               <th>Opciones</th>
             </tr>
           </thead>
           <tbody>
-          <?php foreach ($data_usuario as $v) { ?>
+          <?php foreach ($roles as $rol) { ?>
             <tr>
-              <td><?= $v->IDUSUARIO ?></td>
-              <td><?= $v->NOMBREUSUARIO ?></td>
-              <td><?= $v->CORREOUSUARIO ?></td>
-              <td><?= $v->IDROL ?></td>
-              <td><?= $v->CREADO ?></td>
-              <td><?= $v->ACTUALIZADO ?></td>
+              <td><?= $rol->IDROL ?></td>
+              <td><?= $rol->CREADO ?></td>
+              <td><?= $rol->ACTUALIZADO ?></td>
               <td>
-                <a href="usuario/edit/<?= $v->IDUSUARIO ?>?rol=<?= $v->IDROL ?>"><i class="fa fa-edit"></i></a>
-                <a href="usuario/delete/<?= $v->IDUSUARIO ?>"><i class="fas fa-trash-alt"></i></a>
+                <a href="roles/edit/<?= $rol->IDROL ?>"><i class="fa fa-edit"></i></a>
+                <a href="roles/delete/<?= $rol->IDROL ?>"><i class="fas fa-trash-alt"></i></a>
               </td>
             </tr>
           <?php } ?>
@@ -72,7 +66,7 @@
 </script>
         <script>
           $(function () {
-            $("#dataTableUsuario").DataTable({
+            $("#dataTableRol").DataTable({
               "language": {
                   "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json"
               },
