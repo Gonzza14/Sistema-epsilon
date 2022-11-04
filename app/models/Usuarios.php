@@ -5,7 +5,7 @@ use Phalcon\Mvc\Model;
 class Usuarios extends Model
 {
     public $id;
-    public $nombre;
+    public $nossmbre;
     public $correo;
     public $clave;
     public $id_rol;
