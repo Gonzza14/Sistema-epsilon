@@ -130,6 +130,14 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{{ url('../concepto') }}" class="nav-link">
+              <i class="nav-icon fas fa-coins"></i>
+              <p>
+                Configurar montos a pagar
+              </p>
+            </a>
+          </li>
 
           <li class="nav-header">SOLICITUD</li>
 
@@ -176,7 +184,7 @@
           <li class="nav-header">CAJERO</li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ url('../pago') }}" class="nav-link">
               <i class="nav-icon fas fa-coins"></i>
               <p>
                 Recibir de pago

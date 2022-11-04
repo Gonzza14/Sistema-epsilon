@@ -22,7 +22,7 @@
     <div class="form-group">
       <label class="control-label col-sm-12" for="email">Tipo:</label>
       <div class="col-sm-10">
-        <select class="extranjeroTipoDoc form-control" name="extranjeroTipoDoc" id="extranjeroTipoDoc" value="">
+        <select class="extranjeroTipoDoc form-control" name="extranjeroTipoDoc" id="extranjeroTipoDoc" value="" required>
           <option selected='true' disabled='disabled'>Seleccionar tipo</option>
             <option value="0">Documento Nacional</option>
             <option value="1">Documento Extranjero</option>
