@@ -1,4 +1,4 @@
-<h3>Establecer control de acceso para el componente <b><?= $componente ?></b> Controller</h3>
+<h3>Establecer permisos para el recurso <b><?= $componente ?></b></h3>
 <?php
     echo Phalcon\Tag::formLegacy(
         [
@@ -10,7 +10,7 @@
 ?>
 <input type="hidden" name="componente" value="<?= $componente ?>">
 <div class="row">
-    <table class="table table-bordered">
+    <table class="table table-dark table-hover" id="dataTableAcl">
         <thead>
             <tr>
                 <th>Metodos</th>
@@ -55,3 +55,24 @@
 </div>
 
 <?php echo Phalcon\Tag::endForm(); ?>
+
+<script>
+    $(function () {
+      $("#dataTableAcl").DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json"
+        },
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      $('#dataTable1').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
+    });
+  </script>

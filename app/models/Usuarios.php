@@ -12,12 +12,23 @@ class Usuarios extends Model
 
     public $IDROL;
 
+    public $USERNAME;
+
     public $NOMBREUSUARIO;
+
+    public $APELLIDOUSUARIO;
 
     public $CORREOUSUARIO;
 
+    public $FECHANACIMIENTO;
+
     public $CONTRAUSUARIO;
+
+    public $TELEFONO;
+
     public $ACTIVO;
+
+    public $PRIMERSIGNIN;
 
     public $CREADO;
 

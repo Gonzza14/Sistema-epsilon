@@ -3,6 +3,7 @@
 use Phalcon\Mvc\Controller;
 use Phalcon\Html\TagFactory;
 use security\Roles;
+use Phalcon\Mvc\Model\Manager;
 
 class RolesController extends Controller
 {
@@ -53,19 +54,34 @@ class RolesController extends Controller
             ]
         ]);
 
-        $this->view->id = $rol->IDROL;
+        //$rol = Roles::findFirst($id);
+
         $this->view->idRol = $rol->IDROL;
+        $this->view->id = $rol->IDROL;
     }
 
     public function updateAction()
     {
         $id = $this->request->getPost("id");
-        $rol = security\Roles::findFirst([
+        /*$rol = Roles::findFirstByIDROL($id);*/
+        $rol = Roles::findFirst([
             'conditions' => 'IDROL = :1:',
             'bind' => [
                 '1' => $id,
             ]
         ]);
+        /*$idRol = $this->request->getPost("id");
+        $tiempo = date('d/m/y h:i:s');
+        $query = $this
+        ->modelsManager
+        ->executeQuery(
+            'UPDATE security\Roles SET IDROL= :idRol:, ACTUALIZADO= :tiempo: WHERE identificador = :id:',
+            [
+                'id' => $id,
+                'idRol' => $idRol,
+                'tiempo' => $tiempo
+            ]
+        );*/
         $rol->IDROL = $this->request->getPost("idRol");
         $rol->ACTUALIZADO = date('d/m/y h:i:s');
         $rol->save();

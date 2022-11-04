@@ -66,19 +66,19 @@
     <h1 class="h3 mb-3 fw-normal text">Inicio de sesion</h1>
 
     <div class="form-floating">
-      <input autocomplete="off" type="email" name="correo" class="form-control" id="floatingInput" placeholder="name@example.com">
-      <label for="floatingInput">Correo electronico</label>
+      <input autocomplete="off" type="text" name="nombre" class="form-control" id="floatingInput" placeholder="name@example.com">
+      <label for="floatingInput">Nombre de usuario</label>
     </div>
     <div class="form-floating">
       <input autocomplete="off" type="password" name="clave" class="form-control" id="floatingPassword" placeholder="Password">
       <label for="floatingPassword">Contraseña</label>
     </div>
 
-    <div class="checkbox mb-3">
+   <!-- <div class="checkbox mb-3">
       <label>
         <input type="checkbox" value="remember-me"> Recuerdame
       </label>
-    </div>
+    </div>-->
     <button class="w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
     <p class="mt-5 mb-3 text-muted text">&copy;2022</p>
   </form>

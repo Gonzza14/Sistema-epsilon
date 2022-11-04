@@ -22,6 +22,8 @@ define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
 // ...
 
+
+
 $loader = new Loader();
 $loader->setDirectories(
     [
@@ -29,6 +31,7 @@ $loader->setDirectories(
         APP_PATH . '/models/',
         APP_PATH . '/config/',
         APP_PATH . '/plugins/',
+        APP_PATH . '/library/',
     ]
 );
 
@@ -40,8 +43,17 @@ $loader->setNamespaces(
     ]
 );
 
+$loader->setClasses(
+    [
+        'Mail' => APP_PATH. "/library/Mail/Mail.php"
+    ]    
+);
+
 $container = new FactoryDefault();
 
+/*$container->setShared('config', function () {
+    return APP_PATH . "/config/config.php";
+});*/
 
 $container->setShared(
     'voltService',
@@ -128,21 +140,6 @@ $container->set(
         );
     }
 );
-
-/*$container->set('dispatcher', function () use ($container) {
-    $eventsManager = $container->getShared('eventsManager');
-
-    //Clase de permisos
-    $permission = new Permission();
-
-    //Escucha los eventos de la clase permisos
-    $eventsManager->attach('dispatch', $permission);
-
-    $dispatcher = new Dispatcher();
-    $dispatcher->setEventsManager($eventsManager);
-
-    return $dispatcher;
-});*/
 
 $container->set('dispatcher', function () use ($container) {
     $eventsManager = new EventsManager;

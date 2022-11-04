@@ -13,6 +13,7 @@ class AclController extends Controller
 {
     public function indexAction()
     {
+        $this->view->componentes = security\Componentes::find();
         $this->persistent->parameters = null;
     }
 
@@ -29,7 +30,7 @@ class AclController extends Controller
         $parametros = $this->persistent->parameters;
         if (!is_array($parametros)) {
             $parametros = [];
-        } 
+        }
         $parametros["order"] = "IDROL";
         $acl = Acl::find($parametros);
         $builder = $this->modelsManager->createBuilder($parametros)->columns("IDROL, accion, componente")->from(Acl::class)->orderBy("IDROL");
@@ -46,7 +47,7 @@ class AclController extends Controller
 
         $paginador = new Paginator([
             'builder' => $builder,
-            'limit'=> 10,
+            'limit' => 10,
             'page' => $numeroPagina
         ]);
 
@@ -54,14 +55,14 @@ class AclController extends Controller
         $this->view->setVar('page', $page);
     }
 
-     /**
+    /**
      * Displays the creation form
      */
     public function newAction()
     {
     }
 
-      /**
+    /**
      * Edits a dbaccesscontrollist
      *
      * @param string $role
@@ -87,7 +88,6 @@ class AclController extends Controller
             Phalcon\Tag::setDefault("IDROL", $acl->IDROL);
             Phalcon\Tag::setDefault("accion", $acl->accion);
             Phalcon\Tag::setDefault("componente", $acl->componente);
-            
         }
     }
 
@@ -106,7 +106,7 @@ class AclController extends Controller
         $acl->IDROL = $this->request->getPost("IDROL");
         $acl->accion = $this->request->getPost("accion");
         $acl->componente = $this->request->getPost("componente");
-        
+
 
         if (!$acl->save()) {
             foreach ($acl->getMessages() as $message) {
@@ -129,7 +129,7 @@ class AclController extends Controller
         ]);
     }
 
-        /**
+    /**
      * Saves a dbaccesscontrollist edited
      *
      */
@@ -162,7 +162,7 @@ class AclController extends Controller
         $acl->IDROL = $this->request->getPost("IDROL");
         $acl->accion = $this->request->getPost("accion");
         $acl->componente = $this->request->getPost("componente");
-        
+
 
         if (!$acl->save()) {
 
@@ -187,7 +187,7 @@ class AclController extends Controller
         ]);
     }
 
-        /**
+    /**
      * Deletes a dbaccesscontrollist
      *
      * @param string $role
@@ -240,6 +240,11 @@ class AclController extends Controller
          * @dbresource => Insert Controller Name
          * @dbaction => Insert Controller Functions
          */
+
+        /*$accionCurrentItems = Accion::findByComponente($componente);
+        foreach ($accionCurrentItems as $accionCurrentItem) {
+            $accionCurrentItems->delete();
+        }*/
         $output = $this->populateAclAction($componente);
         if (isset($output['status']) && $output['status'] === false) {
             echo $output['error'];
@@ -247,6 +252,7 @@ class AclController extends Controller
             // Disable View File Content
             $this->view->disable();
         }
+        
 
         // Passing controller name to view file
         $this->view->componente = $componente;
@@ -258,7 +264,7 @@ class AclController extends Controller
         $this->view->aclItems = Acl::findByComponente($componente);
     }
 
-       /**
+    /**
      * [Private]: Don't Open in Browser URL
      */
     protected function populateAclAction($componente)
@@ -268,7 +274,7 @@ class AclController extends Controller
         $controllerFile = $dir . $className . ".php"; # OUTPUT: ../app/controllers/UserController.php
 
         // trying to include a file with the same name as the current script causes a conflict
-        if (strcmp($componente,"acl") != 0) {
+        if (strcmp($componente, "acl") != 0) {
             if ((@include $controllerFile) === false) {
                 // $this->flash->error("No such Resource/Controller File");
                 // return;
@@ -296,6 +302,7 @@ class AclController extends Controller
         foreach ($funcs as $func) {
             if (strpos($func, "Action")) {
                 // Create a {Dbaction} Model Object
+
                 $accion = new Accion();
                 $accion->componente = $componente;
                 $accion->accion = substr($func, 0, -6);
@@ -309,7 +316,6 @@ class AclController extends Controller
                 }
             }
         }
-        
     }
 
     /**
@@ -320,7 +326,7 @@ class AclController extends Controller
         if ($this->request->isPost()) {
 
             $componente = $this->request->getPost('componente');
-            
+
             // Delete all pre-existing access control settings for this resource
             $aclCurrentItems = Acl::findByComponente($componente);
             foreach ($aclCurrentItems as $aclCurrentItem) {
@@ -345,10 +351,8 @@ class AclController extends Controller
             $this->view->disable();
             $this->flash->notice($msg);
             $this->response->redirect('acl');
-
         } else {
             return $this->response->redirect();
         }
     }
-
 }
