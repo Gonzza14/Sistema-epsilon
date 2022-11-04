@@ -143,7 +143,7 @@ button:hover {
 
 <body>
   
-  <script language="javascript">
+  <script>
     $(document).ready(function(){
         $("#pais").on('change', function () {
             $("#pais option:selected").each(function () {
@@ -154,7 +154,20 @@ button:hover {
             });
        });
     });
+
+    $(document).ready(function(){
+        $("#pais").on('change', function () {
+            $("#pais option:selected").each(function () {
+                id_pais=$(this).val();
+                $.post("codigo.php",{ id_pais: id_pais},function(data){
+                $("#codigo").html(data);
+              })		
+            });
+       });
+    });
+    
   
+    
     $(document).ready(function(){
         $("#region").on('change', function () {
             $("#region option:selected").each(function () {
@@ -193,7 +206,7 @@ button:hover {
 include "db_config.php";
 ?>
 
-<form id="regForm" action="<?= $this->url->get('asociado/store') ?>" method="POST">
+<form id="regForm" action="<?= $this->url->get('asociado/store') ?>" method="POST" class="needs-validation" novalidate>
   <h2 class="h2">Solicitud de admisión de cooperativa</h2>
   <div class="bg-gray row col-12 "></div></br>
 
@@ -233,13 +246,6 @@ include "db_config.php";
           </div>
         </div>
         <div class="form-group row">
-          <label for="telefonoA" class="col-sm col-form-label">Telefono</label>
-          <div class="col-sm-8">
-            <input placeholder="Telefono" maxlength="10" class="form-control" name="telefonoA">
-          </div>
-        </div>
-
-        <div class="form-group row">
           <label class="col-sm col-form-label">Genero</label>
           <div class="col-sm-8">
             <select class="form-select" name="genero" required>
@@ -255,17 +261,17 @@ include "db_config.php";
           </select>
           </div>
         </div>
-      </div>
-
-  <!--Columna superior derecha -->
-
-      <div class="col-sm-6">
         <div class="form-group row">
           <label class="col-sm col-form-label">Fecha de nacimiento</label>
           <div class="col-sm-8">
             <input type="date" placeholder="Fecha nacimiento" class="form-control" name="fechaNacimiento" required>
           </div>
         </div>
+      </div>
+
+  <!--Columna superior derecha -->
+
+      <div class="col-sm-6">
         <div class="form-group row">
           <label class="col-sm col-form-label">Pais nacimiento</br><span>(Alpha2 | Alpha3 | Num | COI)</span></label>
           <div class="col-sm-8">
@@ -306,7 +312,30 @@ include "db_config.php";
             <input placeholder="Nacionalidad" class="form-control" name="nacionalidad">
           </div>
         </div>
+
+        <div class="form-group row">
+          <label for="telefonoA" class="col-sm col-form-label">Telefono</label>
+          <div class="col-sm-2" id="codigo">
+          </div>
+          <div class="col-sm-6">
+            <input placeholder="Telefono" maxlength="10" class="form-control" name="telefonoA" required>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm col-form-label">Profesión</label>
+          <div class="col-sm-8">
+            <select class="form-select" name="profesionAso" id="profesionAso" required>
+              <option selected='true' disabled='disabled'>Seleccionar Profesión</option>
+                  <?php foreach ($data_profesion as $v) { ?>
+                  <option value="<?= $v->idProfesion ?>"><?= $v->nombreProfesion ?></option>
+                  <?php } ?>
+          </select>
+          </div>
+        </div>
+
       </div>
+
 
     </div>
 
@@ -332,25 +361,25 @@ include "db_config.php";
         <div class="form-group row">
           <label class="col-sm col-form-label">Documento legal</label>
           <div class="col-sm-8">
-            <input placeholder="Documento" class="form-control" name="numeroDoc" id="numeroDoc" required>
+            <input placeholder="Documento" maxlength="10" class="form-control" name="numeroDoc" id="numeroDoc" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">NIT</label>
           <div class="col-sm-8">
-            <input placeholder="NIT"  class="form-control" name="nit" id="nit">
+            <input placeholder="NIT"  maxlength="17" class="form-control" name="nit" id="nit">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">NUP</label>
           <div class="col-sm-8">
-            <input placeholder="NUP"  class="form-control" name="nup" id="nup">
+            <input placeholder="NUP"  maxlength="12" class="form-control" name="nup" id="nup">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">ISSS</label>
           <div class="col-sm-8">
-            <input placeholder="ISSS" class="form-control" name="isss" id="isss">
+            <input placeholder="ISSS" maxlength="9" class="form-control" name="isss" id="isss">
           </div>
         </div>
       </div>
@@ -399,7 +428,7 @@ include "db_config.php";
         <div class="form-group row">
           <label for="numCasDep" class="col-sm col-form-label">N° de casa/apartamento</label>
           <div class="col-sm-8">
-            <input placeholder="N° casa/departamento" id="numCasDep" class="form-control" name="numCasDep" required>
+            <input placeholder="N° casa/departamento" type="number" id="numCasDep" max="100" class="form-control" name="numCasDep" required>
           </div>
         </div>
         <div class="form-group row">
@@ -491,14 +520,14 @@ $(document).ready(function(){
             $('#direcLabConyugue').removeAttr('disabled');
 
       }else{
-        $("#nombreConyugue").val(' '); $('#nombreConyugue').prop('disabled','disabled');
-        $("#nombreConyugueA").val(' '); $('#nombreConyugueA').prop('disabled','disabled');       
-        $("#fechaNacConyugue").val(' '); $('#fechaNacConyugue').prop('disabled','disabled');       
-        $("#situacionLaboralConyugue").val(' '); $('#situacionLaboralConyugue').prop('disabled','disabled');       
-        $("#profesionConyugue").val(' '); $('#profesionConyugue').prop('disabled','disabled');       
-        $("#cargoConyugue").val(' '); $('#cargoConyugue').prop('disabled','disabled');       
-        $("#empresaConyugue").val(' '); $('#empresaConyugue').prop('disabled','disabled');       
-        $("#direcLabConyugue").val(' '); $('#direcLabConyugue').prop('disabled','disabled');       
+        $('#nombreConyugue').val(' '); $('#nombreConyugue').prop('disabled','disabled');
+        $('#nombreConyugueA').val(' '); $('#nombreConyugueA').prop('disabled','disabled'); 
+        $('#fechaNacConyugue').val('1111-11-11'); $('#fechaNacConyugue').prop('disabled','disabled');        
+        $('#situacionLaboralConyugue').val('0'); $('#situacionLaboralConyugue').prop('disabled','disabled');       
+        $('#profesionConyugue').val(' '); $('#profesionConyugue').prop('disabled','disabled');       
+        $('#cargoConyugue').val(' '); $('#cargoConyugue').prop('disabled','disabled');       
+        $('#empresaConyugue').val(' '); $('#empresaConyugue').prop('disabled','disabled');       
+        $('#direcLabConyugue').val(' '); $('#direcLabConyugue').prop('disabled','disabled');       
 
       }
          
@@ -538,35 +567,72 @@ $(document).ready(function(){
           <div class="form-group row">
             <label class="col-sm col-form-label">Nombres</label>
             <div class="col-sm-8">
-              <input placeholder="Nombre Conyugue" class="form-control" name="nombreConyugue" id="nombreConyugue" required>
+              <input placeholder="Nombre Conyugue" class="form-control" maxlength="100" name="nombreConyugue" id="nombreConyugue" required>
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Apellidos</label>
             <div class="col-sm-8">
-              <input placeholder="Apellido Conyugue" class="form-control" name="nombreConyugueA" id="nombreConyugueA" required>
+              <input placeholder="Apellido Conyugue" class="form-control" maxlength="100" name="nombreConyugueA" id="nombreConyugueA" required>
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Fecha de nacimiento</label>
             <div class="col-sm-8">
-              <input type="date" placeholder="Fecha de nacimiento" class="form-control" name="fechaNacConyugue" id="fechaNacConyugue" required>
+              <input type="date" placeholder="Fecha de nacimiento" class="form-control" name="fechaNacConyugue" id="fechaNacConyugue">
             </div>
           </div>
 
+
           <div class="form-group row">
-            <label class="col-sm col-form-label">Situacion laboral</label>
+            <label class="col-sm col-form-label">Es empresario</label>
             <div class="col-sm-8">
-              <input placeholder="Situacion Laboral" class="form-control"  type="number" name="situacionLaboralConyugue" id="situacionLaboralConyugue" required>
+              <input type="hidden" value="" name="situacionLaboralConyugue" id="situacionLaboralConyugue">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="aflexRadioDefault" id="aflexRadioDefault1">
+                <label class="form-check-label" for="aflexRadioDefault1">
+                  Si
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="aflexRadioDefault" id="aflexRadioDefault2" checked>
+                <label class="form-check-label" for="aflexRadioDefault2">
+                  No
+                </label>
+              </div>
             </div>
           </div>
+          <script>
+            aflexRadioDefault1.addEventListener('change', function (e) {
+            if (this.checked) {
+              document.getElementById("situacionLaboralConyugue").value = 1;
+     
+
+            }
+          });
+
+          aflexRadioDefault2.addEventListener('change', function (e) {
+            if (this.checked) {
+              document.getElementById("situacionLaboralConyugue").value = 0;
+ 
+
+            }
+          });
+          </script>
+
+
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Profesión</label>
-            <div class="col-sm-8">
-              <input placeholder="Profesión" class="form-control" name="profesionConyugue" id="profesionConyugue" required>
+                <div class="col-sm-8">
+                  <select class="form-select" name="profesionConyugue" id="profesionAsoConyugue">
+                    <option selected='true' disabled='disabled'>Seleccionar Profesión</option>
+                        <?php foreach ($data_profesion as $v) { ?>
+                        <option value="<?= $v->idProfesion ?>"><?= $v->nombreProfesion ?></option>
+                        <?php } ?>
+                </select>
             </div>
           </div>
 
@@ -652,6 +718,8 @@ $(document).ready(function(){
             if (this.checked) {
               document.getElementById("empresario").value = 1;
               $('#iva').removeAttr('disabled');
+              console.log("Checkbox is checked..");
+
             }
           });
 
@@ -659,6 +727,8 @@ $(document).ready(function(){
             if (this.checked) {
               document.getElementById("empresario").value = 0;
               $("#iva").val(' '); $('#iva').prop('disabled','disabled');
+              console.log("Checkbox is checked2..");
+
             }
           });
           </script>
@@ -680,7 +750,7 @@ $(document).ready(function(){
           <div class="form-group row">
             <label class="col-sm col-form-label">Dirección laboral</label>
             <div class="col-sm-8">
-              <input placeholder="Dirección Laboral" class="form-control" name="direccLaboral	">
+              <input placeholder="Dirección Laboral" class="form-control" name="direccLaboral">
             </div>
           </div>
 
@@ -697,7 +767,7 @@ $(document).ready(function(){
           <div class="form-group row">
             <label class="col-sm col-form-label">Tarjeta del IVA</label>
             <div class="col-sm-8">
-              <input placeholder="Tarjeta IVA" class="form-control" name="iva" id="iva">
+              <input placeholder="Tarjeta IVA" class="form-control" name="iva" id="iva" required>
             </div>
           </div>
 
@@ -858,12 +928,12 @@ $(document).ready(function(){
   </div>
 
   <div class="tab">
-    <div class="container">
+    <!-- <div class="container">
       <h1 class="title has-text-centered">Input Dinámico</h1>
       <div id="jsonDiv">
           
       </div>
-      <!-- <form action="" id="frmUsers">
+      <form action="" id="frmUsers">
           <label class="label">Username</label>
           <div class="field is-grouped">
               <div class="control has-icons-left">
@@ -891,12 +961,12 @@ $(document).ready(function(){
                     </button>
                 </div>
           </div>
-      </form> -->
+      </form>
       <hr>
       <div id="divElements">
 
       </div>
-  </div>
+  </div> -->
 
 <script>
 let parameters = []
@@ -946,15 +1016,11 @@ const addJsonElement = json => {
     })
 
 
-
     $btnSave.addEventListener("click", (event) =>{
         parameters = parameters.filter(el => el != null)
         const $jsonDiv = document.getElementById("jsonDiv")
         $jsonDiv.innerHTML = `JSON: ${JSON.stringify(parameters)}`
-        $.post('json.php', {
-              v1: JSON.stringify(parameters),
-            }, (response) => {
-              // response from PHP back-end
+        $.post('json.php', {v1: JSON.stringify(parameters),}, (response) => {
               console.log(response);
             });
         $divElements.innerHTML = ""

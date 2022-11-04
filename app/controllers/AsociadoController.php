@@ -31,9 +31,9 @@ class AsociadoController extends Controller
         $asociado->apellido = $this->request->getPost("primerApellido").$this->request->getPost("segundoApellido");
         $asociado->apellidoConyugue = $this->request->getPost("apellidoConyugue");
         $asociado->idGenero = $this->request->getPost("genero");
-        $asociado->idProfesion = "Loco";
+        $asociado->idProfesion = $this->request->getPost("profesionAso");
         $asociado->idUsuario = 1;
-        $asociado->telefono = "69";
+        $asociado->telefono = $this->request->getPost("codigo").$this->request->getPost("telefonoA");;
         $asociado->estado= 0;
 
 
@@ -53,7 +53,8 @@ class AsociadoController extends Controller
         $asociado->idSubRegion = $this->request->getPost("subregion");
         $asociado->nacionalidad = $this->request->getPost("nacionalidad");
         $asociado->barrioColRes = $this->request->getPost("barrioColRes");
-        $asociado->callePasaj = $this->request->getPost("numCasDep");
+        $asociado->callePasaj = $this->request->getPost("callePasaj");
+        $asociado->numCasDep = $this->request->getPost("numCasDep");
         $asociado->idPaisResi = $this->request->getPost("paisResi");
         $asociado->idRegionResi = $this->request->getPost("regionResi");
         $asociado->idSubRegionResi = $this->request->getPost("subregionResi");
@@ -131,12 +132,18 @@ class AsociadoController extends Controller
             echo '<div class="alert alert-success" role="alert"> El registro de tipo doc</div>';
                }
                
-        if ((!($conyugue->save()))) {
+
+if($this->request->getPost("estadoCivil") != 2){
+    if ((!($conyugue->save()))) {
         echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>';		}
             else
         {
         echo '<div class="alert alert-success" role="alert"> El registro de conyugue</div>';
             }    
+}
+        
+
+
     
         if ((!($refP1->save()))) {
             echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>';		}
