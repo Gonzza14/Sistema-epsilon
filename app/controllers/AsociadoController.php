@@ -72,7 +72,7 @@ class AsociadoController extends Controller
         $conyugue->profesionConyugue = $this->request->getPost("profesionConyugue");
         $conyugue->cargoConyugue = $this->request->getPost("cargoConyugue");
         $conyugue->empresaConyugue = $this->request->getPost("empresaConyugue");
-        $conyugue->direcLabConyugue = $this->request->getPost("direcConyugue");
+        $conyugue->direcLabConyugue = $this->request->getPost("direcLabConyugue");
         // //Laboral
         $asociado->capacidadPago = $this->request->getPost("capacidadPago");
         $asociado->idProfesion = $this->request->getPost("profesion");
