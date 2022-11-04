@@ -30,6 +30,8 @@ class Usuarios extends Model
 
     public $PRIMERSIGNIN;
 
+    public $SECRETO;
+
     public $CREADO;
 
     public $ACTUALIZADO;

@@ -4,6 +4,14 @@ use Phalcon\Mvc\Controller;
 use Phalcon\Html\TagFactory;
 use Phalcon\Encryption\Security\Random;
 
+require BASE_PATH . '/vendor/autoload.php';
+
+use PragmaRX\Google2FA\Google2FA;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
+
 class IndexController extends Controller
 {
     public function indexAction()
@@ -36,20 +44,10 @@ class IndexController extends Controller
                         $this->response->redirect('index/signin');
                         $this->view->disable();
                     } else {
-                        if ($usuario->PRIMERSIGNIN) {
+                        if ($usuario->PRIMERSIGNIN == 1) {
                             return $this->response->redirect('index/confirm/' . $usuario->IDUSUARIO);
-                        } else {
-                            $this->session->set('AUTH', [
-                                'id' => $usuario->IDUSUARIO,
-                                'nombre' => $usuario->NOMBREUSUARIO,
-                                'apellido' => $usuario->APELLIDO,
-                                'username' => $usuario->USERNAME,
-                                'correo' => $usuario->CORREOUSUARIO,
-                                'rol' => $usuario->IDROL,
-                                'creado' => $usuario->CREADO,
-                                'actualizado' => $usuario->ACTUALIZADO,
-                            ]);
-                            return $this->response->redirect('index');
+                        } else if ($usuario->PRIMERSIGNIN == 2 || $usuario->PRIMERSIGNIN == 0) {
+                            return $this->response->redirect('index/auth/' . $usuario->IDUSUARIO);
                         }
                     }
                 } else {
@@ -127,6 +125,7 @@ class IndexController extends Controller
                     ];
                     $mail->send($this->request->getPost('correo', ['trim', 'correo']), 'signup', $params);
 
+
                     $this->flash->success("¡Gracias por registrarte!");
                     $this->response->redirect('/index/signin');
                     $this->view->disable();
@@ -143,6 +142,80 @@ class IndexController extends Controller
         }
     }
 
+    public function authAction($id)
+    {
+        $usuario = Usuarios::findFirst($id);
+        $this->view->id = $usuario->IDUSUARIO;
+        $this->view->login = $usuario->PRIMERSIGNIN;
+
+        if ($this->session->has('AUTH')) {
+            $this->flash->error("Ya has iniciado sesion");
+            $this->response->redirect('index');
+            $this->view->disable();
+        } else if ($usuario->PRIMERSIGNIN == 2) {
+
+            $google2fa = new Google2FA();
+            $this->view->google = $google2fa;
+            $secret = $google2fa->generateSecretKey();
+            $usuario->SECRETO = $secret;
+            $usuario->save();
+
+            $g2faUrl = $google2fa->getQRCodeUrl(
+                'Epsilon',
+                'sistemaepsilonmail@gmail.com',
+                $secret
+            );
+
+
+            $writer = new Writer(
+                new ImageRenderer(
+                    new RendererStyle(400),
+                    new SvgImageBackEnd()
+                )
+            );
+            $link = $writer->writeString($g2faUrl);
+            $this->view->qr = $link;
+            if (isset($_POST['enviar'])) {
+                confirmAuthAction();
+            }
+        } else if ($usuario->PRIMERSIGNIN == 0) {
+            
+        }
+    }
+
+    public function confirmAuthAction()
+    {
+        $id = $this->request->getPost("id");
+        //$google2fa = $this->request->getPost("google");
+        $google2fa = new Google2FA();
+        $usuario = Usuarios::findFirstByIDUSUARIO($id);
+
+        $post = $this->request->getPost();
+        if (isset($_POST['enviar'])) {
+            $code = $post['verification'];
+            if ($google2fa->verifyKey(strval($usuario->SECRETO), strval($code))) {
+                $this->session->set('AUTH', [
+                    'id' => $usuario->IDUSUARIO,
+                    'nombre' => $usuario->NOMBREUSUARIO,
+                    'apellido' => $usuario->APELLIDO,
+                    'username' => $usuario->USERNAME,
+                    'correo' => $usuario->CORREOUSUARIO,
+                    'rol' => $usuario->IDROL,
+                    'creado' => $usuario->CREADO,
+                    'actualizado' => $usuario->ACTUALIZADO,
+                ]);
+                $usuario->PRIMERSIGNIN = 0;
+                $usuario->save();
+                if ($usuario->save()) {
+                    $this->response->redirect('index');
+                }
+            } else {
+                $this->flash->error("Codigo incorrecto");
+                $this->view->disable();
+            }
+        }
+    }
+
     public function confirmAction($id)
     {
         if ($this->session->has('AUTH')) {
@@ -150,8 +223,8 @@ class IndexController extends Controller
             $this->response->redirect('index');
             $this->view->disable();
         } else {
-        $usuario = Usuarios::findFirst($id);
-        $this->view->id = $usuario->IDUSUARIO;
+            $usuario = Usuarios::findFirst($id);
+            $this->view->id = $usuario->IDUSUARIO;
         }
     }
 
@@ -164,7 +237,7 @@ class IndexController extends Controller
         if ($post["clave"] == $post["clave-confirmar"]) {
             $usuario->CONTRAUSUARIO = md5($post["clave"]);
             $usuario->ACTUALIZADO =  date('d/m/y h:i:s');
-            $usuario->PRIMERSIGNIN = 0;
+            $usuario->PRIMERSIGNIN = 2;
             $usuario->save();
             $this->session->set('AUTH', [
                 'id' => $usuario->IDUSUARIO,
@@ -178,6 +251,7 @@ class IndexController extends Controller
             ]);
             if (!$usuario->save()) {
                 $this->flash->error("No se pudo cambiar la contraseña");
+                $this->session->destroy();
             } else {
                 $this->flash->success("Se cambio la contraseña con exito");
                 $this->session->destroy();
