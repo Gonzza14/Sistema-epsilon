@@ -18,6 +18,7 @@ use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Session\Bag as SessionBag;
 use Phalcon\Flash\Session as FlashSession;
 
+
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
 // ...
