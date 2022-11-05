@@ -51,8 +51,7 @@ class IndexController extends Controller
                         }
                     }
                 } else {
-                    $this->flash->error("Email y/o contraseña invalida.");
-                    $this->view->disable();
+                    $this->flash->error("Email y/o contraseña invalida.");	
                 }
             }
         }
@@ -211,7 +210,6 @@ class IndexController extends Controller
                 }
             } else {
                 $this->flash->error("Codigo incorrecto");
-                $this->view->disable();
             }
         }
     }
@@ -265,6 +263,6 @@ class IndexController extends Controller
     public function logoutAction()
     {
         $this->session->destroy();
-        return $this->response->redirect("");
+        return $this->response->redirect('index/signin');
     }
 }

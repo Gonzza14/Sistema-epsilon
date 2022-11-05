@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 <style>
 
 .form-signin {
-  font-family: Raleway;
   width: 100%;
   max-width: 330px;
   margin: auto;
@@ -41,6 +39,10 @@
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+.btn-ingresar{
+  margin-bottom: 20px;
 }
 
 .bd-placeholder-img {
@@ -79,7 +81,8 @@
         <input type="checkbox" value="remember-me"> Recuerdame
       </label>
     </div>-->
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
+    <button class="btn-ingresar w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
+    <a class="nav-link text" href="<?= $this->url->get('../index/signup') ?>" class="nav-link">Registrarse</a>
     <p class="mt-5 mb-3 text-muted text">&copy;2022</p>
   </form>
 </main>

@@ -134,14 +134,14 @@ $container->set(
             [
                 'host'     => 'localhost',
                 'username' => 'root',
-                'password' => 'PorscheGt3RS',
+                'password' => '',
                 'dbname'   => 'epsilon',
             ]
         );
     }
 );
 
-/*$container->set('dispatcher', function () use ($container) {
+$container->set('dispatcher', function () use ($container) {
     $eventsManager = new EventsManager;
     // Check if the user is allowed to access certain action using the SecurityPlugin
     $eventsManager->attach('dispatch:beforeDispatch', new SecurityPlugin);
@@ -150,7 +150,7 @@ $container->set(
     $dispatcher = new Dispatcher();
     $dispatcher->setEventsManager($eventsManager);
     return $dispatcher;
-});*/
+});
 
 $application = new Application($container);
 

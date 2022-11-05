@@ -8,6 +8,14 @@
         ]
     );
 ?>
+<style>
+    .btn-guardar{
+        float: right;
+        margin-top: 20px;
+        width: 200px;
+        height: 50px;
+    }
+</style>
 <input type="hidden" name="componente" value="<?= $componente ?>">
 <div class="row">
     <table class="table table-dark table-hover" id="dataTableAcl">
@@ -49,8 +57,8 @@
     </table>
 </div>
 <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-        <?php echo Phalcon\Tag::submitButton(["Guardar", "class" => "btn btn-success"]) ?>
+    <div>
+        <?php echo Phalcon\Tag::submitButton(["Guardar", "class" => "btn btn-primary btn-guardar"]) ?>
     </div>
 </div>
 

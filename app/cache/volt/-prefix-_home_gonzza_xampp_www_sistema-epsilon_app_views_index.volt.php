@@ -44,6 +44,7 @@
  
 
   <!-- Navbar -->
+  <?php if ($this->session->has('AUTH')) { ?>
   <nav class="main-header navbar navbar-expand navbar-dark">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -61,6 +62,7 @@
     </ul>
 
     <!-- Right navbar links -->
+   
     <ul class="navbar-nav ml-auto">
       <?php if ($this->session->has('AUTH') === false) { ?>
       <li class="nav-item">
@@ -79,6 +81,7 @@
       <?php } ?>
     </ul>
   </nav>
+  <?php } ?>
   <!-- /.navbar -->
 
   <?php if ($this->session->has('AUTH')) { ?>
@@ -234,6 +237,19 @@
 
     <!-- Main content -->
     <div class="col col-12">
+      <!--<section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Bienvenido</h1>
+            <p class="lead text-muted">Sistema de cooperativa Epsilon</p>
+            <p>
+              <?php if ($this->session->has('AUTH') === false) { ?>
+              <a href="<?= $this->url->get('../index/signin') ?>" class="btn btn-primary my-2">Iniciar sesion</a>
+              <?php } ?>
+            </p>
+          </div>
+        </div>
+      </section>-->
     <?php echo $this->getContent(); ?>
     </div>
     <!-- /.content -->

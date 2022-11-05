@@ -126,8 +126,5 @@ class RolesController extends Controller
             $this->flash->error("El identificador del rol es invalido");
             return $this->response->redirect("roles");
         }
-
-        # View Page Disable
-        $this->view->disable();
     }
 }
