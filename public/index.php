@@ -65,7 +65,6 @@ $container->setShared(
                 'extension' => '.php',
                 'separator' => '_',
                 'stat'      => true,
-                'path'      => APP_PATH . ('/cache/volt/'),
                 'prefix'    => '-prefix-',
                 'path' => function ($templatePath) {
                     return $templatePath . '.php';

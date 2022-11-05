@@ -44,7 +44,7 @@
  
 
   <!-- Navbar -->
-  {% if session.has('AUTH')%}
+
   <nav class="main-header navbar navbar-expand navbar-dark">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -81,7 +81,6 @@
       {% endif %}
     </ul>
   </nav>
-  {% endif %}
   <!-- /.navbar -->
 
   {% if session.has('AUTH')%}
