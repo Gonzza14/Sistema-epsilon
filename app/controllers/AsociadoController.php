@@ -117,7 +117,7 @@ class AsociadoController extends Controller
 
 
     	if ((!($asociado->save()))) {
-         echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>
+         echo '<div class="alert alert-danger" role="alert">Error de asociado, vuelva a intentarlo</div>
          <div><a href="../usuario"><input class="btn btn-primary"  value="Regresar"type="button"></a></div>';		}
 		   else
 		{
@@ -126,56 +126,56 @@ class AsociadoController extends Controller
             
         
     	if ((!($tipoDoc->save()))) {
-            echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>';		}
+            echo '<div class="alert alert-danger" role="alert">Error del tipo de documento, vuelva a intentarlo</div>';		}
               else
            {
-            echo '<div class="alert alert-success" role="alert"> El registro de tipo doc</div>';
+            echo '<div class="alert alert-success" role="alert"> El registro de tipo de documento</div>';
                }
                
 
-if($this->request->getPost("estadoCivil") != 2){
-    if ((!($conyugue->save()))) {
-        echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>';		}
-            else
-        {
-        echo '<div class="alert alert-success" role="alert"> El registro de conyugue</div>';
-            }    
-}
+        if($this->request->getPost("estadoCivil") != 2){
+            if ((!($conyugue->save()))) {
+                echo '<div class="alert alert-danger" role="alert">Error de conyugue, vuelva a intentarlo</div>';		}
+                    else
+                {
+                echo '<div class="alert alert-success" role="alert"> El registro de conyugue realizado</div>';
+                    }    
+        }
         
 
 
     
         if ((!($refP1->save()))) {
-            echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>';		}
+            echo '<div class="alert alert-danger" role="alert">Error referencia personal, vuelva a intentarlo</div>';		}
                 else
             {
-            echo '<div class="alert alert-success" role="alert"> El registro de r1</div>';
+            echo '<div class="alert alert-success" role="alert"> El registro de referencia personal</div>';
                 } 
                 
                 
         if ((!($refP2->save()))) {
-            echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>';		}
+            echo '<div class="alert alert-danger" role="alert">Error referencia personal, vuelva a intentarlo</div>';		}
                 else
             {
-            echo '<div class="alert alert-success" role="alert"> El registro de r2</div>';
+            echo '<div class="alert alert-success" role="alert"> El registro de referencia personal</div>';
                 } 
 
                                 
         if ((!($refP3->save()))) {
-            echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>';		}
+            echo '<div class="alert alert-danger" role="alert">Error referencia familiar, vuelva a intentarlo</div>';		}
                 else
             {
-            echo '<div class="alert alert-success" role="alert"> El registro de r3</div>';
+            echo '<div class="alert alert-success" role="alert"> El registro de referencia familiar</div>';
                 } 
             
                                 
         if ((!($refP4->save()))) {
-            echo '<div class="alert alert-danger" role="alert">Error, vuelva a intentarlo</div>
+            echo '<div class="alert alert-danger" role="alert">Error referencia familiar, vuelva a intentarlo</div>
             <div><a href="../usuario"><input class="btn btn-primary"  value="Regresar"type="button"></a></div>';		}
                 else
             {
             echo '<div class="alert alert-success" role="alert"> El registro de r4</div>
-                    <div><a href="../usuario"><input class="btn btn-primary"  value="Regresar"type="button"></a></div>';
+                    <div><a href="../beneficiario"><input class="btn btn-primary"  value="Regresar"type="button"></a></div>';
                 } 
     
     

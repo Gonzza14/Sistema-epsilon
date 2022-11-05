@@ -10,8 +10,9 @@
   function init() {
    var map = new google.maps.Map(document.getElementById('map-canvas'), {
      center: {
-       lat: 12.9715987,
-       lng: 77.59456269999998
+       lat: 13.792362,
+       lng: -89.103462, 
+
      },
      zoom: 12
    });
@@ -206,7 +207,7 @@ button:hover {
 include "db_config.php";
 ?>
 
-<form id="regForm" action="<?= $this->url->get('asociado/store') ?>" method="POST" class="needs-validation" novalidate>
+<form id="regForm"  action="<?= $this->url->get('asociado/store') ?>" method="POST" class="needs-validation" novalidate>
   <h2 class="h2">Solicitud de admisión de cooperativa</h2>
   <div class="bg-gray row col-12 "></div></br>
 
@@ -929,44 +930,83 @@ $(document).ready(function(){
 
   <div class="tab">
     <!-- <div class="container">
-      <h1 class="title has-text-centered">Input Dinámico</h1>
+      <h5><b>Beneficiarios</b></h5>
       <div id="jsonDiv">
-          
       </div>
-      <form action="" id="frmUsers">
-          <label class="label">Username</label>
-          <div class="field is-grouped">
-              <div class="control has-icons-left">
-                <input class="input" name="name" id="name" type="text" placeholder="Name" autocomplete="off">
-                <span class="icon is-small is-left">
-                  <i class="fas fa-user"></i>
-                </span>
-              </div>
-              <div class="control has-icons-left">
-                  <input class="input" name="lastName"  id="lastName" type="text" placeholder="Lastname" autocomplete="off">
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-user"></i>
-                  </span>
-                </div>
-                <div class="control">
-                  <button id="btnAdd" type="button" class="button is-danger">
-                      <span class="icon">
-                          <i class="fas fa-plus"></i>
-                      </span>
-                    </button>
-                </div>
-                <div class="control">
-                  <button id="btnSave" type="button" class="button is-info">
-                      Save
-                    </button>
-                </div>
+      <div class="row">
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Parentesco</label>
+            <div class="col-sm-8">
+              <select class="form-select" name="parentesco" id="parentesco">
+                <option selected='true' disabled='disabled'>Seleccionar Parentesco</option>
+                <?php
+                $result = mysqli_query($conn,"SELECT * FROM  parentesco");
+                while($row =mysqli_fetch_array($result)){
+                  ?>
+                  <option value="<?php echo $row['idParentesco'];?>"> <?php echo $row['nombreParentesco']; ?></option>
+                <?php
+                }
+                ?>
+            </select>
+            </div>
           </div>
-      </form>
+
+          <div class="form-group row">
+              <label class="col-sm col-form-label">Nombre Beneficiario</label>
+              <div class="col-sm-8">
+                <input placeholder="Nombre Completo" class="form-control" name="nombreBenef" id="nombreBenef">
+              </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Telefono Beneficiario</label>
+            <div class="col-sm-8">
+              <input placeholder="Telefono" type="tel" class="form-control" name="telefonoBenef" id="telefonoBenef">
+            </div>
+            </div>
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Correo Beneficiario</label>
+            <div class="col-sm-8">
+              <input placeholder="Correo" type="email" class="form-control" name="correoBenef" id="correoBenef">
+            </div>
+            </div>
+      
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Direccion Beneficiario</label>
+            <div class="col-sm-8">
+              <input placeholder="Direccion" class="form-control" name="direccionBenef" id="direccionBenef">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Fecha de nacimiento</label>
+            <div class="col-sm-8">
+              <input  class="form-control" name="fechaBenef" id="fechaBenef" type="text">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Porcentaje</label>
+            <div class="col-sm-8">
+              <input placeholder="Porcentaje" type="number" max="100" min="1" class="form-control" name="porcentaje" id="porcentaje">
+            </div>
+          </div>
+
+      <div class="row">
+                  <button id="btnAdd" type="button" class="btn btn-secondary">Añadir Beneficiario</button>
+                  
+                    <button id="btnSave" type="button" class="btn btn-warning">Guardar Registro</button>
+                </div>
       <hr>
-      <div id="divElements">
+ 
+      </div>
+
+      <div id="divElements" class="form-group">
 
       </div>
-  </div> -->
+    </div>
 
 <script>
 let parameters = []
@@ -981,32 +1021,46 @@ const addJsonElement = json => {
 }
 
 (function load(){
-    const $form = document.getElementById("frmUsers")
+    const $form = document.getElementById("regForm")
     const $divElements = document.getElementById("divElements")
     const $btnSave = document.getElementById("btnSave")
     const $btnAdd = document.getElementById("btnAdd")
 
     const templateElement = (data, position) => {
         return (`
-            <button class="delete" onclick="removeElement(event, ${position})"></button>
-            <strong>User - </strong> ${data}
+          <div class="alert-dark">
+            <strong>Beneficiario</strong> 
+            <p>${data}</p>
+            <button class="btn btn-danger" onclick="removeElement(event, ${position})"></button>
+           </div>
         `)
     }
     $btnAdd.addEventListener("click", (event) => {
-      var v1 = document.getElementById("name").value;
-      var v2 = document.getElementById("lastName").value;
+      var v1 = document.getElementById("parentesco").value;
+      var v2 = document.getElementById("nombreBenef").value;
+      var v3 = document.getElementById("telefonoBenef").value;
+      var v4 = document.getElementById("correoBenef").value;
+      var v5 = document.getElementById("direccionBenef").value;
+      var v6 = document.getElementById("fechaBenef").value;
+      var v7 = document.getElementById("porcentaje").value;
+
+
 
         if( v1 != "" && v2  != ""){
             let index = addJsonElement({
-                name: document.getElementById("name").value,
-                lastName: document.getElementById("lastName").value
+              v1 : document.getElementById("parentesco").value,
+              v2 : document.getElementById("nombreBenef").value,
+              v3 : document.getElementById("telefonoBenef").value,
+              v4 : document.getElementById("correoBenef").value,
+              v5 : document.getElementById("direccionBenef").value,
+              v6 : document.getElementById("fechaBenef").value,
+              v7 : document.getElementById("porcentaje").value,
+
             })
             const $div = document.createElement("div")
-            $div.classList.add("notification", "is-link", "is-light", "py-2", "my-1")
-            $div.innerHTML = templateElement(`"xdxd"${v1} ${v2}`, index)
+            $div.classList.add("row","col-12")
+            $div.innerHTML = templateElement(`Nombre:\n\n${v2}<p>Telefono:\n\n${v3}<p>Telefono:\n\n${v3}<p>Correo:\n\n${v4}<p>Dirección:\n\n${v5}<p>Fecha nacimiento\n\n${v3}<p>Porcentaje:\n\n${v3}`, index)
  // jQuery Ajax Post Request
-
-
             $divElements.insertBefore($div, $divElements.firstChild)
 
             $form.reset()
@@ -1020,7 +1074,7 @@ const addJsonElement = json => {
         parameters = parameters.filter(el => el != null)
         const $jsonDiv = document.getElementById("jsonDiv")
         $jsonDiv.innerHTML = `JSON: ${JSON.stringify(parameters)}`
-        $.post('json.php', {v1: JSON.stringify(parameters),}, (response) => {
+        $.post('json.php', {jason: JSON.stringify(parameters),}, (response) => {
               console.log(response);
             });
         $divElements.innerHTML = ""
@@ -1031,7 +1085,7 @@ const addJsonElement = json => {
 })()
 
 
-  </script>
+  </script> -->
 
 
   </div>

@@ -142,6 +142,15 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="<?= $this->url->get('../beneficiario') ?>" class="nav-link">
+              <i class="nav-icon fas fa-marker"></i>
+              <p>
+                Beneficiario
+              </p>
+            </a>
+          </li>
+
           <li class="nav-header">REVISIÓN DE SOLICITUDES</li>
 
           <li class="nav-item">
