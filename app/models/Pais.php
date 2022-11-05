@@ -4,11 +4,11 @@ use Phalcon\Mvc\Model;
 
 class Pais extends Model
 {
-    public $IDPAIS;
-    public $NOMBREPAIS;
-    public $ALPHA2;
-    public $ALPHA3;
-    public $NUMERICO;
-    public $COI;
-    public $CODTELEFONO;
+    public $idPais;
+    public $nombrePais;
+    public $alpha2;
+    public $alpha3;
+    public $numerico;
+    public $coi;
+    public $codTelefono;
 }

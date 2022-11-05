@@ -4,6 +4,6 @@ use Phalcon\Mvc\Model;
 
 class Genero extends Model
 {
-    public $IDGENERO;
-    public $NOMBREGENERO;
+    public $idGenero;
+    public $nombreGenero;
 }

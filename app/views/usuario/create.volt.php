@@ -1,5 +1,5 @@
                
-               <form action="{{url ("usuario/store")}}" class="form-horizontal" method="POST">
+               <form action="<?= $this->url->get('usuario/store') ?>" class="form-horizontal" method="POST">
                 <div class="form-group">
                   <label class="control-label col-sm-2" for="nama">Nombre:</label>
                   <div class="col-sm-10">

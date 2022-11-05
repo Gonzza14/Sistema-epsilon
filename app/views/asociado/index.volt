@@ -1,18 +1,84 @@
 <!DOCTYPE html>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa6HBo3kO-GFlORU58f_7QcenEI5uo0lg"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"> -->
+<script>
+  function init() {
+   var map = new google.maps.Map(document.getElementById('map-canvas'), {
+     center: {
+       lat: 13.792362,
+       lng: -89.103462, 
+
+     },
+     zoom: 12
+   });
+
+
+   var searchBox = new google.maps.places.SearchBox(document.getElementById('pac-input'));
+   map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById('pac-input'));
+   google.maps.event.addListener(searchBox, 'places_changed', function() {
+     searchBox.set('map', null);
+
+     var places = searchBox.getPlaces();
+     var bounds = new google.maps.LatLngBounds();
+     var i, place;
+     for (i = 0; place = places[i]; i++) { (function(place) {
+         var marker = new google.maps.Marker({
+
+           position: place.geometry.location,
+           draggable: true
+         });
+         marker.bindTo('map', searchBox, 'map');
+         google.maps.event.addListener(marker, 'map_changed', function() {
+          google.maps.event.addListener(marker, 'dragend', function (evt) {
+                $("#lat").val(evt.latLng.lat().toFixed(4));
+                $("#lon").val(evt.latLng.lng().toFixed(4));
+
+                map.panTo(evt.latLng);
+            });
+
+           if (!this.getMap()) {
+             this.unbindAll();
+           }
+         });
+         bounds.extend(place.geometry.location);
+
+
+       }(place));
+
+       var vMarker = new google.maps.Marker({
+                draggable: true,
+            });
+
+            // centers the map on markers coords
+            map.setCenter(vMarker.position);
+
+     }
+     map.fitBounds(bounds);
+     searchBox.set('map', map);
+     map.setZoom(Math.min(map.getZoom(),12));
+
+   });
+ }
+ google.maps.event.addDomListener(window, 'load', init);
+
+
+</script>
+
 <style>
 * {
   box-sizing: border-box;
 }
 
 body {
-  background-color: #f1f1f1;
+  background-color: #f1f1f1;  
 }
 
 #regForm {
-  background-color: #383838;
   margin: auto auto;
   font-family: Raleway;
   padding: 40px;
@@ -21,10 +87,6 @@ body {
   min-width: 100px;
 }
 
-h2 {
-  text-align: left;
-  font-weight: bold;
-}
 
 h5 {
   font-weight: bold;
@@ -33,19 +95,6 @@ h5 {
 }
 
 
-input {
-  padding: 10px;
-  width: 100%;
-  height: 75%;
-  font-size: 13px;
-  font-family: Raleway;
-  border: 1px solid #aaaaaa;
-}
-
-/* Mark input boxes that gets an error on validation: */
-input.invalid {
-  background-color: #ffdddd;
-}
 
 /* Hide all steps by default: */
 .tab {
@@ -91,106 +140,152 @@ button:hover {
   background-color: #04AA6D;
 }
 </style>
+
+
 <body>
-  <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-  <script language="javascript">
-  $(document).ready(function(){
-      $("#pais").on('change', function () {
-          $("#pais option:selected").each(function () {
-              id_pais=$(this).val();
-              $.post("getRegion.php",{
-id_pais: id_pais},function(data){
-              $("#region").html(data);
-            })		
-          });
-     });
-  });
-  </script>
+  
+  <script>
+    $(document).ready(function(){
+        $("#pais").on('change', function () {
+            $("#pais option:selected").each(function () {
+                id_pais=$(this).val();
+                $.post("getRegion.php",{ id_pais: id_pais},function(data){
+                $("#region").html(data);
+              })		
+            });
+       });
+    });
+
+    $(document).ready(function(){
+        $("#pais").on('change', function () {
+            $("#pais option:selected").each(function () {
+                id_pais=$(this).val();
+                $.post("codigo.php",{ id_pais: id_pais},function(data){
+                $("#codigo").html(data);
+              })		
+            });
+       });
+    });
+    
+  
+    
+    $(document).ready(function(){
+        $("#region").on('change', function () {
+            $("#region option:selected").each(function () {
+                id_region=$(this).val();
+                $.post("getSubregion.php",{ id_region: id_region},function(data){
+                $("#subregion").html(data);
+              })		
+            });
+       });
+    });
+
+    $(document).ready(function(){
+        $("#paisResi").on('change', function () {
+            $("#paisResi option:selected").each(function () {
+                id_pais=$(this).val();
+                $.post("getRegion.php",{ id_pais: id_pais},function(data){
+                $("#regionResi").html(data);
+              })		
+            });
+       });
+    });
+  
+    $(document).ready(function(){
+        $("#regionResi").on('change', function () {
+            $("#regionResi option:selected").each(function () {
+                id_region=$(this).val();
+                $.post("getSubregion.php",{ id_region: id_region},function(data){
+                $("#subregionResi").html(data);
+              })		
+            });
+       });
+    });
+    </script>
 
 <?php 
 include "db_config.php";
 ?>
 
-<form id="regForm" action="/action_page.php">
-  <h2>Solicitud de admisión de cooperativa</h2>
+<form id="regForm"  action="{{url ("asociado/store")}}" method="POST" class="needs-validation" novalidate>
+  <h2 class="h2">Solicitud de admisión de cooperativa</h2>
   <div class="bg-gray row col-12 "></div></br>
 
   <!-------------------------Datos personales--------------------------------------------------------->
   <div class="tab">
-    <div class="row col-12"><h5><b>Agregar datos personales</b></h5></div>
+    <div class="row col-12"><h5 class="h5 text-warning"><b>Agregar datos personales</b></h5>
+      <p></br></p>
+      <h5 class="h5 text-warning">Datos personales</h5>
+    </div>
 
+  <!--Columna superior izquierda ------------------------------------------------------------------------------->
     <div class="row">
 
-     <div class="col-sm-6">
+      <div class="col-sm-6">
         <div class="form-group row">
-          <label class="col-sm col-form-label">Nombre</label>
+          <label for="nombreAsociado" class="col-sm col-form-label">Nombre asociado</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input  class="form-control" maxlength="100" placeholder="Nombre Asociado" name="nombreAsociado" required>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm col-form-label">Primer Apellido</label>
+          <label for="primerApellido" class="col-sm col-form-label">Primer Apellido</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Primer Apellido" maxlength="100" class="form-control" name="primerApellido" required>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm col-form-label">Segundo Apellido</label>
+          <label for="segundoApellido" class="col-sm col-form-label">Segundo Apellido</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Segundo Apellido" maxlength="100" class="form-control" name="segundoApellido" required>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm col-form-label">Apellido casada</label>
+          <label for="apellidoConyugue" class="col-sm col-form-label">Apellido casada</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Apellido casada" maxlength="100" class="form-control" name="apellidoConyugue">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Genero</label>
           <div class="col-sm-8">
-            <select class="categoria_id form-control" name="genero"  value="">
+            <select class="form-select" name="genero" required>
               <option selected='true' disabled='disabled'>Seleccionar genero</option>
               <?php
               $result = mysqli_query($conn,"SELECT * FROM  genero");
               while($row =mysqli_fetch_array($result)){
                 ?>
-                <option value="<?php echo $row['IDGENERO'];?>"> <?php echo $row['NOMBREGENERO']; ?></option>
+                <option value="<?php echo $row['idGenero'];?>"> <?php echo $row['nombreGenero']; ?></option>
               <?php
               }
               ?>
-                  <!-- {% for v in data_genero %}
-                  <option value="{{ v.IDGENERO }}">{{ v.NOMBREGENERO }}</option>
-                  {%endfor%} -->
           </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm col-form-label">Fecha de nacimiento</label>
+          <div class="col-sm-8">
+            <input type="date" placeholder="Fecha nacimiento" class="form-control" name="fechaNacimiento" required>
           </div>
         </div>
       </div>
 
+  <!--Columna superior derecha -->
 
       <div class="col-sm-6">
         <div class="form-group row">
-          <label class="col-sm col-form-label">Fecha de nacimiento</label>
+          <label class="col-sm col-form-label">Pais nacimiento</br><span>(Alpha2 | Alpha3 | Num | COI)</span></label>
           <div class="col-sm-8">
-            <input type="date" placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Pais nacimiento</label>
-          <div class="col-sm-8">
-            <select class="form-control" name="pais" id="pais" value="">
+            <select class="form-select" name="pais" id="pais" required>
               <option selected='true' disabled='disabled'>Seleccionar pais</option>
               <?php
               $resultP = mysqli_query($conn,"SELECT * FROM  pais");
               while($rowP =mysqli_fetch_array($resultP)){
                 ?>
-                <option value="<?php echo $rowP['IDPAIS'];?>"> <?php echo $rowP['NOMBREPAIS']; ?></option>
+                <option value="<?php echo $rowP['idPais'];?>"> <?php echo $rowP['nombrePais']."\n|\n".$rowP['alpha2']."\n|\n".$rowP['alpha3']."\n|\n".$rowP['numerico']."\n|\n".$rowP['coi']; ?></option>
               <?php
               }
               ?>
-                  <!-- {% for p in data_pais %}
-                  <option value="{{ p.IDPAIS }}">{{ p.NOMBREPAIS }}</option>
-                  {%endfor%} -->
           </select>
           </div>
         </div>
@@ -198,113 +293,249 @@ include "db_config.php";
         <div class="form-group row">
           <label class="col-sm col-form-label">Región nacimiento</label>
           <div class="col-sm-8">
-            <select class="form-control" name="region" id="region" value="">
+            <select class="form-select" name="region" id="region" required>
           </select>
 
           </div>
         </div>
+
         <div class="form-group row">
           <label class="col-sm col-form-label">Subregión nacimiento</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <select class="form-select" name="subregion" id="subregion" required>
+            </select>
           </div>
         </div>
+        
         <div class="form-group row">
-          <label class="col-sm col-form-label">Nacimiento</label>
+          <label class="col-sm col-form-label">Nacionalidad</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Nacionalidad" class="form-control" name="nacionalidad">
           </div>
         </div>
+
+        <div class="form-group row">
+          <label for="telefonoA" class="col-sm col-form-label">Telefono</label>
+          <div class="col-sm-2" id="codigo">
+          </div>
+          <div class="col-sm-6">
+            <input placeholder="Telefono" maxlength="10" class="form-control" name="telefonoA" required>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm col-form-label">Profesión</label>
+          <div class="col-sm-8">
+            <select class="form-select" name="profesionAso" id="profesionAso" required>
+              <option selected='true' disabled='disabled'>Seleccionar Profesión</option>
+                  {% for v in data_profesion %}
+                  <option value="{{ v.idProfesion }}">{{ v.nombreProfesion }}</option>
+                  {%endfor%}
+          </select>
+          </div>
+        </div>
+
       </div>
+
 
     </div>
 
     <div class="bg-gray row col-12 "></div></br>
 
+
+  <!--Columna inferior izquierda ---------------------------------------------------------------------------->
     <div class="row">
+      
       <div class="col-sm-6">
-        <h5>Documentos</h5>
+        <h5 class="h5 text-warning">Documentos</h5>
         <div class="form-group row">
-          <label class="col-sm col-form-label">Documento legal</label>
+          <label class="col-sm col-form-label">Tipo de documento</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <select class="form-select" name="tipoDocumento" id="tipoDocumento" required>
+              <option selected='true' disabled='disabled'>Seleccionar Tipo de documento</option>
+                  {% for v in data_tipo_doc %}
+                  <option value="{{ v.idTipoDocumento }}">{{ v.nombreTipoDoc }}</option>
+                  {%endfor%}
+          </select>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm col-form-label">Tipo de documento legal</label>
+          <label class="col-sm col-form-label">Documento legal</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Documento" maxlength="10" class="form-control" name="numeroDoc" id="numeroDoc" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">NIT</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="NIT"  maxlength="17" class="form-control" name="nit" id="nit">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">NUP</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="NUP"  maxlength="12" class="form-control" name="nup" id="nup">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">ISSS</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="ISSS" maxlength="9" class="form-control" name="isss" id="isss">
           </div>
         </div>
       </div>
 
+      <script>
+        $(document).ready(function(){
+                $("#tipoDocumento").on('change', function () {
+                  if($("#tipoDocumento").val() != 1){
+                    $('#nit').removeAttr('required');
+                    $('#nit').val('  ');
+                    $('#nup').removeAttr('required');
+                    $('#nup').val('  ');
+                    $('#isss').removeAttr('required');
+                    $('#isss').val('  ');
+
+
+              }else{
+                $('#nit').prop('required','required');
+                $('#nit').val('');
+                $('#nup').prop('required','required');
+                $('#nup').val('');
+                $('#isss').prop('required','required');
+                $('#isss').val('');
+              }
+                 
+               });
+            });
+        
+        </script>
+
       <div class="col-sm-6">
-        <h5>Dirección</h5>
+        <h5 class="h5 text-warning">Dirección</h5>
         <div class="form-group row">
           <label class="col-sm col-form-label">Colonia/Residencial</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Barrio/Colonia/Residencial" class="form-control" name="barrioColRes" required>
           </div>
         </div>
 
         <div class="form-group row">
           <label class="col-sm col-form-label">Calle/Pasaje</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Calle/Pasaje" class="form-control" name="callePasaj" required>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm col-form-label">N° de casa/apartamento</label>
+          <label for="numCasDep" class="col-sm col-form-label">N° de casa/apartamento</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="N° casa/departamento" type="number" id="numCasDep" max="100" class="form-control" name="numCasDep" required>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm col-form-label">Geolocalización</label>
+          <label class="col-sm col-form-label">Pais residencia</br><span>(Alpha2 | Alpha3 | Num | COI)</span></label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <select class="form-select" name="paisResi" id="paisResi" required>
+              <option selected='true' disabled='disabled'>Seleccionar pais</option>
+              <?php
+              $resultP = mysqli_query($conn,"SELECT * FROM  pais");
+              while($rowP =mysqli_fetch_array($resultP)){
+                ?>
+                <option value="<?php echo $rowP['idPais'];?>"> <?php echo $rowP['nombrePais']."\n|\n".$rowP['alpha2']."\n|\n".$rowP['alpha3']."\n|\n".$rowP['numerico']."\n|\n".$rowP['coi']; ?></option>
+              <?php
+              }
+              ?>
+          </select>
           </div>
         </div>
+
         <div class="form-group row">
-          <label class="col-sm col-form-label">País</label>
+          <label class="col-sm col-form-label">Región residencia</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <select class="form-select" name="regionResi" id="regionResi"  required>
+          </select>
+
           </div>
         </div>
+
         <div class="form-group row">
-          <label class="col-sm col-form-label">Región</label>
+          <label class="col-sm col-form-label">Subregión residencia</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>  
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Subregión</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <select class="form-select" name="subregionResi" id="subregionResi" required>
+            </select>
           </div>
         </div>
       </div>
     </div>
+    
+    <!--GEOLOCALIZACION ---------------------------------------------------------------------------->
+
+    <div class="row">
+      <div class="col-sm-12">
+        <h4>Geolocalización</h4>
+      </div>
+      <div class="col-sm-8">
+          <div class="form-group row">
+            <label>Busca tú dirección en el mapa</label>
+            <input id="pac-input"  class="form-control" type="text" placeholder="Busque su dirección aqui">
+              <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa6HBo3kO-GFlORU58f_7QcenEI5uo0lg&sensor=false&libraries=places"></script>
+              <div class="container" id="map-canvas" style="height:400px; width: 100%;"></div>
+          </div>
+      </div>
+
+      <div class="col-sm-1">
+      </div>
+
+      <div class="col-sm-2">
+        <div class="form-group row">
+          <label>Coordenadas</label>
+          <p></p>
+          <p></p>
+          <label for="lat">Longitud</label>
+            <input id="lon" placeholder="X" name="x" max="15" class="form-control" type="number" required></br>
+            <label for="lat">Latitud</label>
+            <input id="lat"  placeholder="Y" name="y" max="15" class="form-control" type="number" required>
+        </div>
+      </div>
+      <div class="col-sm-1">
+      </div>
+    </div>
+
+
   </div>
 
+<!-------------------------Disable and enable--------------------------------------------------------->
+
+<script>
+
+$(document).ready(function(){
+        $("#estadoCivil").on('change', function () {
+          if($("#estadoCivil").val() == 1){
+            $('#nombreConyugue').removeAttr('disabled');
+            $('#nombreConyugueA').removeAttr('disabled');
+            $('#fechaNacConyugue').removeAttr('disabled');
+            $('#situacionLaboralConyugue').removeAttr('disabled');
+            $('#profesionConyugue').removeAttr('disabled');
+            $('#cargoConyugue').removeAttr('disabled');
+            $('#empresaConyugue').removeAttr('disabled');
+            $('#direcLabConyugue').removeAttr('disabled');
+
+      }else{
+        $('#nombreConyugue').val(' '); $('#nombreConyugue').prop('disabled','disabled');
+        $('#nombreConyugueA').val(' '); $('#nombreConyugueA').prop('disabled','disabled'); 
+        $('#fechaNacConyugue').val('1111-11-11'); $('#fechaNacConyugue').prop('disabled','disabled');        
+        $('#situacionLaboralConyugue').val('0'); $('#situacionLaboralConyugue').prop('disabled','disabled');       
+        $('#profesionConyugue').val(' '); $('#profesionConyugue').prop('disabled','disabled');       
+        $('#cargoConyugue').val(' '); $('#cargoConyugue').prop('disabled','disabled');       
+        $('#empresaConyugue').val(' '); $('#empresaConyugue').prop('disabled','disabled');       
+        $('#direcLabConyugue').val(' '); $('#direcLabConyugue').prop('disabled','disabled');       
+
+      }
+         
+       });
+    });
+
+</script>
   <!-------------------------Datos estado civil--------------------------------------------------------->
   <div class="tab">
     <div class="row col-sm"><h5>Estado civil asociado</h5></div>
@@ -314,8 +545,13 @@ include "db_config.php";
           <div class="form-group row">
             <label class="col-sm col-form-label">Estado civil</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
-            </div>
+              <select class="form-select" name="estadoCivil" id="estadoCivil" required>
+                <option selected='true' disabled='disabled'>Seleccionar estado civil</option>
+                    {% for v in data_estado_civil %}
+                    <option value="{{ v.idEstCivil }}">{{ v.nombreEstCivil }}</option>
+                    {%endfor%}
+            </select>
+          </div>
           </div>
 
         </div>
@@ -332,56 +568,93 @@ include "db_config.php";
           <div class="form-group row">
             <label class="col-sm col-form-label">Nombres</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder="Nombre Conyugue" class="form-control" maxlength="100" name="nombreConyugue" id="nombreConyugue" required>
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Apellidos</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder="Apellido Conyugue" class="form-control" maxlength="100" name="nombreConyugueA" id="nombreConyugueA" required>
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Fecha de nacimiento</label>
             <div class="col-sm-8">
-              <input type="date" placeholder="" oninput="this.className = ''" name="fname">
+              <input type="date" placeholder="Fecha de nacimiento" class="form-control" name="fechaNacConyugue" id="fechaNacConyugue">
             </div>
           </div>
 
+
           <div class="form-group row">
-            <label class="col-sm col-form-label">Situacion laboral</label>
+            <label class="col-sm col-form-label">Es empresario</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input type="hidden" value="" name="situacionLaboralConyugue" id="situacionLaboralConyugue">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="aflexRadioDefault" id="aflexRadioDefault1">
+                <label class="form-check-label" for="aflexRadioDefault1">
+                  Si
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="aflexRadioDefault" id="aflexRadioDefault2" checked>
+                <label class="form-check-label" for="aflexRadioDefault2">
+                  No
+                </label>
+              </div>
             </div>
           </div>
+          <script>
+            aflexRadioDefault1.addEventListener('change', function (e) {
+            if (this.checked) {
+              document.getElementById("situacionLaboralConyugue").value = 1;
+     
+
+            }
+          });
+
+          aflexRadioDefault2.addEventListener('change', function (e) {
+            if (this.checked) {
+              document.getElementById("situacionLaboralConyugue").value = 0;
+ 
+
+            }
+          });
+          </script>
+
+
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Profesión</label>
-            <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+                <div class="col-sm-8">
+                  <select class="form-select" name="profesionConyugue" id="profesionAsoConyugue">
+                    <option selected='true' disabled='disabled'>Seleccionar Profesión</option>
+                        {% for v in data_profesion %}
+                        <option value="{{ v.idProfesion }}">{{ v.nombreProfesion }}</option>
+                        {%endfor%}
+                </select>
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Cargo</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder="Cargo" class="form-control" name="cargoConyugue" id="cargoConyugue" required>
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Empresa trabajo</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder=""  class="form-control" name="empresaConyugue" id="empresaConyugue" required>
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Dirección laboral</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder=""  class="form-control" name="direcLabConyugue" id="direcLabConyugue" required>
             </div>
           </div>
 
@@ -402,63 +675,83 @@ include "db_config.php";
           <div class="form-group row">
             <label class="col-sm col-form-label">Capacidad de pago</label>
             <div class="col-sm-8">
-              <input type="number" placeholder="" oninput="this.className = ''" name="fname">
+              <input type="number" placeholder="Capacidad Pago" class="form-control" name="capacidadPago" id="capacidadPago">
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Profesión</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <select class="form-select" name="profesion" required>
+                <option selected='true' disabled='disabled'>Seleccionar Profesión</option>
+                <?php
+                $result = mysqli_query($conn,"SELECT * FROM  profesion");
+                while($row =mysqli_fetch_array($result)){
+                  ?>
+                  <option value="<?php echo $row['idProfesion'];?>"> <?php echo $row['nombreProfesion']; ?></option>
+                <?php
+                }
+                ?>
+            </select>
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Es empresario</label>
             <div class="col-sm-8">
-              <div class="form-check form-check-inline">
-                <input id="inlineCheckbox1" type="radio" placeholder="" oninput="this.className = ''" name="fname">
-                <label class="form-check-label" for="inlineCheckbox1">SI</label>
+              <input type="hidden" value="" name="empresario" id="empresario">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Si
+                </label>
               </div>
-              <div class="form-check form-check-inline">
-                <input id="inlineCheckbox2" type="radio" placeholder="" oninput="this.className = ''" name="fname">
-                <label class="form-check-label" for="inlineCheckbox2">No</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                  No
+                </label>
               </div>
             </div>
           </div>
+          <script>
+            flexRadioDefault1.addEventListener('change', function (e) {
+            if (this.checked) {
+              document.getElementById("empresario").value = 1;
+              $('#iva').removeAttr('disabled');
+              console.log("Checkbox is checked..");
 
-          <div class="form-group row">
-            <label class="col-sm col-form-label">Situacion laboral</label>
-            <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
-            </div>
-          </div>
+            }
+          });
 
-          <div class="form-group row">
-            <label class="col-sm col-form-label">Profesión</label>
-            <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
-            </div>
-          </div>
+          flexRadioDefault2.addEventListener('change', function (e) {
+            if (this.checked) {
+              document.getElementById("empresario").value = 0;
+              $("#iva").val(' '); $('#iva').prop('disabled','disabled');
+              console.log("Checkbox is checked2..");
+
+            }
+          });
+          </script>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Cargo</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder="Cargo" class="form-control" name="cargo">
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Empresa trabajo</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder="Nombre Empresa" class="form-control" name="nombreEmpresa">
             </div>
           </div>
 
           <div class="form-group row">
             <label class="col-sm col-form-label">Dirección laboral</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder="Dirección Laboral" class="form-control" name="direccLaboral">
             </div>
           </div>
 
@@ -466,7 +759,7 @@ include "db_config.php";
         </div>
         </div>
 
-        <div class="row col-12"><h5><b>Datos si es empresario</b></h5></div>
+        <div class="row col-12"><h5 class="h5 text-warning">Datos si es empresario</h5></div>
 
         <div class="bg-gray row col-12"></div>
         <p></p>
@@ -475,7 +768,7 @@ include "db_config.php";
           <div class="form-group row">
             <label class="col-sm col-form-label">Tarjeta del IVA</label>
             <div class="col-sm-8">
-              <input placeholder="" oninput="this.className = ''" name="fname">
+              <input placeholder="Tarjeta IVA" class="form-control" name="iva" id="iva" required>
             </div>
           </div>
 
@@ -495,31 +788,31 @@ include "db_config.php";
         <div class="form-group row">
           <label class="col-sm col-form-label">Nombre</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Nombre Completo" class="form-control" name="nombreRef" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Telefono</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Telefono Referencia"  class="form-control"  name="telefonoRef" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Correo</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Correo"  type="email" class="form-control"  name="correoRef" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Dirección</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Dirección"  class="form-control"  name="direccionRef" required>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row">  
           <label class="col-sm col-form-label">Relacion</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Relación con asociado" class="form-control"  name="relacionAsoc" required>
           </div>
         </div>
       </div>
@@ -528,31 +821,31 @@ include "db_config.php";
         <div class="form-group row">
           <label class="col-sm col-form-label">Nombre</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Nombre Completo"  class="form-control"  name="nombreRef1" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Telefono</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Telefono Referencia"  class="form-control"  name="telefonoRef1" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Correo</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Correo" type="email" class="form-control"  name="correoRef1" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Dirección</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Dirección"  class="form-control"  name="direccionRef1" required>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Relacion</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <input placeholder="Relación con asociado"  class="form-control"  name="relacionAsoc1" required>
           </div>
         </div>
       </div>
@@ -565,83 +858,237 @@ include "db_config.php";
 
     <div class="row">
 
-     <div class="col-sm-6">
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Nombre</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Telefono</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Correo</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Dirección</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Relacion</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-      </div>
-
       <div class="col-sm-6">
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Nombre</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Telefono</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Correo</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Dirección</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm col-form-label">Relacion</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Nombre</label>
+           <div class="col-sm-8">
+             <input placeholder="Nombre Completo" class="form-control" name="nombreFa" required>
+           </div>
+         </div>
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Telefono</label>
+           <div class="col-sm-8">
+             <input placeholder="Telefono"  class="form-control"  name="telefonoFa" required>
+           </div>
+         </div>
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Correo</label>
+           <div class="col-sm-8">
+             <input placeholder="Correo"  type="email" class="form-control"  name="correoFa" required>
+           </div>
+         </div>
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Dirección</label>
+           <div class="col-sm-8">
+             <input placeholder="Dirección"  class="form-control"  name="direccionFa" required>
+           </div>
+         </div>
+         <div class="form-group row">  
+           <label class="col-sm col-form-label">Relacion</label>
+           <div class="col-sm-8">
+             <input placeholder="Relación con asociado" class="form-control"  name="relacionFa" required>
+           </div>
+         </div>
+       </div>
+ 
+       <div class="col-sm-6">
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Nombre</label>
+           <div class="col-sm-8">
+             <input placeholder="Nombre Completo"  class="form-control"  name="nombreFa1" required>
+           </div>
+         </div>
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Telefono</label>
+           <div class="col-sm-8">
+             <input placeholder="Telefono"  class="form-control"  name="telefonoFa1" required>
+           </div>
+         </div>
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Correo</label>
+           <div class="col-sm-8">
+             <input placeholder="Correo" type="email" class="form-control"  name="correoFa1" required>
+           </div>
+         </div>
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Dirección</label>
+           <div class="col-sm-8">
+             <input placeholder="Dirección"  class="form-control"  name="direccionFa1" required>
+           </div>
+         </div>
+         <div class="form-group row">
+           <label class="col-sm col-form-label">Relacion</label>
+           <div class="col-sm-8">
+             <input placeholder="Relación con asociado"  class="form-control"  name="relacionFa1" required>
+           </div>
+         </div>
+       </div>
+ 
+     </div>
+ 
   </div>
 
   <div class="tab">
+    <!-- <div class="container">
+      <h5><b>Beneficiarios</b></h5>
+      <div id="jsonDiv">
+      </div>
+      <div class="row">
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Parentesco</label>
+            <div class="col-sm-8">
+              <select class="form-select" name="parentesco" id="parentesco">
+                <option selected='true' disabled='disabled'>Seleccionar Parentesco</option>
+                <?php
+                $result = mysqli_query($conn,"SELECT * FROM  parentesco");
+                while($row =mysqli_fetch_array($result)){
+                  ?>
+                  <option value="<?php echo $row['idParentesco'];?>"> <?php echo $row['nombreParentesco']; ?></option>
+                <?php
+                }
+                ?>
+            </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
+              <label class="col-sm col-form-label">Nombre Beneficiario</label>
+              <div class="col-sm-8">
+                <input placeholder="Nombre Completo" class="form-control" name="nombreBenef" id="nombreBenef">
+              </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Telefono Beneficiario</label>
+            <div class="col-sm-8">
+              <input placeholder="Telefono" type="tel" class="form-control" name="telefonoBenef" id="telefonoBenef">
+            </div>
+            </div>
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Correo Beneficiario</label>
+            <div class="col-sm-8">
+              <input placeholder="Correo" type="email" class="form-control" name="correoBenef" id="correoBenef">
+            </div>
+            </div>
+      
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Direccion Beneficiario</label>
+            <div class="col-sm-8">
+              <input placeholder="Direccion" class="form-control" name="direccionBenef" id="direccionBenef">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Fecha de nacimiento</label>
+            <div class="col-sm-8">
+              <input  class="form-control" name="fechaBenef" id="fechaBenef" type="text">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm col-form-label">Porcentaje</label>
+            <div class="col-sm-8">
+              <input placeholder="Porcentaje" type="number" max="100" min="1" class="form-control" name="porcentaje" id="porcentaje">
+            </div>
+          </div>
+
+      <div class="row">
+                  <button id="btnAdd" type="button" class="btn btn-secondary">Añadir Beneficiario</button>
+                  
+                    <button id="btnSave" type="button" class="btn btn-warning">Guardar Registro</button>
+                </div>
+      <hr>
+ 
+      </div>
+
+      <div id="divElements" class="form-group">
+
+      </div>
+    </div>
+
+<script>
+let parameters = []
+function removeElement(event, position) {
+    event.target.parentElement.remove()
+    delete parameters[position]
+}
+
+const addJsonElement = json => {
+    parameters.push(json)
+    return parameters.length - 1
+}
+
+(function load(){
+    const $form = document.getElementById("regForm")
+    const $divElements = document.getElementById("divElements")
+    const $btnSave = document.getElementById("btnSave")
+    const $btnAdd = document.getElementById("btnAdd")
+
+    const templateElement = (data, position) => {
+        return (`
+          <div class="alert-dark">
+            <strong>Beneficiario</strong> 
+            <p>${data}</p>
+            <button class="btn btn-danger" onclick="removeElement(event, ${position})"></button>
+           </div>
+        `)
+    }
+    $btnAdd.addEventListener("click", (event) => {
+      var v1 = document.getElementById("parentesco").value;
+      var v2 = document.getElementById("nombreBenef").value;
+      var v3 = document.getElementById("telefonoBenef").value;
+      var v4 = document.getElementById("correoBenef").value;
+      var v5 = document.getElementById("direccionBenef").value;
+      var v6 = document.getElementById("fechaBenef").value;
+      var v7 = document.getElementById("porcentaje").value;
+
+
+
+        if( v1 != "" && v2  != ""){
+            let index = addJsonElement({
+              v1 : document.getElementById("parentesco").value,
+              v2 : document.getElementById("nombreBenef").value,
+              v3 : document.getElementById("telefonoBenef").value,
+              v4 : document.getElementById("correoBenef").value,
+              v5 : document.getElementById("direccionBenef").value,
+              v6 : document.getElementById("fechaBenef").value,
+              v7 : document.getElementById("porcentaje").value,
+
+            })
+            const $div = document.createElement("div")
+            $div.classList.add("row","col-12")
+            $div.innerHTML = templateElement(`Nombre:\n\n${v2}<p>Telefono:\n\n${v3}<p>Telefono:\n\n${v3}<p>Correo:\n\n${v4}<p>Dirección:\n\n${v5}<p>Fecha nacimiento\n\n${v3}<p>Porcentaje:\n\n${v3}`, index)
+ // jQuery Ajax Post Request
+            $divElements.insertBefore($div, $divElements.firstChild)
+
+            $form.reset()
+        }else{
+            alert("Complete los campos")
+        }
+    })
+
+
+    $btnSave.addEventListener("click", (event) =>{
+        parameters = parameters.filter(el => el != null)
+        const $jsonDiv = document.getElementById("jsonDiv")
+        $jsonDiv.innerHTML = `JSON: ${JSON.stringify(parameters)}`
+        $.post('json.php', {jason: JSON.stringify(parameters),}, (response) => {
+              console.log(response);
+            });
+        $divElements.innerHTML = ""
+        parameters = []
+    })
+
+
+})()
+
+
+  </script> -->
+
 
   </div>
-
-
-
 
   <div style="overflow:auto;">
     <div style="float:right;">
@@ -657,11 +1104,34 @@ include "db_config.php";
     <span class="step"></span>
     <span class="step"></span>
   </div>
+
+  <button type="submit" class="btn btn-default">Guardar</button>
+
 </form>
 
 <script>
 var currentTab = 0; // Current tab is set to be the first tab (0)
 showTab(currentTab); // Display the current tab
+
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      nextBtn.addEventListener('click', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
 
 function showTab(n) {
   // This function will display the specified tab of the form...
@@ -713,6 +1183,7 @@ function validateForm() {
       // add an "invalid" class to the field:
       y[i].className += " invalid";
       // and set the current valid status to false
+
       valid = false;
     }
   }
