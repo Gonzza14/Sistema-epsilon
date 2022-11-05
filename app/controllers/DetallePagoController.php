@@ -12,8 +12,7 @@ class DetallePagoController extends Controller
     public function indexAction()
     {
 
-    	$pago = Pago::find();
-    	$this->view->pago=$pago;
+
     }
 
     public function createAction(){
@@ -50,6 +49,13 @@ class DetallePagoController extends Controller
          </div>';
 		}
     }
+    public function editAction($id)
+   	{
+
+   		$idPago = Pago::findFirst($id);
+
+      $this->view->idPago=$idPago->idPago;
+   	}
 
 
 }

@@ -1,52 +1,62 @@
+
+<?php 
+require ('db_config.php'); 
+?>
+<?php
+$url= $_SERVER["REQUEST_URI"];
+$split = explode("/", $url);
+$id = $split[3];
+
+
+?>
 <div class="container"> 
-  <div class="row">
-    <div class="row py-lg-4">
-      <div class="col-sm-12">
-          <h2>Modificando monto a pagar:</h2>
-      </div>
-    </div>
-  </div>              
-  <form action="{{url ("concepto/update")}}" class="form-horizontal" method="POST">
-    <div class="form-group">
-      <div class="col-sm-10">
-        <input type="hidden" class="form-control" name="idConcepto" value="{{idConcepto}}" required>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-12" for="nama">Concepto:</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" autocomplete="off" value="{{concepto}}" name="concepto" placeholder="Ingrese nombre del monto a pagar"  required>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-12" for="email">Monto: ($)</label>
-      <div class="col-sm-10">
-        <input type="number" step="0.01"  min="0"  class="form-control"  value="{{monto}}" autocomplete="off" name="monto" placeholder="Ingrese monto en dólares" required>
+    <div class="row">
+      <div class="row py-lg-4">
+        <div class="col-sm-12">
+            <h3>Detalle cobro:</h3>
+        </div>
       </div>
     </div> 
-    <div class="row">
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <span data-toggle="tooltip" title data-original-title="Guardar cambios realizados">
-            <button type="submit" class="btn btn-success btn-lg btn-block" value="Guardar" name="action">
-                <i class="fa fa-save fa-fw">
-                    <span class="sr-only">
-                      Actualizar monto a pagar
-                    </span>
-                </i>
-                Actualizar monto a pagar
-                </button>
-            </span>
-      </div>
-  </div>
-</div>
-
-  </form>
-</div>                  
-            
-
-
-
-
-
+    <table class="table table-hover" id="dataTable2">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Concepto</th>
+          <th>Monto ($)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $result = mysqli_query($conn,"SELECT a.idConcepto, b.concepto, b.monto
+        FROM detalle_pago a
+        INNER JOIN concepto b ON b.idConcepto = a.idConcepto 
+        WHERE a.idPago = $id");
+        while($row =mysqli_fetch_array($result)){
+          ?>
+          <tr>
+          <td><?php echo $row['idConcepto']; ?></td>
+          <td><?php echo $row['concepto']; ?></td>
+          <td><?php echo $row['monto']; ?></td>
+          </tr>
+        <?php
+        }
+        ?>
+        <tr class="bg-info">
+          <?php
+              $result = mysqli_query($conn,"SELECT SUM(b.monto) as total
+              FROM detalle_pago a
+              INNER JOIN concepto b ON b.idConcepto = a.idConcepto 
+              WHERE a.idPago = $id");
+              while($row =mysqli_fetch_array($result)){
+                $total = $row['total'];
+              }
+                ?>
+          <td></td> 
+          <td >Total ($)</td>
+          <td><?php echo $total; ?></td>
+        </tr>
+      </tbody>
+    </table>
+   
+</div>   
 

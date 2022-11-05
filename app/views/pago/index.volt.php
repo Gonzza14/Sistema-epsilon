@@ -32,7 +32,7 @@ include "db_config.php";
                 <td><?php echo $row['idAsociado']; ?></td>
                 <td><?php echo $row['nombre']; ?></td>
                 <td><?php echo $row['fechaPago']; ?></td>
-                <td> <a href=""><i class="fa fa-edit"></i></a></td>
+                <td> <a href="detallePago/edit/<?php echo $row['idPago']; ?>"><i class="fa fa-edit"></i></a></td>
                 </tr>
               <?php
               }
@@ -53,7 +53,7 @@ include "db_config.php";
                 <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                 <form method="POST" action="">
-                    <a href="concepto/delete/<?php echo $id; ?>" class="btn btn-primary">Borrar</a>
+                    <a href="detallePago/create ?>" class="btn btn-primary">Borrar</a>
                 </form>
                 </div>
             </div>
