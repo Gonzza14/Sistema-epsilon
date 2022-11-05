@@ -18,6 +18,17 @@
                     </div>
                   </div>
                   <div class="form-group">
+                    <label for="role" class="control-label col-sm-2" >Rol de usuario</label>
+                    <div class="col-sm-10">
+                      <select class="form-control" name="idRol" id="role">
+                        <option value="{{rol}}">{{rol}}</option>
+                        {% for role in roles %}
+                        <option value="{{role.IDROL}}">{{role.IDROL}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                       <button type="submit" class="btn btn-default">Guardar registro</button>
                     </div>
