@@ -1,0 +1,10 @@
+HU-31	Realizar abono			Alta	3	5
+HU-32	Dar de baja un abono		Alta	3	2
+HU-33	Listar abono			Media 	3	3
+HU-34	Editar abono			Media	3	5
+
+HU-100	Crear medicamento		Alta	3	5	
+HU-101	Editar medicamento		Alta	3	5
+HU-102	Dar de baja medicamento		Media 	3	2
+	
+HU-92	Dar formato a archivo generado	Baja	3	8

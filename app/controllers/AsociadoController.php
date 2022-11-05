@@ -180,6 +180,11 @@ class AsociadoController extends Controller
     
     
     }
+
+    public function uploadAction()
+    {
+
+    }
     
 }
 
