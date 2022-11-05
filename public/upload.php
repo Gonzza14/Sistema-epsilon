@@ -5,10 +5,10 @@
 	/* 
 	*	Checking whether the file already exists in the destination folder 
 	*/
-	$query = "SELECT filename FROM filedetails WHERE filename='$fileName'";	
+	$query = "SELECT nombre FROM documentos_anexos WHERE nombre='$fileName'";	
 	$result = $link->query($query) or die("Error : ".mysqli_error($link));
 	while($row = mysqli_fetch_array($result)) {
-		if($row['filename'] == $fileName) {
+		if($row['nombre'] == $fileName) {
 			$fileExistsFlag = 1;
 		}		
 	}
@@ -18,7 +18,7 @@
 	if($fileExistsFlag == 0) { 
 		$target = "files/";		
 		$fileTarget = $target.$fileName;	
-		$tempFileName = $_FILES["Filename"]["tmp_name"];
+		$tempFileName = $_FILES[a"Filename"]["tmp_name"];
 		$fileDescription = $_POST['Description'];	
 		$result = move_uploaded_file($tempFileName,$fileTarget);
 		/*
@@ -27,7 +27,7 @@
 		if($result) { 
          
 			echo "Your file <html><b><i>".$fileName."</i></b></html> has been successfully uploaded";		
-			$query = "INSERT INTO filedetails(filepath,filename,description) VALUES ('$fileTarget','$fileName','$fileDescription')";
+			$query = "INSERT INTO documentos_anexos(ruta,filename,description) VALUES ('$fileTarget','$fileName','$fileDescription')";
 			$link->query($query) or die("Error : ".mysqli_error($link));			
 		}
 		else {			

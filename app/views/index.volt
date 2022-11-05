@@ -151,6 +151,15 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{{ url('../asociado/upload') }}" class="nav-link">
+              <i class="nav-icon fas fa-marker"></i>
+              <p>
+                Documentos
+              </p>
+            </a>
+          </li>
+
           <li class="nav-header">REVISIÓN DE SOLICITUDES</li>
 
           <li class="nav-item">
