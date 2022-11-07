@@ -64,36 +64,42 @@ class RolesController extends Controller
     {
         $id = $this->request->getPost("id");
         /*$rol = Roles::findFirstByIDROL($id);*/
-        $rol = Roles::findFirst([
+        /*$rol = Roles::findFirst([
             'conditions' => 'IDROL = :1:',
             'bind' => [
                 '1' => $id,
             ]
-        ]);
-        /*$idRol = $this->request->getPost("id");
+        ]);*/
+        $idRol = $this->request->getPost("idRol");
         $tiempo = date('d/m/y h:i:s');
-        $query = $this
+        $query = $this->db->prepare("UPDATE `roles` SET `IDROL` = :idRol WHERE `roles`.`IDROL` = :id ");
+        $query->bindparam(":idRol", $idRol, PDO::PARAM_STR);
+        $query->bindparam(":id", $id, PDO::PARAM_STR);
+        $query->execute(array(':idRol'=>$idRol, ':id'=>$id));
+
+        /*$query = $this
         ->modelsManager
         ->executeQuery(
-            'UPDATE security\Roles SET IDROL= :idRol:, ACTUALIZADO= :tiempo: WHERE identificador = :id:',
+            
+            'UPDATE security\Roles SET IDROL = :idRol:, ACTUALIZADO= :tiempo: WHERE security\Roles.IDROL = :id:',
             [
                 'id' => $id,
                 'idRol' => $idRol,
                 'tiempo' => $tiempo
             ]
         );*/
-        $rol->IDROL = $this->request->getPost("idRol");
+        /*$rol->IDROL = $this->request->getPost("idRol");
         $rol->ACTUALIZADO = date('d/m/y h:i:s');
-        $rol->save();
-        if (!$rol->save()) {
+        $rol->save();*/
+        if (!$query) {
             $this->flash->error("El rol no se pudo actualizar");
-            $this->dispatcher->forward([
+            /*$this->dispatcher->forward([
                 'controller' => "roles",
                 'action' => 'index'
-            ]);
+            ]);*/
         } else {
             $this->flash->success("El rol se actualizo con exito");
-            $this->response->redirect('roles');
+            /*$this->response->redirect('roles');*/
         }
     }
 
