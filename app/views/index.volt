@@ -143,7 +143,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ url('../tipoDocumento') }}" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
               <p>
                 Tipo de documentos
@@ -175,7 +175,7 @@
           <li class="nav-header">REVISIÓN DE SOLICITUDES</li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ url('../revision') }}" class="nav-link">
               <i class="nav-icon fas fa-list"></i>
               <p>
                 Solicitudes
@@ -186,7 +186,7 @@
           <li class="nav-header">INICIACION DE ASOCIADO</li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ url('../detallePago') }}" class="nav-link">
               <i class="nav-icon fas fa-money-bill-wave"></i>
               <p>
                 Recibo de pago
@@ -194,7 +194,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ url('../detallePago') }}" class="nav-link">
               <i class="nav-icon fas fa-id-card"></i>
               <p>
                 Generar carnet
@@ -206,7 +206,7 @@
           <li class="nav-header">CAJERO</li>
 
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
+            <a href="{{ url('../pago') }}" class="nav-link">
               <i class="nav-icon fas fa-coins"></i>
               <p>
                 Recibir de pago
