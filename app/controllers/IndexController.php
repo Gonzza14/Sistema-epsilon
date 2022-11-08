@@ -97,10 +97,14 @@ class IndexController extends Controller
                         1 => $comprobarNombre,
                     ]
                 ]);
+                $query = $this->db->prepare("SELECT COUNT(*) FROM `usuarios` WHERE `usuarios`.`USERNAME` LIKE :nombre");
+                $query->bindparam(":nombre", $comprobarNombre, PDO::PARAM_STR);
+                $query->execute(array(':nombre'=>$comprobarNombre));
+                $result = $query->fetch();
                 if ($usuarioRegistrado) {
                     $cadena = $usuarioRegistrado->USERNAME;
                     $numerosUsuario = substr($cadena, 2, 5);
-                    $integerUsuario = (int)$numerosUsuario;
+                    $integerUsuario = (int)$result[0];
                     $contador = $integerUsuario + 1;
                     $numeroConCeros =  str_pad($contador, 5, "0", STR_PAD_LEFT);
                     $nombreUsuario = str_replace($numerosUsuario, $numeroConCeros, $cadena);
@@ -127,14 +131,14 @@ class IndexController extends Controller
 
 
                     $this->flash->success("¡Gracias por registrarte!");
-                    $this->response->redirect('/index/signin');
+                    $this->response->redirect('/index/mensaje');
                     $this->view->disable();
                 } else {
 
                     $mensajes = $usuario->getMessages();
 
                     foreach ($mensajes as $mensaje) {
-                        $this->flash->error($mensaje->getMessage(), "<br/>");
+                        $this->flash->error($mensaje->getMessage());
                     }
                     $this->view->disable();
                 }
@@ -265,5 +269,9 @@ class IndexController extends Controller
     {
         $this->session->destroy();
         return $this->response->redirect('index/signin');
+    }
+
+    public function mensajeAction(){
+
     }
 }

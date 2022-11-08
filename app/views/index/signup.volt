@@ -108,7 +108,7 @@ body {
 
 <body class="text-center">
     <main class="form-signin">
-    <form action="{{url ("index/signup")}}" class="form-horizontal" method="POST">
+    <form action="{{url ("index/signup")}}" class="form-horizontal" method="POST" id="form-registrar" name="formulario" onsubmit="return checkSubmit();">
         <h2 class="h3 mb-3 fw-normal text">Registro de usuario</h2>
         <div class="form-floating">
             <input autocomplete="off" type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombres" required>
@@ -135,8 +135,22 @@ body {
             <label for="telefono">Telefono</label>
         </div>
         <br>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
+        <button class="btn btn-lg btn-primary btn-block" name="btnEnviar" id="submitId" type="submit">Registrarse</button>
     </form>
 </main>
 </body>
+<script>
+      enviando = false; //Obligaremos a entrar el if en el primer submit
+    
+    function checkSubmit() {
+        if (!enviando) {
+    		enviando= true;
+    		return true;
+        } else {
+            //Si llega hasta aca significa que pulsaron 2 veces el boton submit
+            alert("El formulario ya se esta enviando");
+            return false;
+        }
+    }
+</script>
 </html>
