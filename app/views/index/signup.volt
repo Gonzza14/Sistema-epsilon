@@ -146,7 +146,7 @@ body {
             return false;
             })
         })*/
-        function confirmEnviar() {
+        /*function confirmEnviar() {
           formulario.btnEnviar.disabled = true; 
           miformulario.btnEnviar.value = "Enviando...";
           setTimeout(function(){
@@ -157,6 +157,6 @@ body {
         }
         miformulario.btnEnviar.addEventListener("click", function(){ 
           return confirmEnviar();
-          }, false);
+          }, false);*/
 </script>
 </html>
