@@ -52,6 +52,7 @@ class IndexController extends Controller
                     }
                 } else {
                     $this->flash->error("Email y/o contraseña invalida.");	
+                    $this->response->redirect('index/signin');
                 }
             }
         }

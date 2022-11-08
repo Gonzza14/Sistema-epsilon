@@ -21,7 +21,11 @@ class UsuarioController extends Controller
 
       $this->view->id = $usuario->IDUSUARIO;
       $this->view->nombre = $usuario->NOMBREUSUARIO;
+      $this->view->apellido = $usuario->APELLIDOUSUARIO;
+      $this->view->rol = $usuario->IDROL;
       $this->view->correo = $usuario->CORREOUSUARIO;
+      $this->view->nacimiento = $usuario->FECHANACIMIENTO;
+      $this->view->telefono = $usuario->TELEFONO;       
       $this->view->rol = $usuario->IDROL;
    }
    public function updateAction()
@@ -30,7 +34,10 @@ class UsuarioController extends Controller
       $usuario = Usuarios::findFirstByIDUSUARIO($id);
       $usuario->IDUSUARIO = $this->request->getPost("id");
       $usuario->NOMBREUSUARIO = $this->request->getPost("nombre");
+      $usuario->APELLIDOUSUARIO = $this->request->getPost("apellido"); 
       $usuario->CORREOUSUARIO = $this->request->getPost("correo");
+      $usuario->FECHANACIMIENTO = $this->request->getPost("nacimiento");
+      $usuario->TELEFONO = $this->request->getPost("telefono");
       $usuario->IDROL = $this->request->getPost("idRol");
       $usuario->ACTUALIZADO=  date('d/m/y h:i:s');
       $usuario->save();

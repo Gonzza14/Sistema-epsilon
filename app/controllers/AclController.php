@@ -241,10 +241,10 @@ class AclController extends Controller
          * @dbaction => Insert Controller Functions
          */
 
-        /*$accionCurrentItems = Accion::findByComponente($componente);
+        $accionCurrentItems = Accion::findByComponente($componente);
         foreach ($accionCurrentItems as $accionCurrentItem) {
             $accionCurrentItems->delete();
-        }*/
+        }
         $output = $this->populateAclAction($componente);
         if (isset($output['status']) && $output['status'] === false) {
             echo $output['error'];

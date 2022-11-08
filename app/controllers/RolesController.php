@@ -72,10 +72,11 @@ class RolesController extends Controller
         ]);*/
         $idRol = $this->request->getPost("idRol");
         $tiempo = date('d/m/y h:i:s');
-        $query = $this->db->prepare("UPDATE `roles` SET `IDROL` = :idRol WHERE `roles`.`IDROL` = :id ");
+        $query = $this->db->prepare("UPDATE `roles` SET `IDROL` = :idRol, `ACTUALIZADO` = :tiempo WHERE `roles`.`IDROL` = :id ");
         $query->bindparam(":idRol", $idRol, PDO::PARAM_STR);
+        $query->bindparam(":tiempo", $tiempo, PDO::PARAM_STR);
         $query->bindparam(":id", $id, PDO::PARAM_STR);
-        $query->execute(array(':idRol'=>$idRol, ':id'=>$id));
+        $query->execute(array(':idRol'=>$idRol,':tiempo'=>$tiempo, ':id'=>$id));
 
         /*$query = $this
         ->modelsManager
@@ -99,7 +100,10 @@ class RolesController extends Controller
             ]);*/
         } else {
             $this->flash->success("El rol se actualizo con exito");
-            /*$this->response->redirect('roles');*/
+            $this->view->disable();
+            $this->response->redirect('roles');
+            /*$this->view->msg = "El rol se actualizo con exito";
+            $this->view->clase = "alert alert-success";*/
         }
     }
 
