@@ -108,7 +108,7 @@ body {
 
 <body class="text-center">
     <main class="form-signin">
-    <form action="{{url ("index/signup")}}" class="form-horizontal" method="POST">
+    <form action="{{url ("index/signup")}}" class="form-horizontal" method="POST" id="form-registrar" name="formulario">
         <h2 class="h3 mb-3 fw-normal text">Registro de usuario</h2>
         <div class="form-floating">
             <input autocomplete="off" type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombres" required>
@@ -135,8 +135,28 @@ body {
             <label for="telefono">Telefono</label>
         </div>
         <br>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
+        <button class="btn btn-lg btn-primary btn-block" name="btnEnviar" id="submitId" type="submit">Registrarse</button>
     </form>
 </main>
 </body>
+<script>
+        /*$(document).ready(function(){
+            $("#submitId").click(function(event){
+            $("#submitId").prop('disabled',true)
+            return false;
+            })
+        })*/
+        function confirmEnviar() {
+          formulario.btnEnviar.disabled = true; 
+          miformulario.btnEnviar.value = "Enviando...";
+          setTimeout(function(){
+            miformulario.btnEnviar.disabled = false;
+            miformulario.btnEnviar.value = "Registrarse";
+          }, 3000);
+          return false;
+        }
+        miformulario.btnEnviar.addEventListener("click", function(){ 
+          return confirmEnviar();
+          }, false);
+</script>
 </html>
