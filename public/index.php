@@ -97,7 +97,7 @@ $container->set(
 $container->setShared('session', function () {
     $session = new Manager();
     $files = new Stream([
-        'savePath' => '/tmp'
+        'SAVEPATH' => '/tmp'
     ]);
     $session->setAdapter($files)->start();
     return $session;
