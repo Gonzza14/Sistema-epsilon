@@ -6,25 +6,54 @@ use Phalcon\Mvc\View;
 use Phalcon\Mvc\Application;
 use Phalcon\Mvc\Url;
 use Phalcon\Db\Adapter\Pdo\Mysql;
-use Phalcon\Di\DiInterface;
+use Phalcon\Flash\Direct as Flash;
+use Phalcon\Escaper;
 use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Mvc\View\Engine\Volt;
+use Phalcon\Session\Manager;
+use Phalcon\Session\Adapter\Stream;
+use Phalcon\Mvc\Model\MetaData\Memory;
+use Phalcon\Mvc\Dispatcher;
+use Phalcon\Events\Manager as EventsManager;
+use Phalcon\Session\Bag as SessionBag;
+use Phalcon\Flash\Session as FlashSession;
 
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
 // ...
+
+
 
 $loader = new Loader();
 $loader->setDirectories(
     [
         APP_PATH . '/controllers/',
         APP_PATH . '/models/',
+        APP_PATH . '/config/',
+        APP_PATH . '/plugins/',
+        APP_PATH . '/library/',
     ]
 );
-    
+
 $loader->register();
 
+$loader->setNamespaces(
+    [
+        "security" =>  APP_PATH . '/models/'
+    ]
+);
+
+$loader->setClasses(
+    [
+        'Mail' => APP_PATH. "/library/Mail/Mail.php"
+    ]    
+);
+
 $container = new FactoryDefault();
+
+/*$container->setShared('config', function () {
+    return APP_PATH . "/config/config.php";
+});*/
 
 $container->setShared(
     'voltService',
@@ -36,7 +65,6 @@ $container->setShared(
                 'extension' => '.php',
                 'separator' => '_',
                 'stat'      => true,
-                'path'      => APP_PATH.('/cache/volt/'),
                 'prefix'    => '-prefix-',
                 'path' => function ($templatePath) {
                     return $templatePath . '.php';
@@ -64,6 +92,33 @@ $container->set(
         return $view;
     }
 );
+
+//Session
+$container->setShared('session', function () {
+    $session = new Manager();
+    $files = new Stream([
+        'SAVEPATH' => '/tmp'
+    ]);
+    $session->setAdapter($files)->start();
+    return $session;
+});
+
+$container->setShared('sessionBag', function () {
+    $session = new Manager();
+    $sessionBag = new SessionBag($session, 'user');
+    return $sessionBag;
+});
+
+//Meta-data
+$container['modelsMetaData'] = function () {
+
+    $metaData = new Memory([
+        "lifetime" => 86400,
+        "prefix" => "metaData"
+    ]);
+    return $metaData;
+};
+
 $container->set(
     'url',
     function () {
@@ -88,6 +143,17 @@ $container->set(
     }
 );
 
+$container->set('dispatcher', function () use ($container) {
+    $eventsManager = new EventsManager;
+    // Check if the user is allowed to access certain action using the SecurityPlugin
+    $eventsManager->attach('dispatch:beforeDispatch', new SecurityPlugin);
+    // Handle exceptions and not-found exceptions using NotFoundPlugin
+    // $eventsManager->attach('dispatch:beforeException', new NotFoundPlugin);
+    $dispatcher = new Dispatcher();
+    $dispatcher->setEventsManager($eventsManager);
+    return $dispatcher;
+});
+
 $application = new Application($container);
 
 try {
@@ -100,3 +166,17 @@ try {
 } catch (\Exception $e) {
     echo 'Exception: ', $e->getMessage();
 }
+
+/**
+ * Register the session flash service with the Twitter Bootstrap classes
+ */
+$container->set('flash', function () {
+    $flash = new FlashSession([
+        'error'   => 'alert alert-danger',
+        'success' => 'alert alert-success',
+        'notice'  => 'alert alert-info',
+        'warning' => 'alert alert-warning'
+    ]);
+
+    return $flash;
+});
