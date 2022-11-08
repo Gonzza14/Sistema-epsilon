@@ -127,14 +127,14 @@ class IndexController extends Controller
 
 
                     $this->flash->success("¡Gracias por registrarte!");
-                    $this->response->redirect('/index/signin');
+                    $this->response->redirect('/index/mensaje');
                     $this->view->disable();
                 } else {
 
                     $mensajes = $usuario->getMessages();
 
                     foreach ($mensajes as $mensaje) {
-                        $this->flash->error($mensaje->getMessage(), "<br/>");
+                        $this->flash->error($mensaje->getMessage());
                     }
                     $this->view->disable();
                 }
@@ -265,5 +265,9 @@ class IndexController extends Controller
     {
         $this->session->destroy();
         return $this->response->redirect('index/signin');
+    }
+
+    public function mensajeAction(){
+
     }
 }
