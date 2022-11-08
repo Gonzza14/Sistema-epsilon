@@ -108,7 +108,7 @@ body {
 
 <body class="text-center">
     <main class="form-signin">
-    <form action="<?= $this->url->get('index/signup') ?>" class="form-horizontal" method="POST" id="form-registrar" name="formulario">
+    <form action="<?= $this->url->get('index/signup') ?>" class="form-horizontal" method="POST" id="form-registrar" name="formulario" onsubmit="return checkSubmit();">
         <h2 class="h3 mb-3 fw-normal text">Registro de usuario</h2>
         <div class="form-floating">
             <input autocomplete="off" type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombres" required>
@@ -140,23 +140,17 @@ body {
 </main>
 </body>
 <script>
-        /*$(document).ready(function(){
-            $("#submitId").click(function(event){
-            $("#submitId").prop('disabled',true)
+      enviando = false; //Obligaremos a entrar el if en el primer submit
+    
+    function checkSubmit() {
+        if (!enviando) {
+    		enviando= true;
+    		return true;
+        } else {
+            //Si llega hasta aca significa que pulsaron 2 veces el boton submit
+            alert("El formulario ya se esta enviando");
             return false;
-            })
-        })*/
-        function confirmEnviar() {
-          formulario.btnEnviar.disabled = true; 
-          miformulario.btnEnviar.value = "Enviando...";
-          setTimeout(function(){
-            miformulario.btnEnviar.disabled = false;
-            miformulario.btnEnviar.value = "Registrarse";
-          }, 3000);
-          return false;
         }
-        miformulario.btnEnviar.addEventListener("click", function(){ 
-          return confirmEnviar();
-          }, false);
+    }
 </script>
 </html>
