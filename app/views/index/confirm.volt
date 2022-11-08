@@ -109,7 +109,7 @@ body {
     <main class="form-signin">
 
     <form action="{{url ("index/updatePassword")}}" class="form-horizontal" method="POST">
-        <h2 class="form-signin-heading">Cambiar contraseña provisional</h2>
+        <h2 class="form-signin-heading">Cambiar contraseña</h2>
         <div class="form-group">
             <div class="col-sm-10">
               <input type="hidden" class="form-control" name="id" value="{{id}}" required>

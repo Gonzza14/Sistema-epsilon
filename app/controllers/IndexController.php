@@ -39,19 +39,18 @@ class IndexController extends Controller
                     ]
                 ]);
                 if ($usuario) {
-                    if ($usuario->ACTIVO != 1) {
-                        $this->flash->error("Usuario no activo");
+                    $usuario->ACTIVO = 1;
+                    $usuario->save();
+                    if (!$usuario->save()) {
+                        $this->flash->error("No se pudo iniciar sesion correctamente");
                         $this->response->redirect('index/signin');
-                        $this->view->disable();
-                    } else {
-                        if ($usuario->PRIMERSIGNIN == 1) {
-                            return $this->response->redirect('index/confirm/' . $usuario->IDUSUARIO);
-                        } else if ($usuario->PRIMERSIGNIN == 2 || $usuario->PRIMERSIGNIN == 0) {
-                            return $this->response->redirect('index/auth/' . $usuario->IDUSUARIO);
-                        }
+                    } else if ($usuario->PRIMERSIGNIN == 1) {
+                        return $this->response->redirect('index/confirm/' . $usuario->IDUSUARIO);
+                    } else if ($usuario->PRIMERSIGNIN == 2 || $usuario->PRIMERSIGNIN == 0) {
+                        return $this->response->redirect('index/auth/' . $usuario->IDUSUARIO);
                     }
                 } else {
-                    $this->flash->error("Email y/o contraseña invalida.");	
+                    $this->flash->error("Email y/o contraseña invalida.");
                     $this->response->redirect('index/signin');
                 }
             }
@@ -84,7 +83,7 @@ class IndexController extends Controller
                 //$usuario->CONTRAUSUARIO = md5($post['clave']);
                 $usuario->CONTRAUSUARIO = md5($provisional);
                 $usuario->IDROL = "Solicitante";
-                $usuario->ACTIVO = 1;
+                $usuario->ACTIVO = 0;
                 $usuario->PRIMERSIGNIN = 1;
                 $usuario->CREADO =  date('d/m/y h:i:s');
                 $usuario->ACTUALIZADO =  date('d/m/y h:i:s');
@@ -92,19 +91,20 @@ class IndexController extends Controller
                 $comprobarNombre =  strtoupper(substr($usuario->NOMBREUSUARIO, 0, 1) . substr($usuario->APELLIDOUSUARIO, 0, 1) . "%");
 
                 $usuarioRegistrado = Usuarios::findFirst([
-                    'conditions' => 'USERNAME LIKE ?1',
+                    'conditions' => 'USERNAME LIKE ?1 ORDER BY USERNAME DESC',
                     'bind' => [
                         1 => $comprobarNombre,
                     ]
                 ]);
-                $query = $this->db->prepare("SELECT COUNT(*) FROM `usuarios` WHERE `usuarios`.`USERNAME` LIKE :nombre");
+                /*$query = $this->db->prepare("SELECT COUNT(*) FROM `usuarios` WHERE `usuarios`.`USERNAME` LIKE :nombre");
                 $query->bindparam(":nombre", $comprobarNombre, PDO::PARAM_STR);
-                $query->execute(array(':nombre'=>$comprobarNombre));
-                $result = $query->fetch();
+                $query->execute(array(':nombre' => $comprobarNombre));
+                $result = $query->fetch();*/
                 if ($usuarioRegistrado) {
                     $cadena = $usuarioRegistrado->USERNAME;
                     $numerosUsuario = substr($cadena, 2, 5);
-                    $integerUsuario = (int)$result[0];
+                    //$integerUsuario = (int)$result[0];
+                    $integerUsuario = (int)$numerosUsuario;
                     $contador = $integerUsuario + 1;
                     $numeroConCeros =  str_pad($contador, 5, "0", STR_PAD_LEFT);
                     $nombreUsuario = str_replace($numerosUsuario, $numeroConCeros, $cadena);
@@ -156,8 +156,7 @@ class IndexController extends Controller
             $this->flash->error("Ya has iniciado sesion");
             $this->response->redirect('index');
             $this->view->disable();
-        } else if ($usuario->PRIMERSIGNIN == 2) {
-
+        } else if ($usuario->PRIMERSIGNIN == 2 && $usuario->ACTIVO == 1) {
             $google2fa = new Google2FA();
             $this->view->google = $google2fa;
             $secret = $google2fa->generateSecretKey();
@@ -179,11 +178,23 @@ class IndexController extends Controller
             );
             $link = $writer->writeString($g2faUrl);
             $this->view->qr = $link;
+            $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 0 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
+            $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
+            $query->execute(array(':idUsuario'=>$id));
             if (isset($_POST['enviar'])) {
                 confirmAuthAction();
             }
-        } else if ($usuario->PRIMERSIGNIN == 0) {
             
+        } else if ($usuario->PRIMERSIGNIN == 0 && $usuario->ACTIVO == 1) {
+            $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 0 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
+            $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
+            $query->execute(array(':idUsuario'=>$id));
+
+        } else {
+            $this->dispatcher->forward(array(
+                'controller' => 'errors',
+                'action'     => 'show401'
+            ));
         }
     }
 
@@ -208,6 +219,7 @@ class IndexController extends Controller
                     'creado' => $usuario->CREADO,
                     'actualizado' => $usuario->ACTUALIZADO,
                 ]);
+                $usuario->ACTIVO = 1;
                 $usuario->PRIMERSIGNIN = 0;
                 $usuario->save();
                 if ($usuario->save()) {
@@ -221,13 +233,21 @@ class IndexController extends Controller
 
     public function confirmAction($id)
     {
+        $usuario = Usuarios::findFirst($id);
         if ($this->session->has('AUTH')) {
             $this->flash->error("Ya has iniciado sesion");
             $this->response->redirect('index');
             $this->view->disable();
-        } else {
-            $usuario = Usuarios::findFirst($id);
+        } else if ($usuario->PRIMERSIGNIN == 1 && $usuario->ACTIVO == 1) {
+            $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 0 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
+            $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
+            $query->execute(array(':idUsuario'=>$id));
             $this->view->id = $usuario->IDUSUARIO;
+        } else {
+            $this->dispatcher->forward(array(
+                'controller' => 'errors',
+                'action'     => 'show401'
+            ));
         }
     }
 
@@ -267,11 +287,22 @@ class IndexController extends Controller
 
     public function logoutAction()
     {
-        $this->session->destroy();
-        return $this->response->redirect('index/signin');
+        $usuario = Usuarios::findFirstByIDUSUARIO($this->session->get('AUTH')['id']);
+        $usuario->ACTIVO = 0;
+        $usuario->save();
+        if (!$usuario->save()) {
+            $this->flash->error("No se pudo cerrar sesion correctamente");
+        } else {
+            $this->session->destroy();
+            $this->response->redirect('index/signin');
+        }
     }
 
-    public function mensajeAction(){
+    public function mensajeAction()
+    {
+    }
 
+    public function recuperarAction()
+    {
     }
 }
