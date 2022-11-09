@@ -128,7 +128,7 @@ body {
     </div>-->
     <button class="btn-ingresar w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
     <!--<a class="nav-link text" href="<?= $this->url->get('../index/signup') ?>" class="nav-link">Registrarse</a>-->
-    <a class="nav-link text" href="<?= $this->url->get('../index/signup') ?>" class="nav-link">¿Olvido su nombre de usuario o contraseña?</a>
+    <a class="nav-link text" href="<?= $this->url->get('../index/recuperar') ?>" class="nav-link">¿Olvido su nombre de usuario o contraseña?</a>
     <p class="mt-5 mb-3 text-muted text">&copy;2022</p>
   </form>
 </main>
