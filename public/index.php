@@ -6,8 +6,8 @@ use Phalcon\Mvc\View;
 use Phalcon\Mvc\Application;
 use Phalcon\Mvc\Url;
 use Phalcon\Db\Adapter\Pdo\Mysql;
-use Phalcon\Flash\Direct as Flash;
-use Phalcon\Escaper;
+/*use Phalcon\Flash\Direct as Flash;*/
+//use Phalcon\Escaper;
 use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Mvc\View\Engine\Volt;
 use Phalcon\Session\Manager;
@@ -45,8 +45,8 @@ $loader->setNamespaces(
 
 $loader->setClasses(
     [
-        'Mail' => APP_PATH. "/library/Mail/Mail.php"
-    ]    
+        'Mail' => APP_PATH . "/library/Mail/Mail.php"
+    ]
 );
 
 $container = new FactoryDefault();
@@ -167,16 +167,61 @@ try {
     echo 'Exception: ', $e->getMessage();
 }
 
+/*$container->set('flash', function(){
+    $flash = new Flash([
+        'error' => 'alert alert-danger',
+        'success' => 'alert alert-success',
+        'notice' => 'alert alert-info',
+        'warning' => 'alert alert-warning'
+    ]);
+    return $flash;
+});*/
+
 /**
  * Register the session flash service with the Twitter Bootstrap classes
  */
-$container->set('flash', function () {
-    $flash = new FlashSession([
-        'error'   => 'alert alert-danger',
-        'success' => 'alert alert-success',
-        'notice'  => 'alert alert-info',
-        'warning' => 'alert alert-warning'
-    ]);
+/*$container->set('flashSession', function () {
+    return new FlashSession(array(
+        'error'   => 'alert alert-dismissable alert-danger',
+        'success' => 'alert alert-dismissable alert-success',
+        'notice'  => 'alert alert-dismissable alert-info',
+        'warning' => 'alert alert-dismissable alert-warning'
+    ));
+});*/
 
-    return $flash;
-});
+$container->set('flashSession', function(){
+    return new Phalcon\Flash\Session(array(
+      'error' => 'alert alert-dismissable alert-danger',
+      'success' => 'alert alert-dismissable alert-success',
+      'notice' => 'alert alert-dismissable alert-info',
+    ));
+  });
+
+/*$container->set(
+    'flashSession',
+    function (){
+        $customTemplate = '<div class="%cssClass%">
+                       <i class="%iconCssClass%"></i>
+                       %message%
+                       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                   </div>';
+
+        $flash = new FlashSession();
+
+        $flash->setCustomTemplate($customTemplate);
+        $flash->setCssClasses([
+            'error'   => 'alert alert-danger',
+            'success' => 'alert alert-success',
+            'notice'  => 'alert alert-info',
+            'warning' => 'alert alert-warning',
+        ]);
+
+        $flash->setIconCssClasses([
+            'error'   => 'fas fa-exclamation-triangle',
+            'success' => 'fas fa-check-circle',
+            'notice'  => 'fas fa-info-circle',
+            'warning' => 'fas fa-exclamation-triangle'
+        ]);
+        return $flash;
+    }
+);*/

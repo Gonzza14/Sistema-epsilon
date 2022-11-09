@@ -73,7 +73,7 @@ class AclController extends Controller
 
             $acl = Acl::findFirstByIDROL($IDROL);
             if (!$acl) {
-                $this->flash->error("La lista de accesso no ha sido encontrada");
+                $this->flashSession->error("La lista de accesso no ha sido encontrada");
 
                 $this->dispatcher->forward([
                     'controller' => "acl",
@@ -110,7 +110,7 @@ class AclController extends Controller
 
         if (!$acl->save()) {
             foreach ($acl->getMessages() as $message) {
-                $this->flash->error($message);
+                $this->flashSession->error($message);
             }
 
             $this->dispatcher->forward([
@@ -121,7 +121,7 @@ class AclController extends Controller
             return;
         }
 
-        $this->flash->success("La lista de acceso fue creada satisfactoriamente");
+        $this->flashSession->success("La lista de acceso fue creada satisfactoriamente");
 
         $this->dispatcher->forward([
             'controller' => "acl",
@@ -149,7 +149,7 @@ class AclController extends Controller
         $acl = acl::findFirstByIDROL($IDROL);
 
         if (!$acl) {
-            $this->flash->error("la lista de acceso no existe " . $IDROL);
+            $this->flashSession->error("la lista de acceso no existe " . $IDROL);
 
             $this->dispatcher->forward([
                 'controller' => "acl",
@@ -167,7 +167,7 @@ class AclController extends Controller
         if (!$acl->save()) {
 
             foreach ($acl->getMessages() as $message) {
-                $this->flash->error($message);
+                $this->flashSession->error($message);
             }
 
             $this->dispatcher->forward([
@@ -179,7 +179,7 @@ class AclController extends Controller
             return;
         }
 
-        $this->flash->success("La lista de acceso fue actualizada con exito");
+        $this->flashSession->success("La lista de acceso fue actualizada con exito");
 
         $this->dispatcher->forward([
             'controller' => "acl",
@@ -196,7 +196,7 @@ class AclController extends Controller
     {
         $acl = Acl::findFirstByIDROL($IDROL);
         if (!$acl) {
-            $this->flash->error("La lista de acceso no fue encontrada");
+            $this->flashSession->error("La lista de acceso no fue encontrada");
 
             $this->dispatcher->forward([
                 'controller' => "acl",
@@ -209,7 +209,7 @@ class AclController extends Controller
         if (!$acl->delete()) {
 
             foreach ($acl->getMessages() as $message) {
-                $this->flash->error($message);
+                $this->flashSession->error($message);
             }
 
             $this->dispatcher->forward([
@@ -220,7 +220,7 @@ class AclController extends Controller
             return;
         }
 
-        $this->flash->success("La lista de acceso fue eliminada correctamente");
+        $this->flashSession->success("La lista de acceso fue eliminada correctamente");
 
         $this->dispatcher->forward([
             'controller' => "acl",
@@ -276,9 +276,11 @@ class AclController extends Controller
         // trying to include a file with the same name as the current script causes a conflict
         if (strcmp($componente, "acl") != 0) {
             if ((@include $controllerFile) === false) {
-                // $this->flash->error("No such Resource/Controller File");
-                // return;
-                return ['status' => false, 'error' => "No existe archivo Componente/Controller"];
+                $this->flashSession->error("No existe archivo Componente/Controller");
+                $this->view->disable();
+                $this->response->redirect('acl');
+                return;
+                //return ['status' => false, 'error' => "No existe archivo Componente/Controller"];
             }
         }
 
@@ -293,7 +295,9 @@ class AclController extends Controller
         if (!$componentesModel->save()) {
             // Validation OR Database Errors
             foreach ($componentesModel->getMessages() as $message) {
-                $this->flash->error($message);
+                $this->flashSession->error($message);
+                $this->view->disable();
+                $this->response->redirect('acl');
             }
             return;
         }
@@ -310,7 +314,9 @@ class AclController extends Controller
                 if (!$accion->save()) {
                     // Validation OR Database Errors
                     foreach ($accion->getMessages() as $message) {
-                        $this->flash->error($message);
+                        $this->flashSession->error($message);
+                        $this->view->disable();
+                        $this->response->redirect('acl');
                     }
                     return;
                 }
@@ -348,8 +354,9 @@ class AclController extends Controller
                 }
             }
 
+           
+            $this->flashSession->notice($msg);
             $this->view->disable();
-            $this->flash->notice($msg);
             $this->response->redirect('acl');
         } else {
             return $this->response->redirect();

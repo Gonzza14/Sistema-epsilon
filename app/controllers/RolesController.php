@@ -31,15 +31,17 @@ class RolesController extends Controller
         $exito = $rol->save();
 
         if ($exito) {
-            $this->flash->success("¡El rol ha sido registrado!");
-            $this->response->redirect('roles');
+            $this->flashSession->success("¡El rol ha sido registrado!");
             $this->view->disable();
+            $this->response->redirect('roles');
         } else {
 
             $mensajes = $rol->getMessages();
 
             foreach ($mensajes as $mensaje) {
-                $this->flash->error($mensaje->getMessage(), "<br/>");
+                $this->flashSession->error($mensaje->getMessage());
+                $this->view->disable();
+                $this->response->redirect('roles');
             }
             $this->view->disable();
         }
@@ -93,13 +95,13 @@ class RolesController extends Controller
         $rol->ACTUALIZADO = date('d/m/y h:i:s');
         $rol->save();*/
         if (!$query) {
-            $this->flash->error("El rol no se pudo actualizar");
-            /*$this->dispatcher->forward([
+            $this->flashSession->error("El rol no se pudo actualizar");
+            $this->dispatcher->forward([
                 'controller' => "roles",
                 'action' => 'index'
-            ]);*/
+            ]);
         } else {
-            $this->flash->success("El rol se actualizo con exito");
+            $this->flashSession->success("El rol se actualizo con exito");
             $this->view->disable();
             $this->response->redirect('roles');
             /*$this->view->msg = "El rol se actualizo con exito";
@@ -119,21 +121,25 @@ class RolesController extends Controller
             ]);
 
             if (!$rol) {
-                $this->flash->error('El rol no fue encontrado');
+                $this->flashSession->error('El rol no fue encontrado');
+                $this->view->disable();
                 return $this->response->redirect('roles');
             }
 
             if (!$rol->delete()) {
                 foreach ($rol->getMessages() as $msg) {
-                    $this->flash->error((string) $msg);
+                    $this->flashSession->error((string) $msg);
                 }
+                $this->view->disable();
                 return $this->response->redirect("roles");
             } else {
-                $this->flash->success("El rol fue eliminado");
+                $this->flashSession->success("El rol fue eliminado");
+                $this->view->disable();
                 return $this->response->redirect("roles");
             }
         } else {
-            $this->flash->error("El identificador del rol es invalido");
+            $this->flashSession->error("El identificador del rol es invalido");
+            $this->view->disable();
             return $this->response->redirect("roles");
         }
     }

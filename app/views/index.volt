@@ -309,7 +309,7 @@
           <div class="container-fluid">
             <div class="row mb-2">
               <div class="col-sm-6">
-                {{ flash.output() }}
+               
                 {% if session.has('AUTH') %}
                 <!--<h1 class="m-0">Bienvenid@ <?= $this->session->get('AUTH')['nombre'];?></h1>-->
                 {% endif %}
@@ -337,6 +337,7 @@
           </div>
         </div>
       </section>-->
+          <div class="alert alert-dark"><?php echo $this->flashSession->output(); ?></div>
           <?php echo $this->getContent(); ?>
         </div>
         <!-- /.content -->

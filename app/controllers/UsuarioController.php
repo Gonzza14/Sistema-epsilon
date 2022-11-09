@@ -42,13 +42,14 @@ class UsuarioController extends Controller
       $usuario->ACTUALIZADO=  date('d/m/y h:i:s');
       $usuario->save();
       if (!$usuario->save()) {
-         $this->flash->error("El usuario no se pudo actualizar");
+         $this->flashSession->error("El usuario no se pudo actualizar");
          $this->dispatcher->forward([
             'controller' => "usuario",
             'action' => 'index'
         ]);
       } else {
-         $this->flash->success("El usuario se actualizo con exito");
+         $this->flashSession->success("El usuario se actualizo con exito");
+         $this->view->disable();
          $this->response->redirect('usuario');
       }
    }
@@ -68,26 +69,28 @@ class UsuarioController extends Controller
           ]);
 
           if (!$usuario) {
-              $this->flash->error('El usuario no fue encontrado');
+              $this->flashSession->error('El usuario no fue encontrado');
+              $this->view->disable();
               return $this->response->redirect('usuario');
           }    
 
           if (!$usuario->delete()) {
               foreach ($usuario->getMessages() as $msg) {
-                  $this->flash->error((string) $msg);
+                  $this->flashSession->error((string) $msg);
+                  
               }
+              $this->view->disable();
               return $this->response->redirect("usuario");
           } else {
-              $this->flash->success("El usuario fue eliminado");
+              $this->flashSession->success("El usuario fue eliminado");
+              $this->view->disable();
               return $this->response->redirect("usuario");
           }
 
       } else {
-          $this->flash->error("El identificador del usuario es invalido");
+          $this->flasSession->error("El identificador del usuario es invalido");
+          $this->view->disable();
           return $this->response->redirect("usuario");
       }
-
-      # View Page Disable
-      $this->view->disable();
    }
 }

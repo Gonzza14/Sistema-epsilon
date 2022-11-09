@@ -111,7 +111,6 @@ body {
   <form action="{{url ("index/signin")}}" class="form-horizontal" method="POST">
     <img class="mb-2 center imagen" src="{{ url('dist/img/user-icon.png') }}" alt="" width="100" height="100">
     <h1 class="h3 mb-3 fw-normal text">Inicio de sesion</h1>
-
     <div class="form-floating">
       <input autocomplete="off" type="text" name="nombre" class="form-control" id="floatingInput" placeholder="Nombre de usuario" required>
       <label for="floatingInput">Nombre de usuario</label>

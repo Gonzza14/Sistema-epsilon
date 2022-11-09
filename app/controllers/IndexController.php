@@ -14,15 +14,16 @@ use BaconQrCode\Writer;
 
 class IndexController extends Controller
 {
+
     public function indexAction()
     {
     }
     public function signinAction()
     {
         if ($this->session->has('AUTH')) {
-            $this->flash->error("Ya has iniciado sesion");
-            $this->response->redirect('index');
+            $this->flashSession->error("Ya has iniciado sesion");
             $this->view->disable();
+            $this->response->redirect('index');
         } else {
             if ($this->request->isPost()) {
 
@@ -42,7 +43,8 @@ class IndexController extends Controller
                     $usuario->ACTIVO = 1;
                     $usuario->save();
                     if (!$usuario->save()) {
-                        $this->flash->error("No se pudo iniciar sesion correctamente");
+                        $this->flashSession->error("No se pudo iniciar sesion correctamente");
+                        $this->view->disable();
                         $this->response->redirect('index/signin');
                     } else if ($usuario->PRIMERSIGNIN == 1) {
                         return $this->response->redirect('index/confirm/' . $usuario->IDUSUARIO);
@@ -50,8 +52,9 @@ class IndexController extends Controller
                         return $this->response->redirect('index/auth/' . $usuario->IDUSUARIO);
                     }
                 } else {
-                    $this->flash->error("Email y/o contraseña invalida.");
-                    $this->response->redirect('index/signin');
+                    $this->flashSession->error("Email y/o contraseña invalida.");
+                    $this->view->disable();
+                    return $this->response->redirect('index/signin');
                 }
             }
         }
@@ -60,87 +63,87 @@ class IndexController extends Controller
     public function signupAction()
     {
         if ($this->session->has('AUTH')) {
-            $this->flash->error("Ya has iniciado sesion");
-            $this->response->redirect('index');
+            $this->flashSession->error("Ya has iniciado sesion");
             $this->view->disable();
+            $this->response->redirect('index');
         } else {
-            $this->view->roles = security\Roles::find();
-
-            $mail = new Mail();
-
-            $post = $this->request->getPost();
             if ($this->request->isPost()) {
-                $usuario = new Usuarios();
+                $this->view->roles = security\Roles::find();
 
-                $random = new Random();
-                $provisional = $random->base62(8);
+                $mail = new Mail();
 
-                $usuario->NOMBREUSUARIO = ucwords($post['nombre']);
-                $usuario->APELLIDOUSUARIO = ucwords($post['apellido']);
-                $usuario->CORREOUSUARIO = $post['correo'];
-                $usuario->FECHANACIMIENTO = $post['nacimiento'];
-                $usuario->TELEFONO = $post['telefono'];
-                //$usuario->CONTRAUSUARIO = md5($post['clave']);
-                $usuario->CONTRAUSUARIO = md5($provisional);
-                $usuario->IDROL = "Solicitante";
-                $usuario->ACTIVO = 0;
-                $usuario->PRIMERSIGNIN = 1;
-                $usuario->CREADO =  date('d/m/y h:i:s');
-                $usuario->ACTUALIZADO =  date('d/m/y h:i:s');
+                $post = $this->request->getPost();
+                if ($this->request->isPost()) {
+                    $usuario = new Usuarios();
 
-                $comprobarNombre =  strtoupper(substr($usuario->NOMBREUSUARIO, 0, 1) . substr($usuario->APELLIDOUSUARIO, 0, 1) . "%");
+                    $random = new Random();
+                    $provisional = $random->base62(8);
 
-                $usuarioRegistrado = Usuarios::findFirst([
-                    'conditions' => 'USERNAME LIKE ?1 ORDER BY USERNAME DESC',
-                    'bind' => [
-                        1 => $comprobarNombre,
-                    ]
-                ]);
-                /*$query = $this->db->prepare("SELECT COUNT(*) FROM `usuarios` WHERE `usuarios`.`USERNAME` LIKE :nombre");
+                    $usuario->NOMBREUSUARIO = ucwords($post['nombre']);
+                    $usuario->APELLIDOUSUARIO = ucwords($post['apellido']);
+                    $usuario->CORREOUSUARIO = $post['correo'];
+                    $usuario->FECHANACIMIENTO = $post['nacimiento'];
+                    $usuario->TELEFONO = $post['telefono'];
+                    //$usuario->CONTRAUSUARIO = md5($post['clave']);
+                    $usuario->CONTRAUSUARIO = md5($provisional);
+                    $usuario->IDROL = "Solicitante";
+                    $usuario->ACTIVO = 0;
+                    $usuario->PRIMERSIGNIN = 1;
+                    $usuario->CREADO =  date('d/m/y h:i:s');
+                    $usuario->ACTUALIZADO =  date('d/m/y h:i:s');
+
+                    $comprobarNombre =  strtoupper(substr($usuario->NOMBREUSUARIO, 0, 1) . substr($usuario->APELLIDOUSUARIO, 0, 1) . "%");
+
+                    $usuarioRegistrado = Usuarios::findFirst([
+                        'conditions' => 'USERNAME LIKE ?1 ORDER BY USERNAME DESC',
+                        'bind' => [
+                            1 => $comprobarNombre,
+                        ]
+                    ]);
+                    /*$query = $this->db->prepare("SELECT COUNT(*) FROM `usuarios` WHERE `usuarios`.`USERNAME` LIKE :nombre");
                 $query->bindparam(":nombre", $comprobarNombre, PDO::PARAM_STR);
                 $query->execute(array(':nombre' => $comprobarNombre));
                 $result = $query->fetch();*/
-                if ($usuarioRegistrado) {
-                    $cadena = $usuarioRegistrado->USERNAME;
-                    $numerosUsuario = substr($cadena, 2, 5);
-                    //$integerUsuario = (int)$result[0];
-                    $integerUsuario = (int)$numerosUsuario;
-                    $contador = $integerUsuario + 1;
-                    $numeroConCeros =  str_pad($contador, 5, "0", STR_PAD_LEFT);
-                    $nombreUsuario = str_replace($numerosUsuario, $numeroConCeros, $cadena);
-                } else {
-                    $numero = 1;
-                    $numeroConCeros =  str_pad($numero, 5, "0", STR_PAD_LEFT);
-                    $nombreUsuario =  strtoupper(substr($usuario->NOMBREUSUARIO, 0, 1) . substr($usuario->APELLIDOUSUARIO, 0, 1) . $numeroConCeros);
-                }
-
-                $usuario->USERNAME = $nombreUsuario;
-                $exito = $usuario->save();
-
-                if ($exito) {
-                    /**
-                     * Send Email
-                     */
-                    $params = [
-                        'nombre' => $usuario->NOMBREUSUARIO,
-                        'username' => $usuario->USERNAME,
-                        'contra' => $provisional,
-                        'link' => "http://127.0.1.3/index/confirm"
-                    ];
-                    $mail->send($this->request->getPost('correo', ['trim', 'correo']), 'signup', $params);
-
-
-                    $this->flash->success("¡Gracias por registrarte!");
-                    $this->response->redirect('/index/mensaje');
-                    $this->view->disable();
-                } else {
-
-                    $mensajes = $usuario->getMessages();
-
-                    foreach ($mensajes as $mensaje) {
-                        $this->flash->error($mensaje->getMessage());
+                    if ($usuarioRegistrado) {
+                        $cadena = $usuarioRegistrado->USERNAME;
+                        $numerosUsuario = substr($cadena, 2, 5);
+                        //$integerUsuario = (int)$result[0];
+                        $integerUsuario = (int)$numerosUsuario;
+                        $contador = $integerUsuario + 1;
+                        $numeroConCeros =  str_pad($contador, 5, "0", STR_PAD_LEFT);
+                        $nombreUsuario = str_replace($numerosUsuario, $numeroConCeros, $cadena);
+                    } else {
+                        $numero = 1;
+                        $numeroConCeros =  str_pad($numero, 5, "0", STR_PAD_LEFT);
+                        $nombreUsuario =  strtoupper(substr($usuario->NOMBREUSUARIO, 0, 1) . substr($usuario->APELLIDOUSUARIO, 0, 1) . $numeroConCeros);
                     }
-                    $this->view->disable();
+
+                    $usuario->USERNAME = $nombreUsuario;
+                    $exito = $usuario->save();
+
+                    if ($exito) {
+                        /**
+                         * Send Email
+                         */
+                        $params = [
+                            'nombre' => $usuario->NOMBREUSUARIO,
+                            'username' => $usuario->USERNAME,
+                            'contra' => $provisional,
+                            'link' => "http://127.0.1.3/index/confirm"
+                        ];
+                        $mail->send($this->request->getPost('correo', ['trim', 'correo']), 'signup', $params);
+                        $this->response->redirect('/index/mensaje');
+                    } else {
+
+                        $mensajes = $usuario->getMessages();
+
+                        foreach ($mensajes as $mensaje) {
+                            $this->flashSession->error($mensaje->getMessage());
+                            $this->view->disable();
+                            $this->response->redirect('/index/signup');
+                        }
+                        $this->view->disable();
+                    }
                 }
             }
         }
@@ -153,9 +156,9 @@ class IndexController extends Controller
         $this->view->login = $usuario->PRIMERSIGNIN;
 
         if ($this->session->has('AUTH')) {
-            $this->flash->error("Ya has iniciado sesion");
-            $this->response->redirect('index');
+            $this->flashSession->error("Ya has iniciado sesion");
             $this->view->disable();
+            $this->response->redirect('index');
         } else if ($usuario->PRIMERSIGNIN == 2 && $usuario->ACTIVO == 1) {
             $google2fa = new Google2FA();
             $this->view->google = $google2fa;
@@ -180,16 +183,14 @@ class IndexController extends Controller
             $this->view->qr = $link;
             $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 0 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
             $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
-            $query->execute(array(':idUsuario'=>$id));
+            $query->execute(array(':idUsuario' => $id));
             if (isset($_POST['enviar'])) {
                 confirmAuthAction();
             }
-            
         } else if (($usuario->PRIMERSIGNIN == 0 || $usuario->PRIMERSIGNIN == 3) && $usuario->ACTIVO == 1) {
             $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 0 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
             $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
-            $query->execute(array(':idUsuario'=>$id));
-
+            $query->execute(array(':idUsuario' => $id));
         } else {
             $this->dispatcher->forward(array(
                 'controller' => 'errors',
@@ -203,37 +204,44 @@ class IndexController extends Controller
         $id = $this->request->getPost("id");
         //$google2fa = $this->request->getPost("google");
         $google2fa = new Google2FA();
-        $usuario = Usuarios::findFirstByIDUSUARIO($id);
+        if ($this->request->isPost()) {
+            $usuario = Usuarios::findFirstByIDUSUARIO($id);
 
-        $post = $this->request->getPost();
-        if (isset($_POST['enviar'])) {
-            $code = $post['verification'];
-            if ($google2fa->verifyKey(strval($usuario->SECRETO), strval($code))) {
-                $usuario->ACTIVO = 1;
-                if($usuario->PRIMERSIGNIN == 3){
-                    $usuario->save();
-                    if ($usuario->save()) {
-                        return $this->response->redirect('index/confirm/'.$usuario->IDUSUARIO);
+            $post = $this->request->getPost();
+            if (isset($_POST['enviar'])) {
+                $code = $post['verification'];
+                if ($google2fa->verifyKey(strval($usuario->SECRETO), strval($code))) {
+                    $usuario->ACTIVO = 1;
+                    if ($usuario->PRIMERSIGNIN == 3) {
+                        $usuario->save();
+                        if ($usuario->save()) {
+                            return $this->response->redirect('index/confirm/' . $usuario->IDUSUARIO);
+                        }
+                    } else {
+                        $this->session->set('AUTH', [
+                            'id' => $usuario->IDUSUARIO,
+                            'nombre' => $usuario->NOMBREUSUARIO,
+                            'apellido' => $usuario->APELLIDO,
+                            'username' => $usuario->USERNAME,
+                            'correo' => $usuario->CORREOUSUARIO,
+                            'rol' => $usuario->IDROL,
+                            'creado' => $usuario->CREADO,
+                            'actualizado' => $usuario->ACTUALIZADO,
+                        ]);
+                        $usuario->PRIMERSIGNIN = 0;
+                        $usuario->save();
+                        if ($usuario->save()) {
+                            return $this->response->redirect('index');
+                        }
                     }
-                }else{
-                    $this->session->set('AUTH', [
-                        'id' => $usuario->IDUSUARIO,
-                        'nombre' => $usuario->NOMBREUSUARIO,
-                        'apellido' => $usuario->APELLIDO,
-                        'username' => $usuario->USERNAME,
-                        'correo' => $usuario->CORREOUSUARIO,
-                        'rol' => $usuario->IDROL,
-                        'creado' => $usuario->CREADO,
-                        'actualizado' => $usuario->ACTUALIZADO,
-                    ]);
-                    $usuario->PRIMERSIGNIN = 0;
-                    $usuario->save();
-                    if ($usuario->save()) {
-                        return $this->response->redirect('index');
-                    }
-                } 
-            } else {
-                $this->flash->error("Codigo incorrecto");
+                } else {
+                    $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 1 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
+                    $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
+                    $query->execute(array(':idUsuario' => $id));
+                    $this->flashSession->error("Codigo incorrecto");
+                    $this->view->disable();
+                    $this->response->redirect('index/auth/' . $id);
+                }
             }
         }
     }
@@ -242,13 +250,13 @@ class IndexController extends Controller
     {
         $usuario = Usuarios::findFirst($id);
         if ($this->session->has('AUTH')) {
-            $this->flash->error("Ya has iniciado sesion");
-            $this->response->redirect('index');
+            $this->flashSession->error("Ya has iniciado sesion");
             $this->view->disable();
+            $this->response->redirect('index');
         } else if (($usuario->PRIMERSIGNIN == 1 || $usuario->PRIMERSIGNIN == 3) && $usuario->ACTIVO == 1) {
             $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 0 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
             $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
-            $query->execute(array(':idUsuario'=>$id));
+            $query->execute(array(':idUsuario' => $id));
             $this->view->id = $usuario->IDUSUARIO;
         } else {
             $this->dispatcher->forward(array(
@@ -263,37 +271,47 @@ class IndexController extends Controller
         $post = $this->request->getPost();
         $id = $post["id"];
 
-        $usuario = Usuarios::findFirstByIDUSUARIO($id);
-        if ($post["clave"] == $post["clave-confirmar"]) {
-            $usuario->CONTRAUSUARIO = md5($post["clave"]);
-            $usuario->ACTUALIZADO =  date('d/m/y h:i:s');
-            if($usuario->PRIMERSIGNIN == 3){
-                $usuario->PRIMERSIGNIN = 0;
-                $usuario->save();
-            }else{
-                $usuario->PRIMERSIGNIN = 2;
-                $usuario->save();
-            }
-            $this->session->set('AUTH', [
-                'id' => $usuario->IDUSUARIO,
-                'nombre' => $usuario->NOMBREUSUARIO,
-                'apellido' => $usuario->APELLIDO,
-                'username' => $usuario->USERNAME,
-                'correo' => $usuario->CORREOUSUARIO,
-                'rol' => $usuario->IDROL,
-                'creado' => $usuario->CREADO,
-                'actualizado' => $usuario->ACTUALIZADO,
-            ]);
-            if (!$usuario->save()) {
-                $this->flash->error("No se pudo cambiar la contraseña");
-                $this->session->destroy();
+        if ($this->request->isPost()) {
+            $usuario = Usuarios::findFirstByIDUSUARIO($id);
+            if ($post["clave"] == $post["clave-confirmar"]) {
+                $usuario->CONTRAUSUARIO = md5($post["clave"]);
+                $usuario->ACTUALIZADO =  date('d/m/y h:i:s');
+                if ($usuario->PRIMERSIGNIN == 3) {
+                    $usuario->PRIMERSIGNIN = 0;
+                    $usuario->save();
+                } else {
+                    $usuario->PRIMERSIGNIN = 2;
+                    $usuario->save();
+                }
+                $this->session->set('AUTH', [
+                    'id' => $usuario->IDUSUARIO,
+                    'nombre' => $usuario->NOMBREUSUARIO,
+                    'apellido' => $usuario->APELLIDO,
+                    'username' => $usuario->USERNAME,
+                    'correo' => $usuario->CORREOUSUARIO,
+                    'rol' => $usuario->IDROL,
+                    'creado' => $usuario->CREADO,
+                    'actualizado' => $usuario->ACTUALIZADO,
+                ]);
+                if (!$usuario->save()) {
+                    $this->flashSession->error("No se pudo cambiar la contraseña");
+                    $this->view->disable();
+                    $this->response->redirect('index/signin');
+                    $this->session->destroy();
+                } else {
+                    $this->flashSession->success("Se cambio la contraseña con exito");
+                    $this->view->disable();
+                    $this->response->redirect('index/signin');
+                    $this->session->destroy();
+                }
             } else {
-                $this->flash->success("Se cambio la contraseña con exito");
-                $this->session->destroy();
-                $this->response->redirect('index/signin');
+                $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 1 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
+                $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
+                $query->execute(array(':idUsuario' => $id));
+                $this->flashSession->error("Las contraseñas no coinciden");
+                $this->view->disable();
+                $this->response->redirect('index/confirm/' . $id);
             }
-        } else {
-            $this->flash->error("Las contraseñas no coinciden");
         }
     }
 
@@ -303,7 +321,9 @@ class IndexController extends Controller
         $usuario->ACTIVO = 0;
         $usuario->save();
         if (!$usuario->save()) {
-            $this->flash->error("No se pudo cerrar sesion correctamente");
+            $this->flashSession->error("No se pudo cerrar sesion correctamente");
+            $this->view->disable();
+            $this->response->redirect('index');
         } else {
             $this->session->destroy();
             $this->response->redirect('index/signin');
@@ -317,44 +337,52 @@ class IndexController extends Controller
     public function recuperarAction()
     {
         if ($this->session->has('AUTH')) {
-            $this->flash->error("Ya has iniciado sesion");
-            $this->response->redirect('index');
+            $this->flashSession->error("Ya has iniciado sesion");
             $this->view->disable();
+            $this->response->redirect('index');
         } else {
-            $post = $this->request->getPost();
-            $correo = $post["correo"];
+            if ($this->request->isPost()) {
+                $post = $this->request->getPost();
+                $correo = $post["correo"];
 
-            $usuario = Usuarios::findFirst([
-                'conditions' => 'CORREOUSUARIO = ?1',
-                'bind' => [
-                    1 => $correo,
-                ]
-            ]);
-            if($usuario){
-                $mail = new Mail();
-                $random = new Random();
-                $provisional = $random->base62(8);
-                $usuario->CONTRAUSUARIO = md5($provisional);
-                $usuario->PRIMERSIGNIN = 3;
-                $usuario->save();
-                if($usuario->save()){
-                    $params = [
-                        'nombre' => $usuario->NOMBREUSUARIO,
-                        'username' => $usuario->USERNAME,
-                        'contra' => $provisional,
-                    ];
-                    $mail->send($this->request->getPost('correo', ['trim', 'correo']), 'recuperar', $params);
-                    $this->flash->success("El correo electronico se ha enviado con las nuevas credenciales");
-                }else{
-                    $mensajes = $usuario->getMessages();
+                $usuario = Usuarios::findFirst([
+                    'conditions' => 'CORREOUSUARIO = ?1',
+                    'bind' => [
+                        1 => $correo,
+                    ]
+                ]);
+                if ($usuario) {
+                    $mail = new Mail();
+                    $random = new Random();
+                    $provisional = $random->base62(8);
+                    $usuario->CONTRAUSUARIO = md5($provisional);
+                    $usuario->PRIMERSIGNIN = 3;
+                    $usuario->save();
+                    if ($usuario->save()) {
+                        $params = [
+                            'nombre' => $usuario->NOMBREUSUARIO,
+                            'username' => $usuario->USERNAME,
+                            'contra' => $provisional,
+                        ];
+                        $mail->send($this->request->getPost('correo', ['trim', 'correo']), 'recuperar', $params);
+                        $this->flashSession->success("El correo electronico se ha enviado con las nuevas credenciales");
+                        $this->view->disable();
+                        $this->response->redirect('index/signin');
+                    } else {
+                        $mensajes = $usuario->getMessages();
 
-                    foreach ($mensajes as $mensaje) {
-                        $this->flash->error($mensaje->getMessage());
+                        foreach ($mensajes as $mensaje) {
+                            $this->flashSession->error($mensaje->getMessage());
+                            $this->view->disable();
+                            $this->response->redirect('index/recuperar');
+                        }
+                        $this->view->disable();
                     }
+                } else {
+                    $this->flashSession->error("No se encuentra el correo electronico ingresado asociado a una cuenta.");
                     $this->view->disable();
+                    $this->response->redirect('index/recuperar');
                 }
-            }else{
-                $this->flash->error("No se encuentra el correo electronico ingresado asociado a una cuenta.");
             }
         }
     }
