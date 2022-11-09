@@ -379,7 +379,7 @@ class IndexController extends Controller
                         $this->view->disable();
                     }
                 } else {
-                    $this->flashSession->error("No se encuentra el correo electronico ingresado asociado a una cuenta.");
+                    $this->flashSession->error("El correo electronico no se encuentra registrado.");
                     $this->view->disable();
                     $this->response->redirect('index/recuperar');
                 }
