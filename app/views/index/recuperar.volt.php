@@ -15,7 +15,7 @@ body {
   padding-top: 100px;
   padding-bottom: 100px;
   width: 100%;
-  max-width: 330px;
+  max-width: 500px;
   margin: auto;
 }
 
@@ -105,32 +105,46 @@ body {
         -webkit-overflow-scrolling: touch;
       }
 </style>
-
 <body class="text-center">
-  <main class="form-signin">
-  <form action="{{url ("index/signin")}}" class="form-horizontal" method="POST">
-    <img class="mb-2 center imagen" src="{{ url('dist/img/user-icon.png') }}" alt="" width="100" height="100">
-    <h1 class="h3 mb-3 fw-normal text">Inicio de sesion</h1>
+    <main class="form-signin">
 
-    <div class="form-floating">
-      <input autocomplete="off" type="text" name="nombre" class="form-control" id="floatingInput" placeholder="Nombre de usuario" required>
-      <label for="floatingInput">Nombre de usuario</label>
-    </div>
-    <div class="form-floating">
-      <input autocomplete="off" type="password" name="clave" class="form-control" id="floatingPassword" placeholder="Contraseña" required>
-      <label for="floatingPassword">Contraseña</label>
-    </div>
-
-   <!-- <div class="checkbox mb-3">
-      <label>
-        <input type="checkbox" value="remember-me"> Recuerdame
-      </label>
-    </div>-->
-    <button class="btn-ingresar w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
-    <!--<a class="nav-link text" href="{{ url('../index/signup') }}" class="nav-link">Registrarse</a>-->
-    <a class="nav-link text" href="{{ url('../index/recuperar') }}" class="nav-link">¿Olvido su nombre de usuario o contraseña?</a>
-    <p class="mt-5 mb-3 text-muted text">&copy;2022</p>
-  </form>
+    <form action="<?= $this->url->get('index/recuperar') ?>" class="form-horizontal" method="POST" onsubmit="return checkSubmit();">
+        <h2 class="form-signin-heading">Recuperar credenciales</h2>
+       <!-- <div class="form-group">
+            <div class="col-sm-10">
+              <input type="hidden" class="form-control" name="id" value="<?= $id ?>" required>
+            </div>
+          </div>-->
+          <p>Ingrese el correo electronico asociado a su cuenta</p>
+          <div class="form-floating">
+            <input autocomplete="off" type="text" name="correo" class="form-control" id="correo" placeholder="Correo electronico" required>
+            <label for="correo">Correo electronico</label>
+          </div>
+          <br>
+        <!--<label for="role" class="sr-only">Rol de usuario</label>
+        <select class="form-control" name="idRol" id="user_role">
+            <option value="">Seleccionar rol de usuario</option>
+            <?php foreach ($roles as $role) { ?>
+                <option value="<?= $role->IDROL ?>"><?= $role->IDROL ?></option>
+            <?php } ?>
+        </select>
+        <br>-->
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Enviar correo</button>
+    </form>
 </main>
 </body>
+<script>
+    enviando = false; //Obligaremos a entrar el if en el primer submit
+  
+  function checkSubmit() {
+      if (!enviando) {
+          enviando= true;
+          return true;
+      } else {
+          //Si llega hasta aca significa que pulsaron 2 veces el boton submit
+          alert("El formulario ya se esta enviando");
+          return false;
+      }
+  }
+</script>
 </html>

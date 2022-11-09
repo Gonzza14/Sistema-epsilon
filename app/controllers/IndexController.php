@@ -46,7 +46,7 @@ class IndexController extends Controller
                         $this->response->redirect('index/signin');
                     } else if ($usuario->PRIMERSIGNIN == 1) {
                         return $this->response->redirect('index/confirm/' . $usuario->IDUSUARIO);
-                    } else if ($usuario->PRIMERSIGNIN == 2 || $usuario->PRIMERSIGNIN == 0) {
+                    } else if ($usuario->PRIMERSIGNIN == 2 || $usuario->PRIMERSIGNIN == 0 || $usuario->PRIMERSIGNIN == 3) {
                         return $this->response->redirect('index/auth/' . $usuario->IDUSUARIO);
                     }
                 } else {
@@ -185,7 +185,7 @@ class IndexController extends Controller
                 confirmAuthAction();
             }
             
-        } else if ($usuario->PRIMERSIGNIN == 0 && $usuario->ACTIVO == 1) {
+        } else if (($usuario->PRIMERSIGNIN == 0 || $usuario->PRIMERSIGNIN == 3) && $usuario->ACTIVO == 1) {
             $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 0 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
             $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
             $query->execute(array(':idUsuario'=>$id));
@@ -209,22 +209,29 @@ class IndexController extends Controller
         if (isset($_POST['enviar'])) {
             $code = $post['verification'];
             if ($google2fa->verifyKey(strval($usuario->SECRETO), strval($code))) {
-                $this->session->set('AUTH', [
-                    'id' => $usuario->IDUSUARIO,
-                    'nombre' => $usuario->NOMBREUSUARIO,
-                    'apellido' => $usuario->APELLIDO,
-                    'username' => $usuario->USERNAME,
-                    'correo' => $usuario->CORREOUSUARIO,
-                    'rol' => $usuario->IDROL,
-                    'creado' => $usuario->CREADO,
-                    'actualizado' => $usuario->ACTUALIZADO,
-                ]);
                 $usuario->ACTIVO = 1;
-                $usuario->PRIMERSIGNIN = 0;
-                $usuario->save();
-                if ($usuario->save()) {
-                    $this->response->redirect('index');
-                }
+                if($usuario->PRIMERSIGNIN == 3){
+                    $usuario->save();
+                    if ($usuario->save()) {
+                        return $this->response->redirect('index/confirm/'.$usuario->IDUSUARIO);
+                    }
+                }else{
+                    $this->session->set('AUTH', [
+                        'id' => $usuario->IDUSUARIO,
+                        'nombre' => $usuario->NOMBREUSUARIO,
+                        'apellido' => $usuario->APELLIDO,
+                        'username' => $usuario->USERNAME,
+                        'correo' => $usuario->CORREOUSUARIO,
+                        'rol' => $usuario->IDROL,
+                        'creado' => $usuario->CREADO,
+                        'actualizado' => $usuario->ACTUALIZADO,
+                    ]);
+                    $usuario->PRIMERSIGNIN = 0;
+                    $usuario->save();
+                    if ($usuario->save()) {
+                        return $this->response->redirect('index');
+                    }
+                } 
             } else {
                 $this->flash->error("Codigo incorrecto");
             }
@@ -238,7 +245,7 @@ class IndexController extends Controller
             $this->flash->error("Ya has iniciado sesion");
             $this->response->redirect('index');
             $this->view->disable();
-        } else if ($usuario->PRIMERSIGNIN == 1 && $usuario->ACTIVO == 1) {
+        } else if (($usuario->PRIMERSIGNIN == 1 || $usuario->PRIMERSIGNIN == 3) && $usuario->ACTIVO == 1) {
             $query = $this->db->prepare("UPDATE `usuarios` SET `ACTIVO` = 0 WHERE `usuarios`.`IDUSUARIO` = :idUsuario ");
             $query->bindparam(":idUsuario", $id, PDO::PARAM_STR);
             $query->execute(array(':idUsuario'=>$id));
@@ -260,8 +267,13 @@ class IndexController extends Controller
         if ($post["clave"] == $post["clave-confirmar"]) {
             $usuario->CONTRAUSUARIO = md5($post["clave"]);
             $usuario->ACTUALIZADO =  date('d/m/y h:i:s');
-            $usuario->PRIMERSIGNIN = 2;
-            $usuario->save();
+            if($usuario->PRIMERSIGNIN == 3){
+                $usuario->PRIMERSIGNIN = 0;
+                $usuario->save();
+            }else{
+                $usuario->PRIMERSIGNIN = 2;
+                $usuario->save();
+            }
             $this->session->set('AUTH', [
                 'id' => $usuario->IDUSUARIO,
                 'nombre' => $usuario->NOMBREUSUARIO,
@@ -304,5 +316,46 @@ class IndexController extends Controller
 
     public function recuperarAction()
     {
+        if ($this->session->has('AUTH')) {
+            $this->flash->error("Ya has iniciado sesion");
+            $this->response->redirect('index');
+            $this->view->disable();
+        } else {
+            $post = $this->request->getPost();
+            $correo = $post["correo"];
+
+            $usuario = Usuarios::findFirst([
+                'conditions' => 'CORREOUSUARIO = ?1',
+                'bind' => [
+                    1 => $correo,
+                ]
+            ]);
+            if($usuario){
+                $mail = new Mail();
+                $random = new Random();
+                $provisional = $random->base62(8);
+                $usuario->CONTRAUSUARIO = md5($provisional);
+                $usuario->PRIMERSIGNIN = 3;
+                $usuario->save();
+                if($usuario->save()){
+                    $params = [
+                        'nombre' => $usuario->NOMBREUSUARIO,
+                        'username' => $usuario->USERNAME,
+                        'contra' => $provisional,
+                    ];
+                    $mail->send($this->request->getPost('correo', ['trim', 'correo']), 'recuperar', $params);
+                    $this->flash->success("El correo electronico se ha enviado con las nuevas credenciales");
+                }else{
+                    $mensajes = $usuario->getMessages();
+
+                    foreach ($mensajes as $mensaje) {
+                        $this->flash->error($mensaje->getMessage());
+                    }
+                    $this->view->disable();
+                }
+            }else{
+                $this->flash->error("No se encuentra el correo electronico ingresado asociado a una cuenta.");
+            }
+        }
     }
 }
