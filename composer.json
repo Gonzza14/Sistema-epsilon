@@ -1,6 +1,7 @@
 {
-
     "require": {
-        "spipu/html2pdf": "*"
+        "swiftmailer/swiftmailer": "^6.0",
+        "pragmarx/google2fa": "^8.0",
+        "bacon/bacon-qr-code": "^2.0"
     }
 }
