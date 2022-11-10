@@ -30,7 +30,6 @@ class IndexController extends Controller
                 $post = $this->request->getPost();
                 $nombre = $post["nombre"];
                 $clave = md5($post["clave"]);
-
                 // $user = new Users();
                 $usuario = Usuarios::findFirst([
                     'conditions' => 'USERNAME = ?1 and CONTRAUSUARIO = ?2',
@@ -385,5 +384,9 @@ class IndexController extends Controller
                 }
             }
         }
+    }
+
+    public function signinGoogleAction(){
+        $this->response->redirect('index/signinGoogle'); 
     }
 }
