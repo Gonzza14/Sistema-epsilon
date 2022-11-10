@@ -1,7 +1,73 @@
 <!DOCTYPE html>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa6HBo3kO-GFlORU58f_7QcenEI5uo0lg"></script>
+
+<script>
+  function init() {
+   var map = new google.maps.Map(document.getElementById('map-canvas'), {
+     center: {
+       lat: 12.9715987,
+       lng: 77.59456269999998
+     },
+     zoom: 12
+   });
+
+
+   var searchBox = new google.maps.places.SearchBox(document.getElementById('pac-input'));
+   map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById('pac-input'));
+   google.maps.event.addListener(searchBox, 'places_changed', function() {
+     searchBox.set('map', null);
+
+     var places = searchBox.getPlaces();
+     var bounds = new google.maps.LatLngBounds();
+     var i, place;
+     for (i = 0; place = places[i]; i++) { (function(place) {
+         var marker = new google.maps.Marker({
+
+           position: place.geometry.location,
+           draggable: true
+         });
+         marker.bindTo('map', searchBox, 'map');
+         google.maps.event.addListener(marker, 'map_changed', function() {
+          google.maps.event.addListener(marker, 'dragend', function (evt) {
+                $("#lat").val(evt.latLng.lat().toFixed(4));
+                $("#lon").val(evt.latLng.lng().toFixed(4));
+
+                map.panTo(evt.latLng);
+            });
+
+           if (!this.getMap()) {
+             this.unbindAll();
+           }
+         });
+         bounds.extend(place.geometry.location);
+
+
+       }(place));
+
+       var vMarker = new google.maps.Marker({
+                draggable: true,
+            });
+
+            // centers the map on markers coords
+            map.setCenter(vMarker.position);
+
+     }
+     map.fitBounds(bounds);
+     searchBox.set('map', map);
+     map.setZoom(Math.min(map.getZoom(),12));
+
+   });
+ }
+ google.maps.event.addDomListener(window, 'load', init);
+
+
+</script>
+
+
 <style>
 * {
   box-sizing: border-box;
@@ -92,20 +158,29 @@ button:hover {
 }
 </style>
 <body>
-  <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
   <script language="javascript">
-  $(document).ready(function(){
-      $("#pais").on('change', function () {
-          $("#pais option:selected").each(function () {
-              id_pais=$(this).val();
-              $.post("getRegion.php",{
-id_pais: id_pais},function(data){
-              $("#region").html(data);
-            })		
-          });
-     });
-  });
-  </script>
+    $(document).ready(function(){
+        $("#pais").on('change', function () {
+            $("#pais option:selected").each(function () {
+                id_pais=$(this).val();
+                $.post("getRegion.php",{ id_pais: id_pais},function(data){
+                $("#region").html(data);
+              })		
+            });
+       });
+    });
+  
+    $(document).ready(function(){
+        $("#region").on('change', function () {
+            $("#region option:selected").each(function () {
+                id_region=$(this).val();
+                $.post("getSubregion.php",{ id_region: id_region},function(data){
+                $("#subregion").html(data);
+              })		
+            });
+       });
+    });
+    </script>
 
 <?php 
 include "db_config.php";
@@ -149,7 +224,7 @@ include "db_config.php";
         <div class="form-group row">
           <label class="col-sm col-form-label">Genero</label>
           <div class="col-sm-8">
-            <select class="categoria_id form-control" name="genero"  value="">
+            <select class="custom-select" name="genero"  value="">
               <option selected='true' disabled='disabled'>Seleccionar genero</option>
               <?php
               $result = mysqli_query($conn,"SELECT * FROM  genero");
@@ -178,7 +253,7 @@ include "db_config.php";
         <div class="form-group row">
           <label class="col-sm col-form-label">Pais nacimiento</label>
           <div class="col-sm-8">
-            <select class="form-control" name="pais" id="pais" value="">
+            <select class="custom-select" name="pais" id="pais" value="">
               <option selected='true' disabled='disabled'>Seleccionar pais</option>
               <?php
               $resultP = mysqli_query($conn,"SELECT * FROM  pais");
@@ -198,17 +273,20 @@ include "db_config.php";
         <div class="form-group row">
           <label class="col-sm col-form-label">Región nacimiento</label>
           <div class="col-sm-8">
-            <select class="form-control" name="region" id="region" value="">
+            <select class="custom-select" name="region" id="region" value="">
           </select>
 
           </div>
         </div>
+
         <div class="form-group row">
           <label class="col-sm col-form-label">Subregión nacimiento</label>
           <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
+            <select class="custom-select" name="subregion" id="subregion" value="">
+            </select>
           </div>
         </div>
+        
         <div class="form-group row">
           <label class="col-sm col-form-label">Nacimiento</label>
           <div class="col-sm-8">
@@ -218,6 +296,8 @@ include "db_config.php";
       </div>
 
     </div>
+
+    
 
     <div class="bg-gray row col-12 "></div></br>
 
@@ -278,12 +358,6 @@ include "db_config.php";
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm col-form-label">Geolocalización</label>
-          <div class="col-sm-8">
-            <input placeholder="" oninput="this.className = ''" name="fname">
-          </div>
-        </div>
-        <div class="form-group row">
           <label class="col-sm col-form-label">País</label>
           <div class="col-sm-8">
             <input placeholder="" oninput="this.className = ''" name="fname">
@@ -303,6 +377,39 @@ include "db_config.php";
         </div>
       </div>
     </div>
+    
+    <div class="row">
+      <div class="col-sm-12">
+        <h4>Geolocalización</h4>
+      </div>
+      <div class="col-sm-8">
+          <div class="form-group row">
+            <label>Busca tú dirección en el mapa</label>
+            <input id="pac-input"  class="form-control" type="text" placeholder="Busque su dirección aqui">
+              <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa6HBo3kO-GFlORU58f_7QcenEI5uo0lg&sensor=false&libraries=places"></script>
+              <div class="container" id="map-canvas" style="height:400px; width: 100%;"></div>
+          </div>
+      </div>
+
+      <div class="col-sm-1">
+      </div>
+
+      <div class="col-sm-2">
+        <div class="form-group row">
+          <label>Coordenadas</label>
+          <p></p>
+          <p></p>
+          <label for="lat">Longitud</label>
+            <input id="lon"  class="form-control" type="text"></br>
+            <label for="lat">Latitud</label>
+            <input id="lat"  class="form-control" type="text">
+        </div>
+      </div>
+      <div class="col-sm-1">
+      </div>
+    </div>
+
+
   </div>
 
   <!-------------------------Datos estado civil--------------------------------------------------------->
