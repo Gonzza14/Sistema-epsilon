@@ -2,7 +2,7 @@
 include "db_config.php";
 ?>     
 
-<form action="{{ url ('revision/update') }}" class="form-horizontal" method="POST">
+<form action="{{ url ('aceptacion/update') }}" class="form-horizontal" method="POST">
   <div class="form-group">
     <div class="col-sm-10">
       <input type="hidden" class="form-control" name="idAsociado" value="{{idAsociado}}" required>
@@ -339,7 +339,7 @@ include "db_config.php";
 </form>
 
 
-<form action="{{ url ('revision/update2') }}" class="form-horizontal" method="POST">
+<form action="{{ url ('aceptacion/update2') }}" class="form-horizontal" method="POST">
   <div class="form-group">
     <div class="col-sm-10">
       <input type="hidden" class="form-control" name="idAsociado" value="{{idAsociado}}" required>

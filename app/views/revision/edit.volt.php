@@ -320,7 +320,7 @@ include "db_config.php";
     <div class="row"></div>
   <?php foreach ($data_archivos as $arch) { ?>
     <div class="col-2">
-      <label class="control-label col-sm-2" for="data_archivos"><a href="<?= $ruta ?>/../../../public/<?= $arch->ruta ?>"><?= $arch->nombre ?></a></label>
+        <a href="<?= $ruta ?>/../../../public/<?= $arch->ruta ?>" download="<?= $arch->nombre ?>"><?= $arch->nombre ?></a>
     </div>
   <?php } ?>
   </div>
