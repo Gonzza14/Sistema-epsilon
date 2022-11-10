@@ -256,8 +256,15 @@
 
               <li class="nav-item">
                 <a href="{{ url('../beneficiario') }}" class="nav-link">
-                  <i class="nav-icon fas fa-marker"></i>
+                  <i class="nav-icon fas  fa-home"></i>                  
                   <p>Beneficiario</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{{ url('../asociado/upload') }}" class="nav-link">
+                  <i class="fa-solid fas fa-folder-open"></i>                  
+                  <p>Subir documentos</p>
                 </a>
               </li>
 
