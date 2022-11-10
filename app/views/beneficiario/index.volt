@@ -77,7 +77,7 @@ include "db_config.php";
           <div class="form-group row">
             <label class="col-sm col-form-label">Fecha de nacimiento</label>
             <div class="col-sm-8">
-              <input  class="form-control" name="fechaBenef" id="fechaBenef" type="text">
+              <input  class="form-control" name="fechaBenef" id="fechaBenef" type="date">
             </div>
           </div>
 
@@ -103,6 +103,8 @@ include "db_config.php";
     </div>
 
 <script>
+  var total = 0;
+
 let parameters = []
 function removeElement(event, position) {
     event.target.parentElement.remove()
@@ -138,7 +140,14 @@ const addJsonElement = json => {
       var v6 = document.getElementById("fechaBenef").value;
       var v7 = document.getElementById("porcentaje").value;
 
-
+      total += Number(v7);
+      if(total==100){
+        alert('Se alcanzo el 100% de porcentaje en los beneficiarios, puede guardar');
+      }
+      if(total>100){
+        alert('No puede asignar más del 100%, borre sus registros y confirme nuevamente antes de Guardar')
+        location.reload();
+      }
 
         if( v1 != "" && v2  != ""){
             let index = addJsonElement({
@@ -153,7 +162,7 @@ const addJsonElement = json => {
             })
             const $div = document.createElement("div")
             $div.classList.add("row","col-12")
-            $div.innerHTML = templateElement(`Nombre:\n\n${v2}<p>Telefono:\n\n${v3}<p>Telefono:\n\n${v3}<p>Correo:\n\n${v4}<p>Dirección:\n\n${v5}<p>Fecha nacimiento\n\n${v3}<p>Porcentaje:\n\n${v3}`, index)
+            $div.innerHTML = templateElement(`Parentesco:\n\n${v1}<p>Nombre:\n\n${v2}<p>Telefono:\n\n${v3}<p>Correo:\n\n${v4}<p>Dirección:\n\n${v5}<p>Fecha nacimiento\n\n${v6}<p>Porcentaje:\n\n${v7}`, index)
  // jQuery Ajax Post Request
             $divElements.insertBefore($div, $divElements.firstChild)
 
@@ -173,6 +182,8 @@ const addJsonElement = json => {
             });
         $divElements.innerHTML = ""
         parameters = []
+        alert("Se guardo con exito");
+        window.location.href = "/";
     })
 
 
