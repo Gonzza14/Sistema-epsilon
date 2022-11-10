@@ -337,7 +337,7 @@
           </div>
         </div>
       </section>-->
-          <div class="alert alert-dark"><?php echo $this->flashSession->output(); ?></div>
+          <?php echo $this->flashSession->output(); ?>
           <?php echo $this->getContent(); ?>
         </div>
         <!-- /.content -->

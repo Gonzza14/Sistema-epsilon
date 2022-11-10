@@ -109,6 +109,36 @@ $container->setShared('sessionBag', function () {
     return $sessionBag;
 });
 
+$container->set(
+    'flashSession',
+    function (){
+        $customTemplate = '<div class="%cssClass%">
+                       <i class="%cssIconClass%"></i>
+                       %message%
+                       <button type="button" style="float: right;" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                   </div>';
+
+        $flash = new FlashSession();
+
+        $flash->setCustomTemplate($customTemplate);
+        $flash->setCssClasses([
+            'error'   => 'alert alert-danger',
+            'success' => 'alert alert-success',
+            'notice'  => 'alert alert-info',
+            'warning' => 'alert alert-warning',
+        ]);
+
+        $flash->setCssIconClasses([
+            'error'   => 'fas fa-exclamation-triangle',
+            'success' => 'fas fa-check-circle',
+            'notice'  => 'fas fa-info-circle',
+            'warning' => 'fas fa-exclamation-triangle'
+        ]);
+        return $flash;
+    }
+);
+
+
 //Meta-data
 $container['modelsMetaData'] = function () {
 
@@ -181,21 +211,21 @@ try {
  * Register the session flash service with the Twitter Bootstrap classes
  */
 /*$container->set('flashSession', function () {
-    return new FlashSession(array(
+    return new FlashSession([
         'error'   => 'alert alert-dismissable alert-danger',
         'success' => 'alert alert-dismissable alert-success',
         'notice'  => 'alert alert-dismissable alert-info',
         'warning' => 'alert alert-dismissable alert-warning'
-    ));
+    ]);
 });*/
 
-$container->set('flashSession', function(){
+/*$container->set('flashSession', function(){
     return new Phalcon\Flash\Session(array(
       'error' => 'alert alert-dismissable alert-danger',
       'success' => 'alert alert-dismissable alert-success',
       'notice' => 'alert alert-dismissable alert-info',
     ));
-  });
+  });*/
 
 /*$container->set(
     'flashSession',

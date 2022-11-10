@@ -78,7 +78,7 @@ class RolesController extends Controller
         $query->bindparam(":idRol", $idRol, PDO::PARAM_STR);
         $query->bindparam(":tiempo", $tiempo, PDO::PARAM_STR);
         $query->bindparam(":id", $id, PDO::PARAM_STR);
-        $query->execute(array(':idRol'=>$idRol,':tiempo'=>$tiempo, ':id'=>$id));
+        $query->execute(array(':idRol' => $idRol, ':tiempo' => $tiempo, ':id' => $id));
 
         /*$query = $this
         ->modelsManager
@@ -126,14 +126,20 @@ class RolesController extends Controller
                 return $this->response->redirect('roles');
             }
 
-            if (!$rol->delete()) {
-                foreach ($rol->getMessages() as $msg) {
-                    $this->flashSession->error((string) $msg);
+            try {
+                if (!$rol->delete()) {
+                    foreach ($rol->getMessages() as $msg) {
+                        $this->flashSession->error((string) $msg);
+                    }
+                    $this->view->disable();
+                    return $this->response->redirect("roles");
+                } else {
+                    $this->flashSession->success("El rol fue eliminado");
+                    $this->view->disable();
+                    return $this->response->redirect("roles");
                 }
-                $this->view->disable();
-                return $this->response->redirect("roles");
-            } else {
-                $this->flashSession->success("El rol fue eliminado");
+            } catch (PDOException $e) {
+                $this->flashSession->error("El rol esta siendo utilizado por otros registros");
                 $this->view->disable();
                 return $this->response->redirect("roles");
             }
