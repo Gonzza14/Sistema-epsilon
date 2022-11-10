@@ -157,11 +157,22 @@ button:hover {
     });
 
     $(document).ready(function(){
-        $("#pais").on('change', function () {
-            $("#pais option:selected").each(function () {
+        $("#paisResi").on('change', function () {
+            $("#paisResi option:selected").each(function () {
                 id_pais=$(this).val();
                 $.post("codigo.php",{ id_pais: id_pais},function(data){
                 $("#codigo").html(data);
+              })		
+            });
+       });
+    });
+
+    $(document).ready(function(){
+        $("#pais").on('change', function () {
+            $("#pais option:selected").each(function () {
+                id_pais=$(this).val();
+                $.post("nacionalidad.php",{ id_pais: id_pais},function(data){
+                $("#nacionalidad").html(data);
               })		
             });
        });
@@ -208,6 +219,7 @@ include "db_config.php";
 ?>
 
 <form id="regForm"  action="{{url ("asociado/store")}}" method="POST" class="needs-validation" novalidate>
+  <input type="number" hidden name="idPrincipal" value="<?= $this->session->get('AUTH')['id'];?>"> 
   <h2 class="h2">Solicitud de admisión de cooperativa</h2>
   <div class="bg-gray row col-12 "></div></br>
 
@@ -243,13 +255,13 @@ include "db_config.php";
         <div class="form-group row">
           <label for="apellidoConyugue" class="col-sm col-form-label">Apellido casada</label>
           <div class="col-sm-8">
-            <input placeholder="Apellido casada" maxlength="100" class="form-control" name="apellidoConyugue">
+            <input placeholder="Apellido casada" maxlength="100" class="form-control" id="apellidoConyugue" name="apellidoConyugue">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm col-form-label">Genero</label>
           <div class="col-sm-8">
-            <select class="form-select" name="genero" required>
+            <select class="form-select" name="genero" id="genero" required>
               <option selected='true' disabled='disabled'>Seleccionar genero</option>
               <?php
               $result = mysqli_query($conn,"SELECT * FROM  genero");
@@ -308,18 +320,8 @@ include "db_config.php";
         </div>
         
         <div class="form-group row">
-          <label class="col-sm col-form-label">Nacionalidad</label>
-          <div class="col-sm-8">
-            <input placeholder="Nacionalidad" class="form-control" name="nacionalidad">
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label for="telefonoA" class="col-sm col-form-label">Telefono</label>
-          <div class="col-sm-2" id="codigo">
-          </div>
-          <div class="col-sm-6">
-            <input placeholder="Telefono" maxlength="10" class="form-control" name="telefonoA" required>
+          <label for="nacionalidad" class="col-sm col-form-label">Nacionalidad</label>
+          <div class="col-sm-8" id="nacionalidad">
           </div>
         </div>
 
@@ -383,6 +385,14 @@ include "db_config.php";
             <input placeholder="ISSS" maxlength="9" class="form-control" name="isss" id="isss">
           </div>
         </div>
+        <div class="form-group row">
+          <label for="telefonoA" class="col-sm col-form-label">Telefono</label>
+          <div class="col-sm-2" id="codigo">
+          </div>
+          <div class="col-sm-6">
+            <input placeholder="Telefono" maxlength="10" class="form-control" name="telefonoA" required>
+          </div>
+        </div>
       </div>
 
       <script>
@@ -406,6 +416,13 @@ include "db_config.php";
                 $('#isss').val('');
               }
                  
+               });
+
+               $("#genero").on('change', function () {
+                  if($("#genero").val() == 1){
+                    $('#apellidoConyugue').val('Ninguno');}else{
+                      $('#apellidoConyugue').prop('required', 'required')
+                    }
                });
             });
         
@@ -1104,8 +1121,6 @@ const addJsonElement = json => {
     <span class="step"></span>
     <span class="step"></span>
   </div>
-
-  <button type="submit" class="btn btn-default">Guardar</button>
 
 </form>
 
