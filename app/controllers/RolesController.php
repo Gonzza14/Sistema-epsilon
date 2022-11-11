@@ -25,8 +25,9 @@ class RolesController extends Controller
         $rol = new Roles();
 
         $rol->IDROL = $post['id'];
-        $rol->CREADO =  date('d/m/y h:i:s');
-        $rol->ACTUALIZADO =  date('d/m/y h:i:s');
+        date_default_timezone_set('America/El_Salvador');  
+        $rol->CREADO =  date('d/m/y h:i:s', time());
+        $rol->ACTUALIZADO =  date('d/m/y h:i:s', time());
 
         $exito = $rol->save();
 
@@ -73,7 +74,8 @@ class RolesController extends Controller
             ]
         ]);*/
         $idRol = $this->request->getPost("idRol");
-        $tiempo = date('d/m/y h:i:s');
+        date_default_timezone_set('America/El_Salvador');  
+        $tiempo = date('d/m/y h:i:s', time());
         $query = $this->db->prepare("UPDATE `roles` SET `IDROL` = :idRol, `ACTUALIZADO` = :tiempo WHERE `roles`.`IDROL` = :id ");
         $query->bindparam(":idRol", $idRol, PDO::PARAM_STR);
         $query->bindparam(":tiempo", $tiempo, PDO::PARAM_STR);

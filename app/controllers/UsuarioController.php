@@ -39,7 +39,8 @@ class UsuarioController extends Controller
       $usuario->FECHANACIMIENTO = $this->request->getPost("nacimiento");
       $usuario->TELEFONO = $this->request->getPost("telefono");
       $usuario->IDROL = $this->request->getPost("idRol");
-      $usuario->ACTUALIZADO=  date('d/m/y h:i:s');
+      date_default_timezone_set('America/El_Salvador');  
+      $usuario->ACTUALIZADO=  date('d/m/y h:i:s', time());
       $usuario->save();
       if (!$usuario->save()) {
          $this->flashSession->error("El usuario no se pudo actualizar");

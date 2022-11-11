@@ -89,8 +89,9 @@ class IndexController extends Controller
                     $usuario->IDROL = "Solicitante";
                     $usuario->ACTIVO = 0;
                     $usuario->PRIMERSIGNIN = 1;
-                    $usuario->CREADO =  date('d/m/y h:i:s');
-                    $usuario->ACTUALIZADO =  date('d/m/y h:i:s');
+                    date_default_timezone_set('America/El_Salvador');  
+                    $usuario->CREADO =  date('d/m/y h:i:s', time());
+                    $usuario->ACTUALIZADO =  date('d/m/y h:i:s', time());
 
                     $comprobarNombre =  strtoupper(substr($usuario->NOMBREUSUARIO, 0, 1) . substr($usuario->APELLIDOUSUARIO, 0, 1) . "%");
 
