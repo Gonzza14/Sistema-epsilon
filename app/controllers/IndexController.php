@@ -392,7 +392,8 @@ class IndexController extends Controller
         // init configuration
         $clientID = '575040290734-d89nno3gtls5vhcr0bpdm2rvtlv2794e.apps.googleusercontent.com';
         $clientSecret = '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';
-        $redirectUri = 'http://epsilon.local.com/index/signinGoogle';
+        //$redirectUri = 'http://epsilon.local.com/index/signinGoogle';
+        $redirectUri = 'http://epsilonteam.ddns.net/index/signinGoogle';
         
         // create Client Request to access Google API
         $client = new Google_Client();
