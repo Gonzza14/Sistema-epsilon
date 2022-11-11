@@ -5,21 +5,12 @@ include "db_config.php";
 
 <style>
   #carnetComp{
-    border-top-width: 10em;
-    border-right-width: 10em;
-    border-bottom-width: 10em;
-    border-left-width: 10em;
-
-    background-color: white;
-    border-top-color: chartreuse;
-    border-right-color: chartreuse;
-    border-bottom-color: chartreuse;
-    border-left-color: chartreuse;
+    background-color: darkgray;
   }
 </style>
 
 <div class="container">
-  <div id="carnetComp">
+  <div id="carnetComp" class="border border-4 border-primary">
     <div class="row">
       <div class="col-4">
         <img src="../../../public/files/user.jpg" alt="usuario">
@@ -46,29 +37,35 @@ include "db_config.php";
   </div>
 </div>
 
-<div class="col-md-6">
-  <button class="btn col-md-offset-6 btn-success btn-lg btn-block right" id="btnCrearCarnet">Generar carnet</button>
+<br>
+<br>
+<br>
+
+<div class="container">
+  <div class="col-md-6">
+    <button class="btn offset-6 btn-primary btn-lg btn-block right" id="btnCrearCarnet">Generar carnet</button>
+  </div>
+    
+  <form action="{{ url ('carnet/update') }}" class="form-horizontal" method="POST" enctype="application/x-www-form-urlencoded">
+    <div class="form-group">
+      <div class="col-sm-10">
+        <input type="hidden" class="form-control" name="idAsociado" value="{{idAsociado}}" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-10">
+        <input type="hidden" class="form-control" name="carnet" id="carnet" value="{{ carnet }}" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-md-6">
+        <button type="submit" class="btn btn-success offset-6 btn-lg btn-block right" name="action">Guardar carnet</button>
+      </div>
+    </div>
+  </form>
 </div>
-  
-<form action="{{ url ('carnet/update') }}" class="form-horizontal" method="POST" enctype="application/x-www-form-urlencoded">
-  <div class="form-group">
-    <div class="col-sm-10">
-      <input type="hidden" class="form-control" name="idAsociado" value="{{idAsociado}}" required>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-10">
-      <input type="hidden" class="form-control" name="carnet" id="carnet" value="{{ carnet }}" required>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-primary" name="action">Crear carnet</button>
-    </div>
-  </div>
-</form>
 
 
 
@@ -84,7 +81,7 @@ include "db_config.php";
         margin: 0.2,
         filename: $carnet + '.pdf',
         image: {
-          type: 'jpg',
+          type: 'jpeg',
           quality: 0.98,
         },
         html2canvas: {
