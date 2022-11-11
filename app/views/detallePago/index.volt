@@ -113,7 +113,7 @@ require ('db_config.php');
         <button class="btn col-md-offset-6 btn-success btn-lg btn-block right" id="btnCrearPdf">Generar factura</button>
       </div>
       <div class="col-md-6">
-        <a class="btn btn-success btn-lg btn-block "  href="../pago/">Finalizar</a>
+        <a class="btn btn-success btn-lg btn-block "  href="{{ url('../pago') }}">Finalizar</a>
       </div>
     </div>
 

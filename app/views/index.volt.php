@@ -255,12 +255,15 @@
               <li class="nav-header">INICIACION DE ASOCIADO</li>
 
               <li class="nav-item">
+<<<<<<< HEAD
                 <a href="<?= $this->url->get('../detallePago') ?>" class="nav-link">
                   <i class="nav-icon fas fa-money-bill-wave"></i>
                   <p>Recibo de pago</p>
                 </a>
               </li>
               <li class="nav-item">
+=======
+>>>>>>> origin/RamaA
                 <a href="<?= $this->url->get('../carnet') ?>" class="nav-link">
                   <i class="nav-icon fas fa-id-card"></i>
                   <p>Generar carnet</p>
@@ -271,7 +274,7 @@
 
               <li class="nav-item">
                 <a href="<?= $this->url->get('../concepto') ?>" class="nav-link">
-                  <i class="nav-icon fas fa-coins"></i>
+                  <i class="nav-icon fas fa-money-bill-wave"></i>
                   <p>Configurar monto a pagar</p>
                 </a>
               </li>

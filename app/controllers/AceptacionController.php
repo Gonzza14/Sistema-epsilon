@@ -14,12 +14,22 @@ class AceptacionController extends Controller
     public function createAction(){
 
     }
+    public function showAction($id){
+        $asociado = Asociado::findFirst($id);
+        $this->view->idAsociado=$asociado->idAsociado;
+        $this->view->nombreAsociado=$asociado->nombreAsociado;
+        $this->view->apellido=$asociado->apellido;
+        $this->view->telefono=$asociado->telefono;
+    }
 
     public function storeAction(){
 		$usuario= new Usuarios();
 		$usuario->nombre = $this->request->getPost("nombre");
 		$usuario->correo = $this->request->getPost("correo");
+        
+
     }
+
 
     public function editAction($id)
    	{
@@ -119,6 +129,7 @@ class AceptacionController extends Controller
 
     public function update2Action()
    	{
+        $id=$this->request->getPost("idAsociado");
         $asociado = Asociado::findFirstByIdAsociado($this->request->getPost("idAsociado"));
         $asociado->idAsociado = $this->request->getPost("idAsociado");
         $asociado->estado = 2;
@@ -139,8 +150,8 @@ class AceptacionController extends Controller
             La solicitud se acepto con exito
             </div>
             <div>
-            <a href="../aceptacion">
-            <input class="btn btn-primary"  value="Regresar"type="button">
+            <a href="../aceptacion/show/' .$id .'">
+            <input class="btn btn-primary"  value="Siguiente"type="button">
             </a>
             </div>';
         }
