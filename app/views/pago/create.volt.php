@@ -29,7 +29,7 @@
                       Guardar monto a pagar
                     </span>
                 </i>
-                Guardar monto a pagar
+                Guardar nuevo pago
                 </button>
             </span>
       </div>

@@ -53,7 +53,7 @@ include "db_config.php";
       <button class="btn col-md-offset-6 btn-primary btn-lg btn-block right" id="btnCrearPdf">Generar Comprobante</button>
     </div>
     <div class="col-md-6">
-      <a class="btn btn-success btn-lg btn-block "  href="../../aceptacion/">Finalizar</a>
+      <a class="btn btn-success btn-lg btn-block "  href="{{ url('../aceptacion') }}">Finalizar</a>
     </div>
   </div>
 </div>
