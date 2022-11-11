@@ -36,9 +36,9 @@ class SecurityPlugin extends Injectable
             $role = $auth['rol'];
         }
 
-        $controller = strtolower($dispatcher->getControllerName()); // Controller Name
-        $action = strtolower($dispatcher->getActionName()); // Controller Method Name
-
+        //$controller = strtolower($dispatcher->getControllerName());
+        $controller = $dispatcher->getControllerName(); 
+        $action = strtolower($dispatcher->getActionName()); 
         $acl = $this->getAcl();
 
         if (!$acl->isComponent($controller)) {
