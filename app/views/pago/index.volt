@@ -32,7 +32,7 @@ include "db_config.php";
                 <td><?php echo $row['idAsociado']; ?></td>
                 <td><?php echo $row['nombre']; ?></td>
                 <td><?php echo $row['fechaPago']; ?></td>
-                <td> <a href="detallePago/edit/<?php echo $row['idPago']; ?>"><i class="fa fa-edit"></i></a></td>
+                <td> <a href="../detallePago/edit/<?php echo $row['idPago']; ?>"><i class="fa fa-edit"></i></a></td>
                 </tr>
               <?php
               }

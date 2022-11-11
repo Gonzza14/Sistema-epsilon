@@ -173,7 +173,7 @@ $container->set(
     }
 );
 
-$container->set('dispatcher', function () use ($container) {
+/*$container->set('dispatcher', function () use ($container) {
     $eventsManager = new EventsManager;
     // Check if the user is allowed to access certain action using the SecurityPlugin
     $eventsManager->attach('dispatch:beforeDispatch', new SecurityPlugin);
@@ -183,6 +183,7 @@ $container->set('dispatcher', function () use ($container) {
     $dispatcher->setEventsManager($eventsManager);
     return $dispatcher;
 });
+*/
 
 $application = new Application($container);
 
