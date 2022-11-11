@@ -401,13 +401,13 @@ class IndexController extends Controller
         $client->setRedirectUri($redirectUri);
         $client->addScope("email");
         $client->addScope("profile");
-
+        
         // authenticate code from Google OAuth Flow
         if (isset($_GET['code'])) {
-
+            echo $_GET['code'];
             $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+            print_r($token);
             $client->setAccessToken($token['access_token']);
-            
 
             // get profile info
             $google_oauth = new Google_Service_Oauth2($client);
@@ -415,6 +415,7 @@ class IndexController extends Controller
             $email =  $google_account_info->email;
             $name =  $google_account_info->name;
 
+            print_r($google_account_info);
         // now you can use this profile info to create account in your website and make user logged in.
         } else {
             $this->response->redirect($client->createAuthUrl());

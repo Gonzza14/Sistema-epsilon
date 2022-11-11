@@ -126,7 +126,7 @@ body {
       </label>
     </div>-->
     <button class="btn-ingresar w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
-    <a class="btn-ingresar w-100 btn btn-lg btn-light" href="<?= $this->url->get('../index/signinGoogle') ?>">Continuar con Google</a>
+    <a class="btn-ingresar w-100 btn btn-lg btn-light" href="<?= $this->url->get('../index/signinGoogle') ?>"><i class="bi bi-arrow-repeat"></i> Continuar con Google</a>
 
     <!--<a class="nav-link text" href="<?= $this->url->get('../index/signup') ?>" class="nav-link">Registrarse</a>-->
     <a class="nav-link text" href="<?= $this->url->get('../index/recuperar') ?>" class="nav-link">¿Olvido su nombre de usuario o contraseña?</a>
