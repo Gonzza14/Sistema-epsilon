@@ -218,7 +218,7 @@ include "db_config.php";
   <label class="control-label col-sm-2" for="data_asoc">Asociaciones</label><br>
   <div class="row">
   <?php
-    $sql = "SELECT nombreAsociacion FROM asociaciones a INNER JOIN detalle_asociacion b ON a.idAsociacion = b.idAsociacion WHERE b.idAsociado = ". $idAsociado;
+    $sql = "SELECT nombreAsociacion FROM asociaciones a INNER JOIN pertenece5 b ON a.idAsociacion = b.idAsociacion WHERE b.idAsociado = ". $idAsociado;
     $result = mysqli_query($conn, $sql);
     while($row =mysqli_fetch_array($result)){
     ?>
