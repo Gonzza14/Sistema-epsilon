@@ -390,7 +390,7 @@ include "db_config.php";
           <div class="col-sm-2" id="codigo">
           </div>
           <div class="col-sm-6">
-            <input placeholder="Telefono" maxlength="10" class="form-control" name="telefonoA" required>
+            <input placeholder="Telefono" type="tel"  maxlength="100" class="form-control" name="telefonoA" required>
           </div>
         </div>
       </div>
@@ -811,7 +811,7 @@ $(document).ready(function(){
         <div class="form-group row">
           <label class="col-sm col-form-label">Telefono</label>
           <div class="col-sm-8">
-            <input placeholder="Telefono Referencia"  class="form-control"  name="telefonoRef" required>
+            <input placeholder="Telefono Referencia"  type="tel"  maxlength="100" class="form-control"  name="telefonoRef" required>
           </div>
         </div>
         <div class="form-group row">
@@ -844,7 +844,7 @@ $(document).ready(function(){
         <div class="form-group row">
           <label class="col-sm col-form-label">Telefono</label>
           <div class="col-sm-8">
-            <input placeholder="Telefono Referencia"  class="form-control"  name="telefonoRef1" required>
+            <input placeholder="Telefono Referencia"  type="tel"  maxlength="100" class="form-control"  name="telefonoRef1" required>
           </div>
         </div>
         <div class="form-group row">
@@ -885,7 +885,7 @@ $(document).ready(function(){
          <div class="form-group row">
            <label class="col-sm col-form-label">Telefono</label>
            <div class="col-sm-8">
-             <input placeholder="Telefono"  class="form-control"  name="telefonoFa" required>
+             <input placeholder="Telefono" type="tel"  maxlength="100" class="form-control"  name="telefonoFa" required>
            </div>
          </div>
          <div class="form-group row">
@@ -918,7 +918,7 @@ $(document).ready(function(){
          <div class="form-group row">
            <label class="col-sm col-form-label">Telefono</label>
            <div class="col-sm-8">
-             <input placeholder="Telefono"  class="form-control"  name="telefonoFa1" required>
+             <input placeholder="Telefono"  type="tel"  maxlength="100" class="form-control"  name="telefonoFa1" required>
            </div>
          </div>
          <div class="form-group row">
