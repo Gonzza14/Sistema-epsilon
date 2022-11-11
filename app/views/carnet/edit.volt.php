@@ -2,6 +2,20 @@
 include "db_config.php";
 ?>     
 
+  <label class="control-label col-sm-2" for="listaDeDispositivos">Selecciona un dispositivo de camara</label>
+  <select name="listaDeDispositivos" id="listaDeDispositivos"></select>
+  <button id="boton">Tomar foto</button>
+  <p id="estado"></p>
+
+  <video muted="muted" id="video"></video>
+  <canvas id="canvas" style="display: none;"></canvas>
+  
+
+
+
+<br>
+<h4>Carnet a crear: <?= $carnet ?></h4>
+
 <form action="<?= $this->url->get('carnet/update') ?>" class="form-horizontal" method="POST" enctype="application/x-www-form-urlencoded">
   <div class="form-group">
     <div class="col-sm-10">
@@ -9,22 +23,6 @@ include "db_config.php";
     </div>
   </div>
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="listaDeDispositivos">Selecciona un dispositivo de camara</label>
-    <div class="col-sm-10">
-      <select name="listaDeDispositivos" id="listaDeDispositivos"></select>
-		  <button id="boton">Tomar foto</button>
-		  <p id="estado"></p>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-10">
-      <video muted="muted" id="video"></video>
-      <canvas id="canvas" style="display: none;"></canvas>
-    </div>
-  </div>
-  
   <div class="form-group">
     <div class="col-sm-10">
       <input type="hidden" class="form-control" name="carnet" value="<?= $carnet ?>" required>
@@ -37,11 +35,6 @@ include "db_config.php";
     </div>
   </div>
 </form>
-
-
-<br>
-<h1><?= $carnet ?></h1>
-<br>
 
 
 
@@ -174,7 +167,7 @@ include "db_config.php";
 
           let foto = $canvas.toDataURL(); //Esta es la foto, en base 64
           $estado.innerHTML = "Enviando foto. Por favor, espera...";
-          fetch("./carnet.php", {
+          fetch("./../../controllers/carnet.php", {
             method: "POST",
             body: encodeURIComponent(foto),
             headers: {

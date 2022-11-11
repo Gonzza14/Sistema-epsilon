@@ -13,7 +13,7 @@
       <th>ID</th>
       <th>Nombre</th>
       <th>Apellido</th>
-      <th>Fecha de solicitud</th>
+      <th>Fecha de aprobacion</th>
       <th>Opciones</th>
     </tr>
   </thead>
@@ -23,7 +23,7 @@
       <td><?= $v->idAsociado ?></td>
       <td><?= $v->nombreAsociado ?></td>
       <td><?= $v->apellido ?></td>
-      <td><?= $v->fechaSolicitud ?></td>
+      <td><?= $v->fechaAprobacion ?></td>
       <td>
         <a href="carnet/edit/<?= $v->idAsociado ?>"><i class="fa fa-eye"></i></a>
       </td>

@@ -11,36 +11,6 @@ class CarnetController extends Controller
     	$this->view->data_solicitudes=$data_solicitudes;
     }
 
-    public function createAction(){
-
-    }
-
-    public function storeAction(){
-		$usuario= new Usuarios();
-		$usuario->nombre = $this->request->getPost("nombre");
-		$usuario->correo = $this->request->getPost("correo");
-		if (!$usuario->save()) {
-         echo '<div class="alert alert-danger" role="alert">
-               Error, vuelva a intentarlo
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';		}
-		   else
-		{
-         echo '<div class="alert alert-success" role="alert">
-               El registro se guardo con exito
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';
-		}
-    }
-
     public function editAction($id)
    	{
    		$asociado = Asociado::findFirst($id);
@@ -123,7 +93,7 @@ class CarnetController extends Controller
         $asociado = Asociado::findFirstByIdAsociado($this->request->getPost("idAsociado"));
         $asociado->idAsociado = $this->request->getPost("idAsociado");
         $asociado->carnet = $this->request->getPost("carnet");
-        $asociado->estado = 4;
+        //$asociado->estado = 4;
         $asociado->save();
 
 
@@ -147,10 +117,12 @@ class CarnetController extends Controller
         
         if($result){
             $asociado->foto = $fileTarget;
+        }else{
+            exit("No se guardo la foto");
         }
 
         //Terminar y regresar el nombre de la foto
-        exit($nombreImagenGuardada);
+        //exit($nombreImagenGuardada);
 
         $asociado->save();
 
@@ -207,44 +179,16 @@ class CarnetController extends Controller
             Error, vuelva a intentarlo
             </div>
             <div>
-            <a href="../revision">
+            <a href="../carnet">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';
         } else{
             echo '<div class="alert alert-success" role="alert">
-            La solicitud fue denegada
+            El carnet fue creado con exito
             </div>
             <div>
-            <a href="../revision">
-            <input class="btn btn-primary"  value="Regresar"type="button">
-            </a>
-            </div>';
-        }
-    }
-
-    public function update2Action()
-   	{
-        $asociado = Asociado::findFirstByIdAsociado($this->request->getPost("idAsociado"));
-        $asociado->idAsociado = $this->request->getPost("idAsociado");
-        $asociado->estado = 2;
-        $asociado->save();
-
-        if (!$asociado->save()) {
-            echo '<div class="alert alert-danger" role="alert">
-            Error, vuelva a intentarlo
-            </div>
-            <div>
-            <a href="../revision">
-            <input class="btn btn-primary"  value="Regresar"type="button">
-            </a>
-            </div>';
-        } else{
-            echo '<div class="alert alert-success" role="alert">
-            La solicitud se reviso con exito
-            </div>
-            <div>
-            <a href="../revision">
+            <a href="../carnet">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';

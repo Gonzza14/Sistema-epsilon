@@ -13,7 +13,7 @@
       <th>ID</th>
       <th>Nombre</th>
       <th>Apellido</th>
-      <th>Fecha de solicitud</th>
+      <th>Fecha de aprobacion</th>
       <th>Opciones</th>
     </tr>
   </thead>
@@ -23,7 +23,7 @@
       <td>{{v.idAsociado}}</td>
       <td>{{v.nombreAsociado}}</td>
       <td>{{v.apellido}}</td>
-      <td>{{v.fechaSolicitud}}</td>
+      <td>{{v.fechaAprobacion}}</td>
       <td>
         <a href="carnet/edit/{{v.idAsociado}}"><i class="fa fa-eye"></i></a>
       </td>
@@ -55,16 +55,6 @@
 
 <div class="card-footer small text-muted"></div>
 </div>
-
-<script>
-  $('#deleteModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget) 
-    var categoria_id = button.data('categoriaid')     
-    var modal = $(this)
-    // modal.find('.modal-footer #user_id').val(user_id)
-    modal.find('form').attr('action','/categoria/' + categoria_id + '/destroy');
-  })
-</script>
 
 <script>
   $(function () {
