@@ -24,8 +24,6 @@ class ConceptoController extends Controller
 		$concepto= new Concepto();
 	    $concepto->concepto = $this->request->getPost("concepto");
 		 $concepto->monto = $this->request->getPost("monto");
-   //   $concepto->concepto = "prueba";
-     // $concepto->monto = 14.58;
 		if (!$concepto->save()) 
       {
          echo '<div class="alert alert-danger" role="alert">

@@ -279,6 +279,13 @@
               <li class="nav-header">CAJERO</li>
 
               <li class="nav-item">
+                <a href="{{ url('../concepto') }}" class="nav-link">
+                  <i class="nav-icon fas fa-coins"></i>
+                  <p>Configurar monto a pagar</p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
                 <a href="{{ url('../pago') }}" class="nav-link">
                   <i class="nav-icon fas fa-coins"></i>
                   <p>Recibir de pago</p>
