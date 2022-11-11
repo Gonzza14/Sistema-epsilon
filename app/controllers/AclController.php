@@ -55,18 +55,10 @@ class AclController extends Controller
         $this->view->setVar('page', $page);
     }
 
-    /**
-     * Displays the creation form
-     */
     public function newAction()
     {
     }
 
-    /**
-     * Edits a dbaccesscontrollist
-     *
-     * @param string $role
-     */
     public function editAction($IDROL)
     {
         if (!$this->request->isPost()) {
@@ -128,11 +120,6 @@ class AclController extends Controller
             'action' => 'index'
         ]);
     }
-
-    /**
-     * Saves a dbaccesscontrollist edited
-     *
-     */
     public function saveAction()
     {
 
@@ -187,11 +174,6 @@ class AclController extends Controller
         ]);
     }
 
-    /**
-     * Deletes a dbaccesscontrollist
-     *
-     * @param string $role
-     */
     public function deleteAction($IDROL)
     {
         $acl = Acl::findFirstByIDROL($IDROL);
@@ -228,18 +210,8 @@ class AclController extends Controller
         ]);
     }
 
-
-    /**
-     * Set Access Control List in the Database
-     * @param {string} $resource {Controller Name}
-     */
     public function setAccessControlAction($componente)
     {
-        /**
-         * Insert Controller and Controller Functions in the Database Table {dbresource, dbaction}
-         * @dbresource => Insert Controller Name
-         * @dbaction => Insert Controller Functions
-         */
 
         $accionCurrentItems = Accion::findByComponente($componente);
         foreach ($accionCurrentItems as $accionCurrentItem) {
@@ -249,31 +221,22 @@ class AclController extends Controller
         if (isset($output['status']) && $output['status'] === false) {
             echo $output['error'];
 
-            // Disable View File Content
             $this->view->disable();
         }
         
-
-        // Passing controller name to view file
         $this->view->componente = $componente;
-        // Fetch All User Roles in the Database Table {dbrole}
         $this->view->roles = Roles::find();
-        // Fetch {$resource} Controller Function Names in the Database Table {dbaction}
         $this->view->acciones = Accion::findByComponente($componente);
-        // Fetch {$resource} Controller Access List in the Database Table {dbaccesscontrollist}
         $this->view->aclItems = Acl::findByComponente($componente);
     }
 
-    /**
-     * [Private]: Don't Open in Browser URL
-     */
+
     protected function populateAclAction($componente)
     {
-        $dir = "../app/controllers/"; # OUTPUT: ../app/controllers/
-        $className = (ucfirst($componente . "Controller")); # OUTPUT: {$resource}Controller, ex- UserController
-        $controllerFile = $dir . $className . ".php"; # OUTPUT: ../app/controllers/UserController.php
+        $dir = "../app/controllers/"; 
+        $className = (ucfirst($componente . "Controller"));
+        $controllerFile = $dir . $className . ".php"; 
 
-        // trying to include a file with the same name as the current script causes a conflict
         if (strcmp($componente, "acl") != 0) {
             if ((@include $controllerFile) === false) {
                 $this->flashSession->error("No existe archivo Componente/Controller");
@@ -284,16 +247,13 @@ class AclController extends Controller
             }
         }
 
-        $thisClass = new $className(); // Create a {$resource} Controller Object
-        $funcs = get_class_methods($thisClass); // Get {$resource} Class Methods
-        unset($thisClass); // Remove Variable
+        $thisClass = new $className(); 
+        $funcs = get_class_methods($thisClass); 
+        unset($thisClass); 
+        $componentesModel = new Componentes(); 
+        $componentesModel->componente = $componente; 
 
-        $componentesModel = new Componentes(); // Create a {Dbresource} Model Object
-        $componentesModel->componente = $componente; // Set {$resource} Controller Name in the Resource Database table field Name
-
-        // Insert {$resource} Controller Name in the Database
         if (!$componentesModel->save()) {
-            // Validation OR Database Errors
             foreach ($componentesModel->getMessages() as $message) {
                 $this->flashSession->error($message);
                 $this->view->disable();
@@ -301,18 +261,13 @@ class AclController extends Controller
             }
             return;
         }
-
-        // Create an action in the database for each of the functions of the controller                    
+              
         foreach ($funcs as $func) {
             if (strpos($func, "Action")) {
-                // Create a {Dbaction} Model Object
-
                 $accion = new Accion();
                 $accion->componente = $componente;
                 $accion->accion = substr($func, 0, -6);
-                // Insert Data in Database 
                 if (!$accion->save()) {
-                    // Validation OR Database Errors
                     foreach ($accion->getMessages() as $message) {
                         $this->flashSession->error($message);
                         $this->view->disable();
@@ -323,17 +278,12 @@ class AclController extends Controller
             }
         }
     }
-
-    /**
-     * Save Access Control List in the Database
-     */
     public function saveAccessControlAction()
     {
         if ($this->request->isPost()) {
 
             $componente = $this->request->getPost('componente');
 
-            // Delete all pre-existing access control settings for this resource
             $aclCurrentItems = Acl::findByComponente($componente);
             foreach ($aclCurrentItems as $aclCurrentItem) {
                 $aclCurrentItem->delete();
@@ -353,8 +303,6 @@ class AclController extends Controller
                     }
                 }
             }
-
-           
             $this->flashSession->notice($msg);
             $this->view->disable();
             $this->response->redirect('acl');

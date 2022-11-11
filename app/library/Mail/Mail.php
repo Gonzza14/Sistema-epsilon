@@ -29,20 +29,9 @@ class Mail extends Injectable
         if (!empty($render)) {
             return $render;
         }
-
-        // When use template for cli
         return $this->view->getContent();
     }
 
-    /**
-     * Sent Mail
-     * 
-     * @param $to : email to send
-     * @param $temlateKey
-     * @param array $params
-     * 
-     * @return int
-     */
     public function send($to, $temlateKey, $params = [])
     {
         $body = $this->getTemplate($temlateKey, $params);
@@ -55,9 +44,6 @@ class Mail extends Injectable
         } else {
             $subject = $params['subject'];
         }
-
-        //$mail = $this->config->mail;
-        // Create the message
         $message = new SwiftMessage($subject);
         $message
             ->setTo([$to])

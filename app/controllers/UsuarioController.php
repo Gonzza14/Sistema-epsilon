@@ -60,7 +60,7 @@ class UsuarioController extends Controller
 
       if ($id > 0 AND !empty($id))
       {
-          // Check Agin User Article is Valid
+    
           $usuario = Usuarios::findFirst([
               'conditions' => 'IDUSUARIO = :1: AND IDUSUARIO != :2:',
               'bind' => [

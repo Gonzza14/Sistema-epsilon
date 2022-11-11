@@ -11,7 +11,6 @@ class RolesController extends Controller
     {
         $this->view->roles = security\Roles::find();
     }
-
     public function createAction()
     {
     }
