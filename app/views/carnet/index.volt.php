@@ -57,16 +57,6 @@
 </div>
 
 <script>
-  $('#deleteModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget) 
-    var categoria_id = button.data('categoriaid')     
-    var modal = $(this)
-    // modal.find('.modal-footer #user_id').val(user_id)
-    modal.find('form').attr('action','/categoria/' + categoria_id + '/destroy');
-  })
-</script>
-
-<script>
   $(function () {
     $("#dataTable").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
