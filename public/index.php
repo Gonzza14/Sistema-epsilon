@@ -166,7 +166,7 @@ $container->set(
             [
                 'host'     => 'localhost',
                 'username' => 'root',
-                'password' => 'S1stemaEpsilon',
+                'password' => '',
                 'dbname'   => 'epsilon',
             ]
         );
