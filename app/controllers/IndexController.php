@@ -387,4 +387,40 @@ class IndexController extends Controller
             }
         }
     }
+
+    public function signinGoogleAction(){
+        
+        // init configuration
+        $clientID = '575040290734-d89nno3gtls5vhcr0bpdm2rvtlv2794e.apps.googleusercontent.com';
+        $clientSecret = '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';
+        //$redirectUri = 'http://epsilon.local.com/index/signinGoogle';
+        $redirectUri = 'http://epsilonteam.ddns.net/index/signinGoogle';
+        
+        // create Client Request to access Google API
+        $client = new Google_Client();
+        $client->setClientId($clientID);
+        $client->setClientSecret($clientSecret);
+        $client->setRedirectUri($redirectUri);
+        $client->addScope("email");
+        $client->addScope("profile");
+        
+        // authenticate code from Google OAuth Flow
+        if (isset($_GET['code'])) {
+            echo $_GET['code'];
+            $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+            print_r($token);
+            $client->setAccessToken($token['access_token']);
+
+            // get profile info
+            $google_oauth = new Google_Service_Oauth2($client);
+            $google_account_info = $google_oauth->userinfo->get();
+            $email =  $google_account_info->email;
+            $name =  $google_account_info->name;
+
+            print_r($google_account_info);
+        // now you can use this profile info to create account in your website and make user logged in.
+        } else {
+            $this->response->redirect($client->createAuthUrl());
+        }
+    }
 }
