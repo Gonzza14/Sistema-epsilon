@@ -9,7 +9,7 @@
     </div>
 </div>
 </br>
-<table class="table table-dark table-hover " id="">
+<table class="table table-dark table-hover " id="dataTableRecursos">
     <thead>
       <tr>
         <th>Nombre del recurso</th>

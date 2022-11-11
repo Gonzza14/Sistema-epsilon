@@ -18,7 +18,7 @@
 </style>
 <input type="hidden" name="componente" value="<?= $componente ?>">
 <div class="row">
-    <table class="table table-dark table-hover" id="dataTableAcl">
+    <table class="table table-dark table-hover" id="">
         <thead>
             <tr>
                 <th>Metodos</th>
