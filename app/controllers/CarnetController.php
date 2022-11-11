@@ -122,9 +122,9 @@ class CarnetController extends Controller
    	{
         $asociado = Asociado::findFirstByIdAsociado($this->request->getPost("idAsociado"));
         $asociado->idAsociado = $this->request->getPost("idAsociado");
-        $asociado->estado = 3;
-
-
+        $asociado->carnet = $this->request->getPost("carnet");
+        $asociado->estado = 4;
+        $asociado->save();
 
 
         $imagenCodificada = file_get_contents("php://input"); //Obtener la imagen
@@ -137,25 +137,69 @@ class CarnetController extends Controller
         $imagenDecodificada = base64_decode($imagenCodificadaLimpia);
             
         //Calcular un nombre único
-        $nombreImagenGuardada = "foto_" . uniqid() . ".png";
+        $nombreImagenGuardada = $this->request->getPost("carnet"). ".png";
+        $target = "files/";
+        $fileTarget = $target.$nombreImagenGuardada;
             
         //Escribir el archivo
-        file_put_contents($nombreImagenGuardada, $imagenDecodificada);
-            
+        $archivo = file_put_contents($nombreImagenGuardada, $imagenDecodificada);
+        $result = move_uploaded_file($archivo,$fileTarget);
+        
+        if($result){
+            $asociado->foto = $fileTarget;
+        }
+
         //Terminar y regresar el nombre de la foto
         exit($nombreImagenGuardada);
-
-
-
-
-
 
         $asociado->save();
 
 
+       /* $fileExistsFlag = 0; 
+        $nombre = $_FILES['Filename']['name'];
+        $usuario = $_POST['usuario'];
+        $link = mysqli_connect("localhost","root","","epsilon") or die("Error ".mysqli_error($link));
+         
+        	//Checking whether the file already exists in the destination folder 
+        
+        $query = "SELECT nombre FROM documentos_anexos WHERE nombre='$nombre'";	
+        $result = $link->query($query) or die("Error : ".mysqli_error($link));
+        while($row = mysqli_fetch_array($result)) {
+            if($row['nombre'] == $nombre) {
+                $fileExistsFlag = 1;
+            }		
+        }
+        
+         	//If file is not present in the destination folder
+        
+        if($fileExistsFlag == 0) { 
+            $target = "files/";		
+            $fileTarget = $target.$nombre;	
+            $tempFileName = $_FILES["Filename"]["tmp_name"];
+            $fileDescription = $_POST['Description'];	
+            $result = move_uploaded_file($tempFileName,$fileTarget);
+            
+            	//If file was successfully uploaded in the destination folder
+            
+            if($result) {
+                $query = "INSERT INTO documentos_anexos(idDocAnexo,idAsociado,nombre,descripcion,ruta) VALUES ('NULL','$usuario','$nombre','$fileDescription','$fileTarget')";
+                $link->query($query) or die("Error : ".mysqli_error($link));
+                        header("Location: /asociado/confirma");
+                
+            }
+            else {			
+                header("Location: /asociado/error");
+            }
+            mysqli_close($link);
+        }
+        
+        	//If file is already present in the destination folder
+        
+        else {
 
-
-
+            header("Location: /asociado/error");
+            mysqli_close($link);
+        }*/
 
 
         if (!$asociado->save()) {

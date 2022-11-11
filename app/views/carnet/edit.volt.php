@@ -2,7 +2,7 @@
 include "db_config.php";
 ?>     
 
-<form action="<?= $this->url->get('carnet/update') ?>" class="form-horizontal" method="POST" enctype="multipart/form-data">
+<form action="<?= $this->url->get('carnet/update') ?>" class="form-horizontal" method="POST" enctype="application/x-www-form-urlencoded">
   <div class="form-group">
     <div class="col-sm-10">
       <input type="hidden" class="form-control" name="idAsociado" value="<?= $idAsociado ?>" required>
@@ -174,7 +174,7 @@ include "db_config.php";
 
           let foto = $canvas.toDataURL(); //Esta es la foto, en base 64
           $estado.innerHTML = "Enviando foto. Por favor, espera...";
-          fetch("./guardar_foto.php", {
+          fetch("./carnet.php", {
             method: "POST",
             body: encodeURIComponent(foto),
             headers: {

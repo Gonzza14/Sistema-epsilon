@@ -19,26 +19,6 @@ class RevisionController extends Controller
 		$usuario= new Usuarios();
 		$usuario->nombre = $this->request->getPost("nombre");
 		$usuario->correo = $this->request->getPost("correo");
-		if (!$usuario->save()) {
-         echo '<div class="alert alert-danger" role="alert">
-               Error, vuelva a intentarlo
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';		}
-		   else
-		{
-         echo '<div class="alert alert-success" role="alert">
-               El registro se guardo con exito
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';
-		}
     }
 
     public function editAction($id)

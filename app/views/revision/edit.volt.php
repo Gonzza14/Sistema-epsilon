@@ -348,7 +348,7 @@ include "db_config.php";
 
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default" name="action">Dar por revisado</button>
+      <button type="submit" class="btn btn-primary" name="action">Dar por revisado</button>
     </div>
   </div>
 </form>

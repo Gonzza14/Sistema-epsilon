@@ -19,26 +19,6 @@ class AceptacionController extends Controller
 		$usuario= new Usuarios();
 		$usuario->nombre = $this->request->getPost("nombre");
 		$usuario->correo = $this->request->getPost("correo");
-		if (!$usuario->save()) {
-         echo '<div class="alert alert-danger" role="alert">
-               Error, vuelva a intentarlo
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';		}
-		   else
-		{
-         echo '<div class="alert alert-success" role="alert">
-               El registro se guardo con exito
-               </div>
-               <div>
-               <a href="../usuario">
-               <input class="btn btn-primary"  value="Regresar"type="button">
-               </a>
-               </div>';
-		}
     }
 
     public function editAction($id)
@@ -121,7 +101,7 @@ class AceptacionController extends Controller
             Error, vuelva a intentarlo
             </div>
             <div>
-            <a href="../revision">
+            <a href="../aceptacion">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';
@@ -130,7 +110,7 @@ class AceptacionController extends Controller
             La solicitud fue denegada
             </div>
             <div>
-            <a href="../revision">
+            <a href="../aceptacion">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';
@@ -142,6 +122,7 @@ class AceptacionController extends Controller
         $asociado = Asociado::findFirstByIdAsociado($this->request->getPost("idAsociado"));
         $asociado->idAsociado = $this->request->getPost("idAsociado");
         $asociado->estado = 2;
+        $asociado->fechaAprobacion = date('Y-m-d');
         $asociado->save();
 
         if (!$asociado->save()) {
@@ -149,16 +130,16 @@ class AceptacionController extends Controller
             Error, vuelva a intentarlo
             </div>
             <div>
-            <a href="../revision">
+            <a href="../aceptacion">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';
         } else{
             echo '<div class="alert alert-success" role="alert">
-            La solicitud se reviso con exito
+            La solicitud se acepto con exito
             </div>
             <div>
-            <a href="../revision">
+            <a href="../aceptacion">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';
