@@ -173,16 +173,16 @@ $container->set(
     }
 );
 
-// $container->set('dispatcher', function () use ($container) {
-//     $eventsManager = new EventsManager;
-//     // Check if the user is allowed to access certain action using the SecurityPlugin
-//     $eventsManager->attach('dispatch:beforeDispatch', new SecurityPlugin);
-//     // Handle exceptions and not-found exceptions using NotFoundPlugin
-//     // $eventsManager->attach('dispatch:beforeException', new NotFoundPlugin);
-//     $dispatcher = new Dispatcher();
-//     $dispatcher->setEventsManager($eventsManager);
-//     return $dispatcher;
-// });
+$container->set('dispatcher', function () use ($container) {
+    $eventsManager = new EventsManager;
+    // Check if the user is allowed to access certain action using the SecurityPlugin
+    $eventsManager->attach('dispatch:beforeDispatch', new SecurityPlugin);
+    // Handle exceptions and not-found exceptions using NotFoundPlugin
+    // $eventsManager->attach('dispatch:beforeException', new NotFoundPlugin);
+    $dispatcher = new Dispatcher();
+    $dispatcher->setEventsManager($eventsManager);
+    return $dispatcher;
+});
 
 $application = new Application($container);
 
