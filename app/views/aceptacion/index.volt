@@ -1,7 +1,7 @@
 <div class="row">
   <div class="row py-lg-2">
     <div class="col-md-6">
-      <h2>Lista de solicitudes pendientes de revision</h2>
+      <h2>Lista de solicitudes pendientes de autorizacion</h2>
     </div>
   </div>
 </div>
@@ -25,7 +25,7 @@
       <td>{{v.apellido}}</td>
       <td>{{v.fechaSolicitud}}</td>
       <td>
-        <a href="revision/edit/{{v.idAsociado}}"><i class="fa fa-eye"></i></a>
+        <a href="aceptacion/edit/{{v.idAsociado}}"><i class="fa fa-eye"></i></a>
       </td>
     </tr>
   {% endfor %}

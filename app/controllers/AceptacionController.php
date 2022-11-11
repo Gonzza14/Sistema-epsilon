@@ -3,11 +3,11 @@
 use Phalcon\Mvc\Controller;
 use Phalcon\Http\Request;
 
-class RevisionController extends Controller
+class AceptacionController extends Controller
 {
     public function indexAction()
     {
-    	$data_solicitudes = Asociado::find('estado = 0');
+    	$data_solicitudes = Asociado::find('estado = 1');
     	$this->view->data_solicitudes=$data_solicitudes;
     }
 
@@ -101,7 +101,7 @@ class RevisionController extends Controller
             Error, vuelva a intentarlo
             </div>
             <div>
-            <a href="../revision">
+            <a href="../aceptacion">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';
@@ -110,7 +110,7 @@ class RevisionController extends Controller
             La solicitud fue denegada
             </div>
             <div>
-            <a href="../revision">
+            <a href="../aceptacion">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';
@@ -121,7 +121,8 @@ class RevisionController extends Controller
    	{
         $asociado = Asociado::findFirstByIdAsociado($this->request->getPost("idAsociado"));
         $asociado->idAsociado = $this->request->getPost("idAsociado");
-        $asociado->estado = 1;
+        $asociado->estado = 2;
+        $asociado->fechaAprobacion = date('Y-m-d');
         $asociado->save();
 
         if (!$asociado->save()) {
@@ -129,16 +130,16 @@ class RevisionController extends Controller
             Error, vuelva a intentarlo
             </div>
             <div>
-            <a href="../revision">
+            <a href="../aceptacion">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';
         } else{
             echo '<div class="alert alert-success" role="alert">
-            La solicitud se reviso con exito
+            La solicitud se acepto con exito
             </div>
             <div>
-            <a href="../revision">
+            <a href="../aceptacion">
             <input class="btn btn-primary"  value="Regresar"type="button">
             </a>
             </div>';

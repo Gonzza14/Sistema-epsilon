@@ -1,7 +1,7 @@
 <div class="row">
   <div class="row py-lg-2">
     <div class="col-md-6">
-      <h2>Lista de solicitudes pendientes de revision</h2>
+      <h2>Crear carnet</h2>
     </div>
   </div>
 </div>
@@ -13,22 +13,22 @@
       <th>ID</th>
       <th>Nombre</th>
       <th>Apellido</th>
-      <th>Fecha de solicitud</th>
+      <th>Fecha de aprobacion</th>
       <th>Opciones</th>
     </tr>
   </thead>
   <tbody>
-  {% for v in data_solicitudes %}
+  <?php foreach ($data_solicitudes as $v) { ?>
     <tr>
-      <td>{{v.idAsociado}}</td>
-      <td>{{v.nombreAsociado}}</td>
-      <td>{{v.apellido}}</td>
-      <td>{{v.fechaSolicitud}}</td>
+      <td><?= $v->idAsociado ?></td>
+      <td><?= $v->nombreAsociado ?></td>
+      <td><?= $v->apellido ?></td>
+      <td><?= $v->fechaAprobacion ?></td>
       <td>
-        <a href="revision/edit/{{v.idAsociado}}"><i class="fa fa-eye"></i></a>
+        <a href="carnet/edit/<?= $v->idAsociado ?>"><i class="fa fa-eye"></i></a>
       </td>
     </tr>
-  {% endfor %}
+  <?php } ?>
   </tbody>
 </table>
 

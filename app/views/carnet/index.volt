@@ -1,7 +1,7 @@
 <div class="row">
   <div class="row py-lg-2">
     <div class="col-md-6">
-      <h2>Lista de solicitudes pendientes de revision</h2>
+      <h2>Crear carnet</h2>
     </div>
   </div>
 </div>
@@ -13,7 +13,7 @@
       <th>ID</th>
       <th>Nombre</th>
       <th>Apellido</th>
-      <th>Fecha de solicitud</th>
+      <th>Fecha de aprobacion</th>
       <th>Opciones</th>
     </tr>
   </thead>
@@ -23,9 +23,9 @@
       <td>{{v.idAsociado}}</td>
       <td>{{v.nombreAsociado}}</td>
       <td>{{v.apellido}}</td>
-      <td>{{v.fechaSolicitud}}</td>
+      <td>{{v.fechaAprobacion}}</td>
       <td>
-        <a href="revision/edit/{{v.idAsociado}}"><i class="fa fa-eye"></i></a>
+        <a href="carnet/edit/{{v.idAsociado}}"><i class="fa fa-eye"></i></a>
       </td>
     </tr>
   {% endfor %}
@@ -55,16 +55,6 @@
 
 <div class="card-footer small text-muted"></div>
 </div>
-
-<script>
-  $('#deleteModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget) 
-    var categoria_id = button.data('categoriaid')     
-    var modal = $(this)
-    // modal.find('.modal-footer #user_id').val(user_id)
-    modal.find('form').attr('action','/categoria/' + categoria_id + '/destroy');
-  })
-</script>
 
 <script>
   $(function () {

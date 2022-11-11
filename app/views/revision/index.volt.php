@@ -1,7 +1,7 @@
 <div class="row">
   <div class="row py-lg-2">
     <div class="col-md-6">
-      <h2>Lista de solicitudes</h2>
+      <h2>Lista de solicitudes pendientes de revision</h2>
     </div>
   </div>
 </div>
